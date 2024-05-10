@@ -55,34 +55,12 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             {
                 try
                 {
-                    var order = await _orderRepository.GetOrderById(command.Id);
-                    var inventoryUpdate = await _productInventory.UpdateProductInventory(order.Id, command.Details,InventoryActionType.None);
-                    if (!inventoryUpdate)
-                        throw new ApiException("مشکلی در بروزرسانی انبار بوجود آمد !");
+                    var order = await _orderRepository.GetByIdAsync(command.Id);
 
                     if (order == null)
-                    {
                         throw new ApiException($"سفارش یاقت نشد !");
-                    }
                     else
-                    {
-                        #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
-                        foreach (var oitem in order.Details)
-                        {
-                            var od = command.Details.FirstOrDefault(d => d.Id == oitem.Id);
-                            if (od != null)
-                            {
-                                List<CargoAnnounceDetail> od_cAnncs = await _cargoAnnouncement.GetCargoAnnouncesByOrderDetailId(od.Id);
-                                if (od.ProximateAmount < od_cAnncs.Sum(c => c.LadingAmount))
-                                    throw new ApiException(
-                                        string.Format(@"مقدار اصلی نمی تواند از مقدار بارگیری شده کمتر باشد !"+"({0} {1}) ",
-                                        od_cAnncs.First(d=>d.OrderDetailId==od.Id).OrderDetail.ProductBrand.Product.ProductName,
-                                        od_cAnncs.First(d=>d.OrderDetailId==od.Id).OrderDetail.ProductBrand.Brand.Name
-                                        ));
-                            }
-                        }
-                        #endregion
-
+                    {                        
                         order = _mapper.Map(command, order);
                         order = await _orderRepository.UpdateOrder(order);
 

@@ -109,7 +109,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             try
             {
-                //-----با ثبت سفارش خرید یه موجودی انبار خرید مبدا کسر میگردد-----
+                //-----با ثبت سفارش خرید موجودی انبار واسطه اضافه میشه-----
                 foreach (var prodBrand in order.Details)
                 {
                     var prodInventory = await _productInventory

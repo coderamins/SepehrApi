@@ -408,8 +408,13 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.Id, d => d.MapFrom(d => d.Id));
 
             CreateMap<CreateOrderCommand, PurchaseOrder>()
+                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
+                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(m => m.OrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+
+            CreateMap<OrderPaymentDto, PurchaseOrderPayment>()
+                .ForMember(m => m.PaymentDate, d => d.MapFrom(d => d.PaymentDate.ToDateTime("00:00")));
 
             CreateMap<UpdatePurchaseOrderDetailRequest, PurchaseOrderDetail>()
                 .ForMember(m => m.DeliverDate, d => d.MapFrom(d => d.DeliverDate.ToDateTime("00:00")))

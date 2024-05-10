@@ -99,7 +99,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }
             }
 
-            var newOrder= await _orders.AddAsync(order);
+            var newOrder = await _orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
             if (order.Customer != null)
             {
@@ -138,7 +138,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 throw new ApiException("سفارش یافت نشد !");
             }
-            if (order.OrderStatusId==(int)OrderStatusEnum.Confirmed)
+            if (order.OrderStatusId == (int)OrderStatusEnum.Confirmed)
                 throw new ApiException("این سفارش قبلا تایید شده است !");
 
             order.OrderStatusId = (int)OrderStatusEnum.Confirmed;
@@ -158,8 +158,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<Order>> GetAllNotSendedOrders(GetNotAnnouncedOrdersParameter param)
         {
             return await _orders.AsNoTracking()
-                .Where(o => 
-                (o.OrderCode==param.OrderCode || param.OrderCode==null) &&
+                .Where(o =>
+                (o.OrderCode == param.OrderCode || param.OrderCode == null) &&
                 o.OrderStatusId != (int)OrderStatusEnum.Sended &&
                             !new int[] { (int)OrderStatusEnum.Canceled, (int)OrderStatusEnum.ReturnedBack }.Contains(o.OrderStatusId))//!o.IsCompletlySended)
                 .Include(c => c.Customer).ThenInclude(c => c.CustomerOfficialCompanies)
@@ -169,7 +169,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.OrderExitType)
                 .Include(c => c.InvoiceType)
                 .Include(c => c.FarePaymentType)
-                .Include(c => c.CargoAnnounces).ThenInclude(c=>c.CargoAnnounceDetails)
+                .Include(c => c.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(c => c.CustomerOfficialCompany)
                 .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
@@ -200,7 +200,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
-                .Include(o => o.CargoAnnounces).ThenInclude(c=>c.CargoAnnounceDetails)
+                .Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType).FirstOrDefaultAsync();
         }
 
@@ -245,14 +245,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<bool> ReturnOrder(Guid orderId)
         {
             var order = await _orders.AsNoTracking()
-                .Include(o => o.LadingPermits.Where(x=>x.IsActive))
+                .Include(o => o.LadingPermits.Where(x => x.IsActive))
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
                 throw new ApiException("سفارش یافت نشد !");
 
-            if (order.OrderStatusId!=(int)OrderStatusEnum.Confirmed)
+            if (order.OrderStatusId != (int)OrderStatusEnum.Confirmed)
                 throw new ApiException("سفارش تایید نشده است !");
 
             if (order.LadingPermits.Count() > 0)  //throw new ApiException("برای این سفارش ارسال بار ثبت شده است !");
@@ -268,7 +268,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async void RemoveRelatedDetails(Guid id)
         {
             var order = await _orders.AsNoTracking()
-                .Include(o => o.LadingPermits.Where(x=>x.IsActive))
+                .Include(o => o.LadingPermits.Where(x => x.IsActive))
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
@@ -340,11 +340,59 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Order> UpdateOrder(Order order)
         {
+            //var po =await _dbContext.Set<OrderDetail>()
+            //    .FirstOrDefaultAsync(o => o.OrderId == order.Id && 
+            //        o.Warehouse.WarehouseTypeId == 2 && o.Order.IsActive);
+            //if (po!=null)
+            //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
+
             _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails.Where(s => s.OrderId == order.Id && !order.Details.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
             _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
             _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
 
-            //ord.OrderSendTypeId = order.OrderSendTypeId;
+            #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
+            foreach (var oitem in order.Details.Where(d => d.Id != 0))
+            {
+                var od = order.Details.FirstOrDefault(d => d.Id == oitem.Id);
+                if (od != null)
+                {
+                    List<CargoAnnounceDetail> od_cAnncs =
+                        await _dbContext.Set<CargoAnnounceDetail>().Where(a => a.OrderDetailId == od.Id).ToListAsync();
+
+                    if (od.ProximateAmount < od_cAnncs.Sum(c => c.LadingAmount))
+                        throw new ApiException(
+                            string.Format(@"مقدار اصلی نمی تواند از مقدار بارگیری شده کمتر باشد !" + "({0} {1}) ",
+                            od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Product.ProductName,
+                            od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Brand.Name
+                            ));
+                }
+            }
+            #endregion
+
+            #region بروزرسانی موجودی
+            if (order.OrderTypeId == OrderType.Urgant)
+            {
+                foreach (var oitem in order.Details)
+                {
+                    var prodInventory = await _dbContext.ProductInventories
+                                    .FirstOrDefaultAsync(i => i.ProductBrandId == oitem.ProductBrandId &&
+                                        i.WarehouseId == oitem.WarehouseId);
+
+                    //---اگه محصول ویرایش شده باشه ابتدا مقدار قبلی به موجودی اضافه شده و سپس از مقدار جدید کسر خواهد شد .
+
+                    var prevProd = order.Details.FirstOrDefault(d => d.Id == oitem.ProductBrandId);
+                    if (prodInventory != null)
+                    {
+                        prodInventory.ApproximateInventory = prevProd == null ?
+                            prodInventory.ApproximateInventory - oitem.ProximateAmount :
+                            prodInventory.ApproximateInventory + prevProd.ProximateAmount - oitem.ProximateAmount;
+
+                        _productInventory.Update(prodInventory);
+                    }
+                }
+            }
+            #endregion
+
             _orders.Update(order);
             await _dbContext.SaveChangesAsync();
 

@@ -90,13 +90,12 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
                 {
                     var buyOrder = request;
 
-                    foreach (var item in productTypes)
-                    {
-                        buyOrder.Details.Add(
-                            request.Details
-                            .First(d => d.ProductBrandId == item.ProductBrandId
-                                   && d.WarehouseId == item.WarehouseId));
-                    }
+                    buyOrder.Details = request.Details.Where(x =>
+                                productTypes.Select(t => t.ProductBrandId).Contains(x.ProductBrandId)).ToList();
+                    //.Add(
+                    //request.Details
+                    //.First(d => d.ProductBrandId == item.ProductBrandId
+                    //       && d.WarehouseId == item.WarehouseId));
 
                     var newPurOrder = _mapper.Map<PurchaseOrder>(buyOrder);
                     await _purOrderRepository.CreateOrderForIntermediatProducts(newPurOrder);
