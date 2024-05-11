@@ -33,7 +33,6 @@ namespace Sepehr.Application.Features.Login
             IDistributedCache distributedCache,
             IPasswordHelper passwordHelper, 
             IJwtProvider jwtProvider,
-            ILogger<LoginCommandHandler> logger,
             IMapper mapper)
         {
             _userRepository = userRepository;
@@ -41,7 +40,6 @@ namespace Sepehr.Application.Features.Login
             _distributedCache=distributedCache;
             _jwtProvider=jwtProvider;
             _mapper = mapper;
-            _logger = logger;
         }
         public async Task<Response<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
@@ -58,7 +56,6 @@ namespace Sepehr.Application.Features.Login
 
             string token=await _jwtProvider.Generate(_user);
             var refreshToken = new RefreshToken { Token=token };// _jwtProvider.GenerateRefreshToken();
-            _logger.LogInformation("----------------------------------" + refreshToken);
          
             //await _userRepository.AddRefreshTokenAsync(refreshToken,request.UserName);
 
