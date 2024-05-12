@@ -22,7 +22,7 @@ namespace Sepehr.Infrastructure.Persistence
         {
 
             string constr = configuration.GetValue<string>("ConnectionStrName") ?? "SepehrConnection";
-            Console.WriteLine(constr);
+            Console.WriteLine("connected database name is=>" + constr);
             services.AddDbContext<ApplicationDbContext>
             (options =>
             {
