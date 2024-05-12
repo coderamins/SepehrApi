@@ -1,4 +1,7 @@
-namespace Sepehr.TestService
+using System;
+using Xunit;
+
+namespace Sepehr.TestApi
 {
     public class UnitTest1
     {

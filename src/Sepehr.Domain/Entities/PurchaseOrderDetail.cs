@@ -21,7 +21,5 @@ namespace Sepehr.Domain.Entities
         public virtual Customer? PurchaserCustomer { get; set; }
         public virtual Product? AlternativeProduct { get; set; }
         public virtual ICollection<LadingPermitDetail>? LadingPermitDetails { get; set; }
-
-
     }
 }   
