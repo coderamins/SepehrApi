@@ -21,10 +21,10 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> ReturnPurchaseOrder(Guid purchaseOrderId);
         Task<PurchaseOrder> UpdatePurchaseOrder(PurchaseOrder purchaseOrder);
         Task<PurchaseOrder> CreateOrder(PurchaseOrder purchaseOrder);
-        Task<PurchaseOrder> CreateOrderForIntermediatProducts(PurchaseOrder order);
+        Task<List<PurchaseOrder>> CreateOrderForIntermediatProducts(List<PurchaseOrder> orders);
         Task<bool> DeletePurchaseOrder(Guid id);
         Task<bool> CancelPurchaseOrder(Guid orderId);
-        Task UpdatePurchaseOrderDetail(ICollection<PurchaseOrderDetail> details,int warehouseId);
+        Task UpdatePurchaseOrderDetail(ICollection<PurchaseOrderDetail> details, int warehouseId);
         Task<PurchaseOrder?> GetPurchaseOrderByIdAsQueryble(Guid purchaseOrderId);
         Task<PurchaseOrderTransfer> TranserPurchaseOrder(TransferPurchaseOrderCommand command);
     }

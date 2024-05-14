@@ -1,5 +1,3 @@
-
-
 @Sepehr.WebApi_HostAddress = http://localhost:5170
 
 GET {{Sepehr.WebApi_HostAddress}}/weatherforecast/

@@ -1,6 +1,36 @@
+<<<<<<< HEAD
 bin/
 obj/
 build/
 .git/
 .vscode/
 .vs/
+=======
+# Ignore project specific build artifacts
+**/bin/
+**/obj/
+**/publish/
+
+# Ignore IDE and test related files
+**/.vs/
+**/.vscode/
+**/[Bb]in/
+**/[Oo]utput/
+**/test/**/*.cs
+
+# Ignore version control and package management files
+.git/
+.gitignore
+*.sln
+*.suo
+**/packages/
+
+# Ignore miscellaneous temporary files
+*.tmp
+*.user
+*.config
+
+# Ignore potential secrets files (adjust as needed)
+.env
+*.secrets
+>>>>>>> 3d139d23851805bb0c61fef48e098aa9fcec8218

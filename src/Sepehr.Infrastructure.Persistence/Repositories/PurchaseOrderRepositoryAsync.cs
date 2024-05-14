@@ -105,46 +105,49 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<PurchaseOrder> CreateOrderForIntermediatProducts(PurchaseOrder order)
+        public async Task<List<PurchaseOrder>> CreateOrderForIntermediatProducts(List<PurchaseOrder> orders)
         {
             try
             {
-                //-----با ثبت سفارش خرید موجودی انبار واسطه اضافه میشه-----
-                foreach (var prodBrand in order.Details)
+                foreach (var ord in orders)
                 {
-                    var prodInventory = await _productInventory
-                            .FirstOrDefaultAsync(i =>
-                            i.ProductBrandId == prodBrand.ProductBrandId &&
-                            i.Warehouse.WarehouseTypeId == 2
-                            );
+                    //-----با ثبت سفارش خرید موجودی انبار واسطه اضافه میشه-----
+                    foreach (var prodBrand in ord.Details)
+                    {
+                        var prodInventory = await _productInventory
+                                .FirstOrDefaultAsync(i =>
+                                i.ProductBrandId == prodBrand.ProductBrandId &&
+                                i.Warehouse.WarehouseTypeId == 2
+                                );
 
-                    if (prodInventory == null)
-                    {
-                        await _productInventory.AddAsync(new ProductInventory
+                        if (prodInventory == null)
                         {
-                            PurchaseInventory = prodBrand.ProximateAmount,
-                            ProductBrandId = prodBrand.ProductBrandId,
-                            OrderPoint = 0,
-                            MinInventory = 0,
-                            MaxInventory = 0,
-                            FloorInventory = 0,
-                            WarehouseId = 3,
-                            IsActive = true,
-                        });
+                            await _productInventory.AddAsync(new ProductInventory
+                            {
+                                PurchaseInventory = prodBrand.ProximateAmount,
+                                ProductBrandId = prodBrand.ProductBrandId,
+                                OrderPoint = 0,
+                                MinInventory = 0,
+                                MaxInventory = 0,
+                                FloorInventory = 0,
+                                WarehouseId = 3,
+                                IsActive = true,
+                            });
+                        }
+                        else
+                        {
+                            prodInventory.PurchaseInventory += prodBrand.ProximateAmount;
+                            _productInventory.Update(prodInventory);
+                        }
                     }
-                    else
-                    {
-                        prodInventory.PurchaseInventory += prodBrand.ProximateAmount;
-                        _productInventory.Update(prodInventory);
-                    }
+
+                    var newOrder = await _dbContext
+                        .AddAsync<PurchaseOrder>(ord);
+
+                    await _dbContext.SaveChangesAsync();
                 }
 
-                var newOrder = await _dbContext
-                    .AddAsync<PurchaseOrder>(order);
-
-                await _dbContext.SaveChangesAsync();
-
-                return newOrder.Entity;
+                return null;
             }
             catch (Exception e)
             {
