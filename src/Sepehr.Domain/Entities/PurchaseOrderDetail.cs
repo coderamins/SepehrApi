@@ -13,7 +13,6 @@ namespace Sepehr.Domain.Entities
 {
     public class PurchaseOrderDetail: OrderDetailBaseEntity
     {
-
         public required virtual PurchaseOrder Order { get; set; }
         public required virtual ProductUnit ProductSubUnit { get; set; }
         public required virtual ProductBrand ProductBrand { get; set; }

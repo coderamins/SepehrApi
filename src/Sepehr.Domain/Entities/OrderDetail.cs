@@ -14,6 +14,7 @@ namespace Sepehr.Domain.Entities
     public class OrderDetail : BaseEntity<int>
     {
         public Guid OrderId { get; set; }
+        public int? PurchaseOrderId { get; set; }
         public int RowId { get; set; }
         public Guid ProductId { get; set; }
         public required int ProductBrandId { get; set; }
@@ -64,6 +65,7 @@ namespace Sepehr.Domain.Entities
         public decimal? ProductSubUnitAmount { get; set; }
         #endregion
 
+        public virtual PurchaseOrder? PurchaseOrder { get;set; }
         public required virtual Order Order { get; set; }
         public required virtual ProductUnit ProductSubUnit { get; set; }
         public required virtual ProductBrand ProductBrand { get; set; }
