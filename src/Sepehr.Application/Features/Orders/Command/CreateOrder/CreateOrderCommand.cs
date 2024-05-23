@@ -109,9 +109,12 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
                     //             .Contains(x.ProductBrandId)).ToList();
 
                     //var newPurOrder = _mapper.Map<PurchaseOrder>(purchaseOrder);
-                    await _purOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
+                   var lstPurchaseOrders= await _purOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
                 }
                 #endregion
+
+                request.Details.ForEach(d => d.PurchaseOrderId =
+                                _lstPurchaseOrder.First(x => x.Details.Select(f => f.ProductBrandId).Contains((int)d.ProductBrandId)).Id);
 
                 Order newOrder = await _orderRepository.CreateOrder(order);
 

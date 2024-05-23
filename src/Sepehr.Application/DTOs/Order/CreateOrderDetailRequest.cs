@@ -24,12 +24,16 @@ namespace Sepehr.Application.DTOs.Order
         public int? PurchaseInvoiceTypeId { get; set; } = null;
         public Guid? PurchaserCustomerId { get; set; } = Guid.Empty;
         public string? SellerCompanyRow { get; set; }
+
+        /// <summary>
+        /// اگر کالای واسطه باشه و براش سفارش خرید ثبت بشود شناسه سفارش ثبت می شود
+        /// </summary>
+        public Guid? PurchaseOrderId { get; internal set; }
+
         public string? Description { get; set; }
 
         public string? PurchaseSettlementDate { get; set; } = string.Empty;
         public required string CargoSendDate { get; set; }
-
-
     }
 
     public class UpdateOrderDetailRequest1

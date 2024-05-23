@@ -346,9 +346,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //if (po!=null)
             //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
 
-            _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails.Where(s => s.OrderId == order.Id && !order.Details.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
+            _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails.Where(s => s.OrderId == order.Id && s.WarehouseId!=3 && !order.Details.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
             _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
             _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
+
+            foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3).GroupBy(g=> new { g.ProductBrandId,g.Id}))
+            {
+                if(oitem.Key.Id!=0)
+                {
+                    var oi_purorder=_dbContext.Set<OrderDetail>().Where(d=>d.Id==oitem.Key.Id); 
+                }
+            }
 
             #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
             foreach (var oitem in order.Details.Where(d => d.Id != 0))
