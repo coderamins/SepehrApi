@@ -350,12 +350,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
             _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
 
-            foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3).GroupBy(g=> new { g.ProductBrandId,g.Id}))
+            foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
             {
-                if(oitem.Key.Id!=0)
-                {
-                    var oi_purorder=_dbContext.Set<OrderDetail>().Where(d=>d.Id==oitem.Key.Id); 
-                }
+                _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+                
             }
 
             #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد

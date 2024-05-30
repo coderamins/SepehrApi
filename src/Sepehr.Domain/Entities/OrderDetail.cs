@@ -14,7 +14,7 @@ namespace Sepehr.Domain.Entities
     public class OrderDetail : BaseEntity<int>
     {
         public Guid OrderId { get; set; }
-        public int? PurchaseOrderId { get; set; }
+        public Guid? PurchaseOrderId { get; set; }
         public int RowId { get; set; }
         public Guid ProductId { get; set; }
         public required int ProductBrandId { get; set; }
