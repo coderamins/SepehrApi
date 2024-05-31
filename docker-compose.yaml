@@ -2,12 +2,18 @@ version: '3.8'
 
 services:
   api:
-    container_name: sepehr-webapi
+    container_name: sepehr-webapi2
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "5001:5001"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SepehrConnection="Server=5.9.192.37,2019;Database=SepehrDb;User Id=sepdb;password=Sepehr2023@;TrustServerCertificate=True;"  # Replace with actual connection string details
     restart: on-failure
+#   sqlserver:
+#     image: microsoft/mssql-server:2019-latest  # Replace with desired SQL Server version
+#     environment:
+#       - SA_PASSWORD=Sepehr2023@  # Replace with a strong password
+#     ports:
+#       - "1433:1433" 
