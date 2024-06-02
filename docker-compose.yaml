@@ -8,7 +8,7 @@ services:
           - 8002:1433
       environment:
             - ACCEPT_EULA=Y
-            - MSSQL_SA_PASSWORD=Sepehr2023@ 
+            - MSSQL_SA_PASSWORD=M@ns0ur1402 
   sepehrapi:
       container_name: SepehrWebApi
       image: ${DOCKER_REGISTRY-}webapisqlserverdockerdemo

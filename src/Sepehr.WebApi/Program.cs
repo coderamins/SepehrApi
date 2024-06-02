@@ -118,38 +118,6 @@ using (var scope = scopeFactory.CreateScope())
 {
     var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-#if !DEBUG
-{
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultInvoiceTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.PurchaseInvoiceTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultFarePaymentTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.WarehouseTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.OrderSendTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultWarehouse.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultBrands.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultVehicleTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultReceivePaymentTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultProductTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultProductUnits.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultStandards.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.ProductStates.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultCustomerValidity.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultPurchaseOrderStatus.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultTransferRemittanceTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultTransferRemittanceStatus.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultReceivePayStatus.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultBanks.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultBasicUser.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultOrderExitTypes.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultPurchaseOrderSendType.SeedAsync(applicationDbContext);
-    await Sepehr.Infrastructure.Persistence.Seeds.DefaultPurchaseOrderFarePaymentTypes.SeedAsync(applicationDbContext);
-
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-}
-#endif
-
-
     Log.Information("Finished Seeding Default Data");
     Log.Information("Application Starting");
 
