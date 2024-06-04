@@ -8,12 +8,16 @@ services:
           - 8002:1433
       environment:
             - ACCEPT_EULA=Y
-            - MSSQL_SA_PASSWORD=M@ns0ur1402 
+            - MSSQL_SA_PASSWORD=Sepehr2023@ 
   sepehrapi:
       container_name: SepehrWebApi
       image: ${DOCKER_REGISTRY-}webapisqlserverdockerdemo
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Development 
+        - ASPNETCORE_HTTP_PORTS=8000
+        - ASPNETCORE_URLS = http://localhost:8000
       ports:
-        - "5001:80" 
+        - "8000:8080" #map 8080 port to 8000 local port
       build:
         context: .
         dockerfile: Dockerfile
