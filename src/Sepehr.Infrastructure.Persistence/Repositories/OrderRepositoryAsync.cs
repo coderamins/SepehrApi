@@ -345,10 +345,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //        o.Warehouse.WarehouseTypeId == 2 && o.Order.IsActive);
             //if (po!=null)
             //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
+            
+            var ord = _dbContext.Orders
+                .Include(i=>i.Details).ThenInclude(i=>i.PurchaseOrder)
+                .FirstOrDefault(o => o.Id == order.Id);
 
-            _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails.Where(s => s.OrderId == order.Id && s.WarehouseId!=3 && !order.Details.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
-            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
-            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));//.Remove(os);
+            var toRemoveDetails = _dbContext.OrderDetails.Where(s => s.OrderId == order.Id && s.WarehouseId != 3 && !order.Details.Select(d => d.Id).Contains(s.Id);
+
+            _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
+            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
+            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
             foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
             {
