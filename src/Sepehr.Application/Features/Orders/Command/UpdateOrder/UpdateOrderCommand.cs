@@ -37,6 +37,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
         public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Response<Order>>
         {
             private readonly IOrderRepositoryAsync _orderRepository;
+            private readonly IPurchaseOrderRepositoryAsync _purchaseOrderRepository;
             private readonly IProductInventoryRepositoryAsync _productInventory;
             private readonly ICargoAnnouncementRepositoryAsync _cargoAnnouncement;
             private readonly IMapper _mapper;
@@ -44,12 +45,15 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             public UpdateOrderCommandHandler(IOrderRepositoryAsync orderRepository, 
                 IProductInventoryRepositoryAsync productInventory,
                 ICargoAnnouncementRepositoryAsync cargoAnnouncement,
-                IMapper mapper)
+                IMapper mapper,
+                IPurchaseOrderRepositoryAsync purchaseOrderRepository)
             {
                 _orderRepository = orderRepository;
                 _productInventory = productInventory;
-                _cargoAnnouncement=cargoAnnouncement;
+                _cargoAnnouncement = cargoAnnouncement;
                 _mapper = mapper;
+                _purchaseOrderRepository = purchaseOrderRepository;
+
             }
             public async Task<Response<Order>> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
             {
@@ -60,7 +64,34 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
                     if (order == null)
                         throw new ApiException($"سفارش یاقت نشد !");
                     else
-                    {                        
+                    {
+                        #region در صورتی که تعدادی از کالاها از انبار واسط باشند یک سفارش خرید هم ثبت می شود
+                        List<ProductInventory> productTypes =
+                            await _productInventory.GetProductInventory(command.Details);
+
+
+                        List<PurchaseOrder> _lstPurchaseOrder = new List<PurchaseOrder>();
+                        if (productTypes.Count() > 0)
+                        {
+                            var purchaseOrder = command;
+                            foreach (var item in command.Details
+                                                .Where(t => productTypes.Select(p => p.ProductBrandId)
+                                                .Contains(t.ProductBrandId)).GroupBy(t => new { t.PurchaserCustomerId }))
+                            {
+                                purchaseOrder.Details = command.Details.Where(x =>
+                                        x.PurchaserCustomerId == item.Key.PurchaserCustomerId &&
+                                        productTypes.Select(t => t.ProductBrandId)
+                                        .Contains(x.ProductBrandId)).ToList();
+
+                                var newPurOrder = _mapper.Map<PurchaseOrder>(purchaseOrder);
+                                _lstPurchaseOrder.Add(newPurOrder);
+                            }
+
+                            var lstPurchaseOrders = await _purchaseOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
+                        }
+                        #endregion
+
+
                         order = _mapper.Map(command, order);
                         order = await _orderRepository.UpdateOrder(order);
 
