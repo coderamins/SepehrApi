@@ -15,7 +15,7 @@ services:
         context: .
         dockerfile: Dockerfile
       ports:
-        - "5001:5001"
+        - "3000:3000"
       environment:
         - ASPNETCORE_ENVIRONMENT=Development
       restart: on-failure  
