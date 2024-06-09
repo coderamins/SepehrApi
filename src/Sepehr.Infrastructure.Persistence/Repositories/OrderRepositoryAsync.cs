@@ -352,14 +352,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             var toRemoveDetails = _dbContext.OrderDetails.Where(s => s.OrderId == order.Id && s.WarehouseId != 3 && !order.Details.Select(d => d.Id).Contains(s.Id);
 
+            foreach(var item in toRemoveDetails.Where(x=>x.Warehouse.WarehouseTypeId==2))
+            {
+                _dbContext.PurchaseOrder.Remove(item.PurchaseOrder);
+            }
+
             _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
             _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
             _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
             foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
             {
-                _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
-                
+                _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));                
             }
 
             #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
