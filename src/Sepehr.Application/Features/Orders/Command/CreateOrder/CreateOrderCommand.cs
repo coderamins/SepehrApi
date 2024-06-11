@@ -10,6 +10,7 @@ using Sepehr.Application.DTOs.Order;
 using Sepehr.Application.DTOs.PurchaseOrder;
 using Sepehr.Application.DTOs.Sms;
 using Sepehr.Application.Exceptions;
+using Sepehr.Application.Features.PurchaseOrders.Command.CreatePurchaseOrder;
 using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
@@ -78,43 +79,33 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
         {
             try
             {
-                List<Order> createdOrders = new List<Order>();
-
-                var order = _mapper.Map<Order>(request);
-
                 #region در صورتی که تعدادی از کالاها از انبار واسط باشند یک سفارش خرید هم ثبت می شود
                 List<ProductInventory> productTypes =
                     await _productInventory.GetProductInventory(request.Details);
 
-
                 List<PurchaseOrder> _lstPurchaseOrder = new List<PurchaseOrder>();
                 if (productTypes.Count() > 0)
                 {
-                    var purchaseOrder = request;
                     foreach (var item in request.Details
                                         .Where(t => productTypes.Select(p => p.ProductBrandId)
-                                        .Contains(t.ProductBrandId)).GroupBy(t => new { t.PurchaserCustomerId }))
+                                        .Contains(t.ProductBrandId)))
                     {
-                        purchaseOrder.Details = request.Details.Where(x =>
-                                x.PurchaserCustomerId == item.Key.PurchaserCustomerId &&
-                                productTypes.Select(t => t.ProductBrandId)
-                                .Contains(x.ProductBrandId)).ToList();
+                        var purOrderDetail= _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
 
-                        var newPurOrder = _mapper.Map<PurchaseOrder>(purchaseOrder);
-                        _lstPurchaseOrder.Add(newPurOrder);
+                        var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(request);
+                        newPurOrder.Details.Add(purOrderDetail);
+                        item.PurchaseOrder=newPurOrder;
                     }
 
-                    // purchaseOrder.Details = request.Details.Where(x =>
-                    //             productTypes.Select(t => t.ProductBrandId)
-                    //             .Contains(x.ProductBrandId)).ToList();
-
                     //var newPurOrder = _mapper.Map<PurchaseOrder>(purchaseOrder);
-                   var lstPurchaseOrders= await _purOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
+                    //var lstPurchaseOrders= await _purOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
                 }
                 #endregion
 
-                request.Details.ForEach(d => d.PurchaseOrderId =
-                                _lstPurchaseOrder.First(x => x.Details.Select(f => f.ProductBrandId).Contains((int)d.ProductBrandId)).Id);
+                //request.Details.ForEach(d => d.PurchaseOrderId =
+                //                _lstPurchaseOrder.First(x => x.Details.Select(f => f.ProductBrandId).Contains((int)d.ProductBrandId)).Id);
+
+                var order = _mapper.Map<Order>(request);
 
                 Order newOrder = await _orderRepository.CreateOrder(order);
 

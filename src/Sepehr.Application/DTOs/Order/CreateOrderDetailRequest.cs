@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sepehr.Application.Features.PurchaseOrders.Command.CreatePurchaseOrder;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace Sepehr.Application.DTOs.Order
 
         public string? PurchaseSettlementDate { get; set; } = string.Empty;
         public required string CargoSendDate { get; set; }
+
+        public CreatePurchaseOrderCommand? PurchaseOrder { get; set; }
     }
 
     public class UpdateOrderDetailRequest1

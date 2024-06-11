@@ -413,6 +413,20 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.OrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
+            CreateMap<CreateOrderCommand, CreatePurchaseOrderCommand>()
+                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
+                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
+                .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
+                .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+
+            CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>();
+            CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>()
+                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.ProductBrandId))
+                .ForMember(m => m.ProximateAmount, opt => opt.MapFrom(d => d.ProximateAmount));
+
+            CreateMap<OrderPaymentDto, PurchaseOrderPaymentDto>();
+            //CreateMap<OrderServiceDto, PurchaseOrderServiceDto>();            
+            
             CreateMap<OrderPaymentDto, PurchaseOrderPayment>()
                 .ForMember(m => m.PaymentDate, d => d.MapFrom(d => d.PaymentDate.ToDateTime("00:00")));
 
