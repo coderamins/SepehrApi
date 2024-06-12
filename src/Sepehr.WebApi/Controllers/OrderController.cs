@@ -50,6 +50,7 @@ namespace Sepehr.WebApi.Controller
 
         // POST api/<controller>
         [HasPermission("CreateOrder")]
+        //[AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post(CreateOrderCommand command)
         {

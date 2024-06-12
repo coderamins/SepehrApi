@@ -93,17 +93,14 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
                         var purOrderDetail= _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
 
                         var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(request);
+                        newPurOrder.Details.Clear();
+
                         newPurOrder.Details.Add(purOrderDetail);
                         item.PurchaseOrder=newPurOrder;
                     }
 
-                    //var newPurOrder = _mapper.Map<PurchaseOrder>(purchaseOrder);
-                    //var lstPurchaseOrders= await _purOrderRepository.CreateOrderForIntermediatProducts(_lstPurchaseOrder);
                 }
                 #endregion
-
-                //request.Details.ForEach(d => d.PurchaseOrderId =
-                //                _lstPurchaseOrder.First(x => x.Details.Select(f => f.ProductBrandId).Contains((int)d.ProductBrandId)).Id);
 
                 var order = _mapper.Map<Order>(request);
 

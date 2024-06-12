@@ -61,6 +61,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var prodBrand in order.Details)
                 {
                     var prodInventory = await _productInventory
+                        .Include(i=>i.Warehouse)
                         .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
                                     i.WarehouseId == prodBrand.WarehouseId);
 
@@ -70,7 +71,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         {
                             await _productInventory.AddAsync(new ProductInventory
                             {
-                                ApproximateInventory = 0 - prodBrand.ProximateAmount,
+                                //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
+                                ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount: 0) - prodBrand.ProximateAmount,
                                 ProductBrandId = prodBrand.ProductBrandId,
                                 OrderPoint = 0,
                                 MinInventory = 0,
@@ -85,6 +87,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     }
                     else
                     {
+                        if (prodBrand.WarehouseId == 3)
+                        {
+                            prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
+                        }
+                        _productInventory.Update(prodInventory);
+
                         prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
                         if (order.InvoiceTypeId == 1 || order.InvoiceTypeId == 2)
                         {
@@ -399,6 +407,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     var prodInventory = await _dbContext.ProductInventories
                                     .FirstOrDefaultAsync(i => i.ProductBrandId == oitem.ProductBrandId &&
                                         i.WarehouseId == oitem.WarehouseId);
+
+                    if (oitem.WarehouseId == 3)
+                    {
+                        prodInventory.ApproximateInventory += oitem.ProximateAmount;
+                    }
+                    _productInventory.Update(prodInventory);
 
                     //---اگه محصول ویرایش شده باشه ابتدا مقدار قبلی به موجودی اضافه شده و سپس از مقدار جدید کسر خواهد شد .
 
