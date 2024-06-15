@@ -12,6 +12,8 @@ using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
 using SizeF = System.Drawing.SizeF;
 using Image = System.Drawing.Image;
+using SixLaborsCaptcha.Core;
+using Stimulsoft.System.Windows.Forms;
 
 namespace Sepehr.Application.Features.Captcha
 {
@@ -173,10 +175,27 @@ namespace Sepehr.Application.Features.Captcha
             return ImageToByte(bitmap);
         }
 
+        public static byte[] GenerateCaptcha(out string key)
+        {
+            key = "";
+            var slc = new SixLaborsCaptchaModule(new SixLaborsCaptchaOptions
+            {
+                DrawLines = 7,
+                TextColor = new SixLabors.ImageSharp.Color[] { SixLabors.ImageSharp.Color.Blue, SixLabors.ImageSharp.Color.Black },
+            });
+
+            key = Extensions.GetUniqueKey(6);
+            var result = slc.Generate(key);
+
+            return result;
+        }
+
         public static byte[] ImageToByte(Image img)
         {
             ImageConverter converter = new ImageConverter();
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
+
+
     }
 }
