@@ -25,11 +25,11 @@ namespace Sepehr.Application.Features.Captcha.Command
         }
         public async Task<Response<CaptchaViewModel>> Handle(GenerateCaptchaCommand request, CancellationToken cancellationToken)
         {
-            var data = CaptchaMaker.GetCaptcha(out var code);
+            var data = CaptchaMaker.GenerateCaptcha(out var code);
             var singleUseKey = Guid.NewGuid().ToString();
 
             var options = new DistributedCacheEntryOptions()
-                  .SetAbsoluteExpiration(DateTime.Now.AddMinutes(2));
+                  .SetAbsoluteExpiration(DateTime.Now.AddMinutes(5));
             await _distributedCache.SetStringAsync(singleUseKey, code, options);
 
             var result = new CaptchaViewModel
