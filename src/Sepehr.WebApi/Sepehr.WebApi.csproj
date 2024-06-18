@@ -35,4 +35,8 @@
     <ProjectReference Include="..\Sepehr.Infrastructure.PersistenceLog\Sepehr.Infrastructure.PersistenceLog.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="fonts\" />
+  </ItemGroup>
+
 </Project>

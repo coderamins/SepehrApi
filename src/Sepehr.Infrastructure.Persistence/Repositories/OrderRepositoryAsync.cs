@@ -356,6 +356,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             var ord = _dbContext.Orders
                 .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
+                .AsNoTracking()
                 .FirstOrDefault(o => o.Id == order.Id);
             if (ord == null)
                 throw new ApiException("سفارش یافت نشد !");
@@ -368,8 +369,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
 
             _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
-            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
-            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
+            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.AsNoTracking().Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
+            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.AsNoTracking().Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
             foreach (var oitem in ord.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
             {
