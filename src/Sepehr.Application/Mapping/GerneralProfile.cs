@@ -357,7 +357,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.OfficialName, opt => opt.MapFrom(d => d.Customer.OfficialName))
                 .ForMember(m => m.PaymentTypeDesc, opt => opt.MapFrom(d => d.FarePaymentType.Desc))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => d.OrderTypeId == OrderType.Urgant ? "فروش فوری" : "پیش فروش"))
-                .ForMember(m => m.OrderExitTypeDesc, opt => opt.MapFrom(d => d.OrderExitType==null ? "": d.OrderExitType.ExitTypeDesc))
+                .ForMember(m => m.OrderExitTypeDesc, opt => opt.MapFrom(d => d.OrderExitType == null ? "" : d.OrderExitType.ExitTypeDesc))
                 .ForMember(m => m.OrderStatusDesc, opt => opt.MapFrom(d => d.OrderStatus.StatusDesc))
                 //.ForMember(m => m.SettlementDate, opt => opt.MapFrom(d => d.SettlementDate.ToShamsiDate()))
                 .ForMember(m => m.CustomerFirstName, opt => opt.MapFrom(d => d.Customer.FirstName))
@@ -419,6 +419,12 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
+            CreateMap<UpdateOrderCommand, CreatePurchaseOrderCommand>()
+                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
+                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
+                .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
+                .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+
             CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>();
             CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>()
                 .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.ProductBrandId))
@@ -426,7 +432,7 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<OrderPaymentDto, PurchaseOrderPaymentDto>();
             //CreateMap<OrderServiceDto, PurchaseOrderServiceDto>();            
-            
+
             CreateMap<OrderPaymentDto, PurchaseOrderPayment>()
                 .ForMember(m => m.PaymentDate, d => d.MapFrom(d => d.PaymentDate.ToDateTime("00:00")));
 

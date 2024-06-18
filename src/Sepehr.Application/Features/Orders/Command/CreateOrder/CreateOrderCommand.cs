@@ -90,13 +90,14 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
                                         .Where(t => productTypes.Select(p => p.ProductBrandId)
                                         .Contains(t.ProductBrandId)))
                     {
-                        var purOrderDetail= _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
+                        var purOrderDetail = _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
 
                         var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(request);
                         newPurOrder.Details.Clear();
 
                         newPurOrder.Details.Add(purOrderDetail);
-                        item.PurchaseOrder=newPurOrder;
+                        item.PurchaseOrder = newPurOrder;
+                        item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
                     }
 
                 }
