@@ -49,7 +49,7 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                     foreach (var item in command.Details)
                     {
                         var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
-                        d.AlternativeProductId = item.AlternativeProductId;
+                        d.AlternativeProductId = item.AlternativeProductBrandId;
                         d.AlternativeProductPrice = item.AlternativeProductPrice;
                         d.AlternativeProductAmount = item.AlternativeProductAmount;
                     }

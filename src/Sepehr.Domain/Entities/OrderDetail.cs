@@ -39,8 +39,7 @@ namespace Sepehr.Domain.Entities
         #endregion
 
         #region برای مواردی که فاکتور رسمی بخواهد و از کالای اصلی موجودی رسمی نداشته باشیم
-        [ForeignKey("AlternativeProduct")]
-        public Guid? AlternativeProductId { get; set; }
+        public int? AlternativeProductBrandId { get; set; }
         /// <summary>,
         /// مقدار کالای جایگزین
         /// </summary>
@@ -73,7 +72,7 @@ namespace Sepehr.Domain.Entities
         public required virtual Warehouse Warehouse { get; set; }
         public virtual PurchaseInvoiceType? PurchaseInvoiceType { get; set; }
         public virtual Customer? PurchaserCustomer { get; set; }
-        public virtual Product? AlternativeProduct { get; set; }
+        public virtual ProductBrand? AlternativeProductBrand { get; set; }
         public virtual ICollection<CargoAnnounceDetail>? CargoAnnounces { get; set; }
     }
 }   

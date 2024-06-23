@@ -169,8 +169,8 @@ namespace Sepehr.Application.Features.Captcha
                 DrawLines = 7,
                 TextColor = new SixLabors.ImageSharp.Color[] { SixLabors.ImageSharp.Color.Blue, SixLabors.ImageSharp.Color.Black },
 
-                FontFamilies = ["tahoma"],
-                FontStyle=SixLabors.Fonts.FontStyle.Regular,
+                FontFamilies = new string[] { "Arial", "Verdana", "Times New Roman" },
+                FontStyle = SixLabors.Fonts.FontStyle.Regular,
             });
 
             key = Extensions.GetUniqueKey(6);

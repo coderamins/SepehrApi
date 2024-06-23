@@ -61,7 +61,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var prodBrand in order.Details)
                 {
                     var prodInventory = await _productInventory
-                        .Include(i=>i.Warehouse)
+                        .Include(i => i.Warehouse)
                         .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
                                     i.WarehouseId == prodBrand.WarehouseId);
 
@@ -72,7 +72,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             await _productInventory.AddAsync(new ProductInventory
                             {
                                 //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
-                                ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount: 0) - prodBrand.ProximateAmount,
+                                ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount : 0) - prodBrand.ProximateAmount,
                                 ProductBrandId = prodBrand.ProductBrandId,
                                 OrderPoint = 0,
                                 MinInventory = 0,
@@ -179,7 +179,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
@@ -204,7 +204,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -225,7 +225,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse)
@@ -339,7 +339,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -354,14 +354,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //if (po!=null)
             //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
 
-            var ord = _dbContext.Orders
+            var ord =await _dbContext.Orders
                 .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
-                .AsNoTracking()
-                .FirstOrDefault(o => o.Id == order.Id);
+                .FirstOrDefaultAsync(o => o.Id == order.Id);
             if (ord == null)
                 throw new ApiException("سفارش یافت نشد !");
 
-            var toRemoveDetails = _dbContext.OrderDetails.Where(s => s.OrderId == order.Id && s.WarehouseId != 3 && !order.Details.Select(d => d.Id).Contains(s.Id));
+            var toRemoveDetails = ord.Details
+                .Where(s => s.OrderId == order.Id && s.WarehouseId != 3 &&
+                !order.Details.Select(d => d.Id).Contains(s.Id));
 
             foreach (var item in toRemoveDetails.Where(x => x.Warehouse.WarehouseTypeId == 2))
             {
@@ -369,8 +370,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
 
             _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
-            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices.AsNoTracking().Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
-            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments.AsNoTracking().Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
+            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices
+                .Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
+            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
+                .Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
             foreach (var oitem in ord.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
             {
