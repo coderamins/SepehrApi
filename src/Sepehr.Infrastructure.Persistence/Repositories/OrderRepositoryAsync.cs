@@ -179,7 +179,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
@@ -204,7 +204,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -225,7 +225,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse)
@@ -339,7 +339,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProduct)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -354,13 +354,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //if (po!=null)
             //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
 
-            var ord = _dbContext.Orders
+            var ord =await _dbContext.Orders
                 .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
-                .FirstOrDefault(o => o.Id == order.Id);
+                .FirstOrDefaultAsync(o => o.Id == order.Id);
             if (ord == null)
                 throw new ApiException("سفارش یافت نشد !");
 
-            var toRemoveDetails = _dbContext.OrderDetails
+            var toRemoveDetails = ord.Details
                 .Where(s => s.OrderId == order.Id && s.WarehouseId != 3 &&
                 !order.Details.Select(d => d.Id).Contains(s.Id));
 

@@ -312,7 +312,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<OrderDetail, OrderDetailViewModel>()
                 .ForMember(m => m.ProductSubUnitDesc, d => d.MapFrom(d => d.ProductSubUnit.UnitName))
                 .ForMember(m => m.WarehouseName, d => d.MapFrom(d => d.Warehouse.Name))
-                .ForMember(m => m.AlternativeProductName, d => d.MapFrom(d => d.AlternativeProduct == null ? "" : d.AlternativeProduct.ProductName))
+                .ForMember(m => m.AlternativeProductName, d => d.MapFrom(d => d.AlternativeProductBrand == null ? "" : d.AlternativeProductBrand.Brand.Name))
                 .ForMember(m => m.BrandName, d => d.MapFrom(d => d.ProductBrand.Brand.Name))
                 .ForMember(m => m.BrandId, d => d.MapFrom(d => d.ProductBrand.Brand.Id))
                 .ForMember(m => m.ProductName, d => d.MapFrom(d => d.Product.ProductName))
@@ -390,7 +390,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.FileData, opt => opt.MapFrom(d => ConvertToByte(d.FileData)));
 
             CreateMap<ApproveInvoiceTypeCommand, Order>()
-                .ForPath(m => m.Details, opt => opt.Ignore())
+                //.ForPath(m => m.Details, opt => opt.Ignore())
                 .ForMember(m => m.OrderCode, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())
                 .ForMember(m => m.Created, opt => opt.Ignore());

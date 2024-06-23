@@ -14,7 +14,7 @@ namespace Sepehr.Application.DTOs.Order
         /// <summary>
         /// کد کالای جایگزین
         /// </summary>
-        public Guid? AlternativeProductId { get; set; }
+        public int? AlternativeProductBrandId { get; set; }
         /// <summary>,
         /// مقدار کالای جایگزین
         /// </summary>
@@ -25,6 +25,7 @@ namespace Sepehr.Application.DTOs.Order
         /// </summary>
         [DataType(DataType.Currency)]
         public decimal AlternativeProductPrice { get; set; }
+        public decimal ProximateAmount { get; set; }
 
     }
 }

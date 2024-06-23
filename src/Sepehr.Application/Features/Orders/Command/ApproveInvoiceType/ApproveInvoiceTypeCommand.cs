@@ -48,12 +48,13 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                             ,command.OrderStatusId== (int)OrderStatusEnum.AccApproved ? "تایید حسابداری سفارش":"عدم تایید حسابداری سفارش"));
                     
                     order = _mapper.Map(command, order);
+
                     foreach(var item in command.Details)
                     {
                         var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
-                        d.AlternativeProductId = item.AlternativeProductId;
+                        d.AlternativeProductBrandId = item.AlternativeProductBrandId;
                         d.AlternativeProductPrice= item.AlternativeProductPrice;
-                        d.AlternativeProductAmount= item.AlternativeProductAmount;
+                        d.AlternativeProductAmount= item.AlternativeProductAmount;                        
                     }
 
                     List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);

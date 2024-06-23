@@ -62,7 +62,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             {
                 try
                 {
-                    var order = await _orderRepository.GetByIdAsync(command.Id);
+                    var order = await _orderRepository.GetOrderById(command.Id);
 
                     if (order == null)
                         throw new ApiException($"سفارش یاقت نشد !");
@@ -92,7 +92,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
                         #endregion
 
                         order = _mapper.Map(command, order);
-                        order = await _orderRepository.UpdateOrder(order);
+                        await _orderRepository.UpdateAsync(order);
 
                         return new Response<Order>(order, "");
                     }

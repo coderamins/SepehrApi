@@ -28,8 +28,7 @@ namespace Sepehr.Domain.Entities.BaseEntities
         public string? Description { get; set; }
 
         #region برای مواردی که فاکتور رسمی بخواهد و از کالای اصلی موجودی رسمی نداشته باشیم
-        [ForeignKey("AlternativeProduct")]
-        public Guid? AlternativeProductId { get; set; }
+        public int? AlternativeProductId { get; set; }
         /// <summary>,
         /// مقدار کالای جایگزین
         /// </summary>
