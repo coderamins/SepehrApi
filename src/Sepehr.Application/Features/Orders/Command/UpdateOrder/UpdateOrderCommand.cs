@@ -92,7 +92,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
                         #endregion
 
                         order = _mapper.Map(command, order);
-                        await _orderRepository.UpdateAsync(order);
+                        await _orderRepository.UpdateOrder(order);
 
                         return new Response<Order>(order, "");
                     }

@@ -61,7 +61,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var prodBrand in order.Details)
                 {
                     var prodInventory = await _productInventory
-                        .Include(i => i.Warehouse)
+                        //.Include(i => i.Warehouse).AsNoTracking()
                         .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
                                     i.WarehouseId == prodBrand.WarehouseId);
 
@@ -179,7 +179,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i=>i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
@@ -200,14 +200,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
                 .Include(o => o.Details).ThenInclude(o => o.CargoAnnounces)
-                .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit)
+                .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
-                .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
+                .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
                 .Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType).FirstOrDefaultAsync();
         }
@@ -225,7 +225,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i=>i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse)
@@ -339,7 +339,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -354,90 +354,111 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //if (po!=null)
             //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
 
-            var ord =await _dbContext.Orders
-                .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
-                .FirstOrDefaultAsync(o => o.Id == order.Id);
-            if (ord == null)
-                throw new ApiException("سفارش یافت نشد !");
-
-            var toRemoveDetails = ord.Details
-                .Where(s => s.OrderId == order.Id && s.WarehouseId != 3 &&
-                !order.Details.Select(d => d.Id).Contains(s.Id));
-
-            foreach (var item in toRemoveDetails.Where(x => x.Warehouse.WarehouseTypeId == 2))
+            try
             {
-                _dbContext.PurchaseOrder.Remove(item.PurchaseOrder);
-            }
+                //var ord = await _dbContext.Orders
+                //        .AsNoTracking()
+                //        .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
+                //        .FirstOrDefaultAsync(o => o.Id == order.Id);
+                if (order == null)
+                    throw new ApiException("سفارش یافت نشد !");
 
-            _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
-            _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices
-                .Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
-            _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
-                .Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
+                var toRemoveDetails = _orderDetail
+                    .Where(s => s.OrderId == order.Id && s.WarehouseId != 3 &&
+                    !order.Details.Select(d => d.Id).Contains(s.Id));
 
-            foreach (var oitem in ord.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
-            {
-                _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
-                var inv = await _dbContext.ProductInventories
-                    .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.WarehouseId == 3);
-
-                inv.ApproximateInventory -= oitem.ProximateAmount;
-            }
-
-            #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
-            foreach (var oitem in order.Details.Where(d => d.Id != 0))
-            {
-                var od = order.Details.FirstOrDefault(d => d.Id == oitem.Id);
-                if (od != null)
+                foreach (var item in toRemoveDetails.Where(x => x.WarehouseId == 3))
                 {
-                    List<CargoAnnounceDetail> od_cAnncs =
-                        await _dbContext.Set<CargoAnnounceDetail>().Where(a => a.OrderDetailId == od.Id).ToListAsync();
-
-                    if (od.ProximateAmount < od_cAnncs.Sum(c => c.LadingAmount))
-                        throw new ApiException(
-                            string.Format(@"مقدار اصلی نمی تواند از مقدار بارگیری شده کمتر باشد !" + "({0} {1}) ",
-                            od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Product.ProductName,
-                            od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Brand.Name
-                            ));
+                    _dbContext.PurchaseOrder.Remove(item.PurchaseOrder);
                 }
-            }
-            #endregion
 
-            #region بروزرسانی موجودی
-            if (order.OrderTypeId == OrderType.Urgant)
-            {
-                foreach (var oitem in order.Details)
+                _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
+                _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices
+                    .Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
+                _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
+                    .Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
+
+                foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
                 {
-                    var prodInventory = await _dbContext.ProductInventories
-                                    .FirstOrDefaultAsync(i => i.ProductBrandId == oitem.ProductBrandId &&
-                                        i.WarehouseId == oitem.WarehouseId);
+                    _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+                    var inv = await _dbContext.ProductInventories
+                        .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.WarehouseId == 3);
 
-                    if (oitem.WarehouseId == 3)
+                    inv.ApproximateInventory -= oitem.ProximateAmount;
+                }
+
+                #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
+                foreach (var oitem in order.Details.Where(d => d.Id != 0))
+                {
+                    var od = order.Details.FirstOrDefault(d => d.Id == oitem.Id);
+                    if (od != null)
                     {
-                        prodInventory.ApproximateInventory += oitem.ProximateAmount;
+                        List<CargoAnnounceDetail> od_cAnncs =
+                            await _dbContext.Set<CargoAnnounceDetail>().Where(a => a.OrderDetailId == od.Id).ToListAsync();
+
+                        if (od.ProximateAmount < od_cAnncs.Sum(c => c.LadingAmount))
+                            throw new ApiException(
+                                string.Format(@"مقدار اصلی نمی تواند از مقدار بارگیری شده کمتر باشد !" + "({0} {1}) ",
+                                od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Product.ProductName,
+                                od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Brand.Name
+                                ));
                     }
-                    _productInventory.Update(prodInventory);
+                }
+                #endregion
 
-                    //---اگه محصول ویرایش شده باشه ابتدا مقدار قبلی به موجودی اضافه شده و سپس از مقدار جدید کسر خواهد شد .
-
-                    var prevProd = order.Details.FirstOrDefault(d => d.Id == oitem.ProductBrandId);
-                    if (prodInventory != null)
+                #region بروزرسانی موجودی
+                if (order.OrderTypeId == OrderType.Urgant)
+                {
+                    foreach (var oitem in order.Details)
                     {
-                        prodInventory.ApproximateInventory = prevProd == null ?
-                            prodInventory.ApproximateInventory - oitem.ProximateAmount :
-                            prodInventory.ApproximateInventory + prevProd.ProximateAmount - oitem.ProximateAmount;
+                        var prodInventory = await _dbContext.ProductInventories
+                                        .FirstOrDefaultAsync(i => i.ProductBrandId == oitem.ProductBrandId &&
+                                            i.WarehouseId == oitem.WarehouseId);
 
+                        if (oitem.WarehouseId == 3)
+                        {
+                            prodInventory.ApproximateInventory += oitem.ProximateAmount;
+                        }
                         _productInventory.Update(prodInventory);
+
+                        //---اگه محصول ویرایش شده باشه ابتدا مقدار قبلی به موجودی اضافه شده و سپس از مقدار جدید کسر خواهد شد .
+
+                        var prevProd = order.Details.FirstOrDefault(d => d.Id == oitem.ProductBrandId);
+                        if (prodInventory != null)
+                        {
+                            prodInventory.ApproximateInventory = prevProd == null ?
+                                prodInventory.ApproximateInventory - oitem.ProximateAmount :
+                                prodInventory.ApproximateInventory + prevProd.ProximateAmount - oitem.ProximateAmount;
+
+                            _productInventory.Update(prodInventory);
+                        }
                     }
                 }
+                #endregion
+
+                _orders.Update(order);
+                await _dbContext.SaveChangesAsync();
+
+                return order;
             }
-            #endregion
+            catch (Exception e)
+            {
 
-            _orders.Update(order);
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                throw;
+            }
         }
 
+        public async Task<bool> ApproveOrderInvoiceType(Order order)
+        {
+            _orders.Update(order);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Order?> GetOrderForUpdateInvoiceType(Guid orderId)
+        {
+            return await _orders.AsNoTracking().Where(o => o.Id == orderId)
+                .Include(o => o.Details).FirstOrDefaultAsync();
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
             {
                 try
                 {
-                    var order = await _orderRepository.GetOrderById(command.OrderId);
+                    var order = await _orderRepository.GetOrderForUpdateInvoiceType(command.OrderId);
                     if (order.InvoiceTypeId != 2)
                         throw new ApiException("فاکتور سفارش رسمی نمی باشد !");
 
@@ -48,21 +48,23 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                             ,command.OrderStatusId== (int)OrderStatusEnum.AccApproved ? "تایید حسابداری سفارش":"عدم تایید حسابداری سفارش"));
                     
                     order = _mapper.Map(command, order);
-
-                    foreach(var item in command.Details)
+                    foreach (var item in command.Details)
                     {
                         var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
                         d.AlternativeProductBrandId = item.AlternativeProductBrandId;
-                        d.AlternativeProductPrice= item.AlternativeProductPrice;
-                        d.AlternativeProductAmount= item.AlternativeProductAmount;                        
+                        d.AlternativeProductPrice = item.AlternativeProductPrice;
+                        d.AlternativeProductAmount = item.AlternativeProductAmount;
                     }
+
+                    await _orderRepository.ApproveOrderInvoiceType(order);
+
 
                     List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);
                     orderAttachments.ForEach(a=>a.OrderId=command.OrderId);
                     orderAttachments.ForEach(a=>a.AttachmentType=AttachmentType.ApproveInvoiceType);
 
                     await _orderRepository.AddAttachmnets(orderAttachments,command.OrderId);
-                    await _orderRepository.UpdateAsync(order);
+                    //await _orderRepository.UpdateAsync(order);
                     return new Response<bool>(true);
 
                 }

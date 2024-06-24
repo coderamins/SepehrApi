@@ -39,8 +39,8 @@ namespace Sepehr.Domain.Entities
         #endregion
         
         #region برای مواردی که فاکتور رسمی بخواهد و از کالای اصلی موجودی رسمی نداشته باشیم
-        [ForeignKey("AlternativeProduct")]
-        public Guid? AlternativeProductId { get; set; }
+        [ForeignKey("AlternativeProductBrand")]
+        public Guid? AlternativeProductBrandId { get; set; }
         /// <summary>,
         /// مقدار کالای جایگزین
         /// </summary>

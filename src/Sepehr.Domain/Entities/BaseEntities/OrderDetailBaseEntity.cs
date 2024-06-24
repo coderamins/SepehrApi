@@ -13,6 +13,7 @@ namespace Sepehr.Domain.Entities.BaseEntities
     {
         public Guid OrderId { get; set; }
         public int RowId { get; set; }
+        [ForeignKey("ProductBrand")]
         public required int ProductBrandId { get; set; }
 
         [DataType(DataType.Currency)]
@@ -28,7 +29,8 @@ namespace Sepehr.Domain.Entities.BaseEntities
         public string? Description { get; set; }
 
         #region برای مواردی که فاکتور رسمی بخواهد و از کالای اصلی موجودی رسمی نداشته باشیم
-        public int? AlternativeProductId { get; set; }
+        [ForeignKey("AlternativeProductBrandId")]
+        public int? AlternativeProductBrandId { get; set; }
         /// <summary>,
         /// مقدار کالای جایگزین
         /// </summary>
@@ -40,7 +42,6 @@ namespace Sepehr.Domain.Entities.BaseEntities
         [DataType(DataType.Currency)]
         public decimal AlternativeProductPrice { get; set; }
         #endregion
-
 
         #region واحد فرعی
         /// <summary>

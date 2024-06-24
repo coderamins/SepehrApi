@@ -164,8 +164,11 @@ namespace Sepehr.Application.Features.Captcha
         public static byte[] GenerateCaptcha(out string key)
         {
             key = "";
+            var a = "0123456789";
+            var chars = a.ToCharArray();
+
             var slc = new SixLaborsCaptchaModule(new SixLaborsCaptchaOptions
-            {
+            {                
                 DrawLines = 7,
                 TextColor = new SixLabors.ImageSharp.Color[] { SixLabors.ImageSharp.Color.Blue, SixLabors.ImageSharp.Color.Black },
 
@@ -173,7 +176,7 @@ namespace Sepehr.Application.Features.Captcha
                 FontStyle = SixLabors.Fonts.FontStyle.Regular,
             });
 
-            key = Extensions.GetUniqueKey(6);
+            key = Extensions.GetUniqueKey(6,chars);
             var result = slc.Generate(key);
 
             return result;
