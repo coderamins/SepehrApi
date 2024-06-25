@@ -179,7 +179,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i=>i.Brand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
@@ -225,7 +225,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i=>i.Brand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse)
@@ -364,10 +364,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     throw new ApiException("سفارش یافت نشد !");
 
                 var toRemoveDetails = _orderDetail
-                    .Where(s => s.OrderId == order.Id && s.WarehouseId != 3 &&
+                    .Where(s => s.OrderId == order.Id && /*s.Warehouse.WarehouseTypeId != 2 &&*/
                     !order.Details.Select(d => d.Id).Contains(s.Id));
 
-                foreach (var item in toRemoveDetails.Where(x => x.WarehouseId == 3))
+                foreach (var item in toRemoveDetails.Where(x => x.WarehouseId == 3 && x.PurchaseOrder != null))
                 {
                     _dbContext.PurchaseOrder.Remove(item.PurchaseOrder);
                 }
@@ -378,13 +378,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
                     .Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
-                foreach (var oitem in order.Details.Where(d => d.WarehouseId == 3))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
+                foreach (var oitem in order.Details.Where(d => d.PurchaseOrderId!=null))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
                 {
-                    _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
-                    var inv = await _dbContext.ProductInventories
-                        .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.WarehouseId == 3);
+                    var _purOrder =await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
+                    if (_purOrder != null)
+                    {
+                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
 
-                    inv.ApproximateInventory -= oitem.ProximateAmount;
+                        var inv = await _dbContext.ProductInventories
+                            .FirstAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
+
+                        inv.ApproximateInventory -= _purOrder.Details.Sum(d=>d.ProximateAmount);
+                    }
                 }
 
                 #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
