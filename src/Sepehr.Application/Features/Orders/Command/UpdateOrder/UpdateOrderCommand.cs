@@ -85,7 +85,11 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
                                 newPurOrder.Details.Clear();
 
                                 newPurOrder.Details.Add(purOrderDetail);
+                                newPurOrder.OrderServices.Clear();
+                                newPurOrder.OrderPayments.Clear();
                                 item.PurchaseOrder = newPurOrder;
+                                //item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
+                                //item.PurchaseOrder.TotalAmount = item.Price * item.ProximateAmount;
                             }
 
                         }

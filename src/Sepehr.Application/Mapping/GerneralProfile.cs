@@ -414,18 +414,22 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
             CreateMap<CreateOrderCommand, CreatePurchaseOrderCommand>()
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
                 .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
             CreateMap<UpdateOrderCommand, CreatePurchaseOrderCommand>()
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
                 .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
-            CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>();
+
             CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>()
                 .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.ProductBrandId))
                 .ForMember(m => m.ProximateAmount, opt => opt.MapFrom(d => d.ProximateAmount));
