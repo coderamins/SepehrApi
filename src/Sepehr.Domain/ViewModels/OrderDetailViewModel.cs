@@ -34,7 +34,8 @@ namespace Sepehr.Domain.ViewModels
         public decimal ProductSubUnitAmount { get; set; }
 
         public int? AlternativeProductBrandId { get; set; }
-        public string AlternativeProductBrandName { get; set; }
+        public string AlternativeProductBrandName { get; set; }=string.Empty;
+        public string AlternativeProductName { get; set; } = string.Empty;
         public decimal AlternativeProductAmount { get; set; }
         public decimal AlternativeProductPrice { get; set; }
         public string? Description { get; set; }
@@ -50,6 +51,5 @@ namespace Sepehr.Domain.ViewModels
 
         public ProductViewModel Product { get; set; }
         public CustomerViewModel? PurchaserCustomer { get; set; }
-
     }
 }

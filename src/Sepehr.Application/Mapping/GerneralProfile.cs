@@ -313,6 +313,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ProductSubUnitDesc, d => d.MapFrom(d => d.ProductSubUnit.UnitName))
                 .ForMember(m => m.WarehouseName, d => d.MapFrom(d => d.Warehouse.Name))
                 .ForMember(m => m.AlternativeProductBrandName, d => d.MapFrom(d => d.AlternativeProductBrand == null ? "" : d.AlternativeProductBrand.Brand.Name))
+                .ForMember(m => m.AlternativeProductName, d => d.MapFrom(d => d.AlternativeProductBrand == null ? "" : d.AlternativeProductBrand.Product.ProductName))
                 .ForMember(m => m.BrandName, d => d.MapFrom(d => d.ProductBrand.Brand.Name))
                 .ForMember(m => m.BrandId, d => d.MapFrom(d => d.ProductBrand.Brand.Id))
                 .ForMember(m => m.ProductName, d => d.MapFrom(d => d.Product.ProductName))

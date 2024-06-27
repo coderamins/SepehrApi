@@ -97,6 +97,7 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
 
                         newPurOrder.Details.Add(purOrderDetail);
                         item.PurchaseOrder = newPurOrder;
+                        item.PurchaseOrder.TotalAmount = purOrderDetail.ProximateAmount * purOrderDetail.Price;
                         item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
                     }
 
