@@ -16,6 +16,7 @@ namespace Sepehr.Domain.ViewModels
         public string? ProductName { get; set; }
         public string BrandName { get; set; }
         public string? WarehouseName { get; set; }
+        public int WarehouseTypeId { get; set; }
         public decimal ProximateAmount { get; set; }
         public int NumberInPackage { get; set; }
         public decimal Price { get; set; }
@@ -35,6 +36,7 @@ namespace Sepehr.Domain.ViewModels
 
         public int? AlternativeProductBrandId { get; set; }
         public string AlternativeProductBrandName { get; set; }
+        public string AlternativeProductName { get; set; }
         public decimal AlternativeProductAmount { get; set; }
         public decimal AlternativeProductPrice { get; set; }
         public string? Description { get; set; }

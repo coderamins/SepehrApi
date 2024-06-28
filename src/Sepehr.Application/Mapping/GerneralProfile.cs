@@ -311,8 +311,10 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<OrderDetail, OrderDetailViewModel>()
                 .ForMember(m => m.ProductSubUnitDesc, d => d.MapFrom(d => d.ProductSubUnit.UnitName))
+                .ForMember(m => m.WarehouseTypeId, d => d.MapFrom(d => d.Warehouse.WarehouseTypeId))
                 .ForMember(m => m.WarehouseName, d => d.MapFrom(d => d.Warehouse.Name))
                 .ForMember(m => m.AlternativeProductBrandName, d => d.MapFrom(d => d.AlternativeProductBrand == null ? "" : d.AlternativeProductBrand.Brand.Name))
+                .ForMember(m => m.AlternativeProductName, d => d.MapFrom(d => d.AlternativeProductBrand == null ? "" : d.AlternativeProductBrand.Product.ProductName))
                 .ForMember(m => m.BrandName, d => d.MapFrom(d => d.ProductBrand.Brand.Name))
                 .ForMember(m => m.BrandId, d => d.MapFrom(d => d.ProductBrand.Brand.Id))
                 .ForMember(m => m.ProductName, d => d.MapFrom(d => d.Product.ProductName))
@@ -428,6 +430,15 @@ namespace Sepehr.Application.Mapping
                 .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
                 .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+
+            CreateMap<CreatePurchaseOrderDto, PurchaseOrder>()
+                .ForMember(m => m.ExitType, opt => opt.MapFrom(d => ExitType.Usual))
+                .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => 1))
+                .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => 1))
+                .ForMember(m => m.OrderSendTypeId, opt => opt.MapFrom(d => 1))
+                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(d => 3))
+                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(d => 3));
+
 
 
             CreateMap<OrderDetailRequest, CreatePurchaseOrderDetailRequest>()

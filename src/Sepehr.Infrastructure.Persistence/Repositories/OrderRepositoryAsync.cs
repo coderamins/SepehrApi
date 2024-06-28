@@ -22,10 +22,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     {
         private readonly DbSet<Order> _orders;
         private readonly DbSet<OrderDetail> _orderDetail;
+        private readonly DbSet<PurchaseOrder> _purchaseOrder;
         private readonly DbSet<OrderService> _orderServices;
         private readonly DbSet<OrderPayment> _orderPayments;
         private readonly DbSet<Warehouse> _warehouses;
         private readonly DbSet<ProductInventory> _productInventory;
+        private readonly DbSet<OfficialWarehoseInventory> _officialWarehosesInv;
         private readonly IEmailService _emailService;
         private readonly ISmsService _smsService;
         private readonly IAuthenticatedUserService _authenticatedUser;
@@ -40,6 +42,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             , IAuthenticatedUserService authenticatedUser
             ) : base(dbContext)
         {
+            _purchaseOrder = dbContext.Set<PurchaseOrder>();
             _orderPayments = dbContext.Set<OrderPayment>();
             _orderServices = dbContext.Set<OrderService>();
             _orderDetail = dbContext.Set<OrderDetail>();
@@ -50,6 +53,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
             _dapContext = dapContext;
             _productInventory = dbContext.Set<ProductInventory>();
+            _officialWarehosesInv = dbContext.Set<OfficialWarehoseInventory>();
             _authenticatedUser = authenticatedUser;
         }
 
@@ -199,12 +203,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.FarePaymentType)
                 .Include(c => c.OrderExitType)
                 .Include(c => c.CustomerOfficialCompany)
+                .Include(o => o.Details).ThenInclude(o => o.PurchaseOrder)
                 .Include(o => o.Details).ThenInclude(o => o.CargoAnnounces)
                 .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
                 .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Product)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
@@ -340,6 +346,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType)
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer)
                 .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Brand)
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(i => i.Product)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
@@ -348,49 +355,57 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Order> UpdateOrder(Order order)
         {
-            //var po =await _dbContext.Set<OrderDetail>()
-            //    .FirstOrDefaultAsync(o => o.OrderId == order.Id && 
-            //        o.Warehouse.WarehouseTypeId == 2 && o.Order.IsActive);
-            //if (po!=null)
-            //    throw new ApiException($"برای این سفارش یک سفارش خرید به شماره {po.o} ثبت شده است، و ابتدا باید تعیین تکلیف شود.");
-
             try
             {
-                //var ord = await _dbContext.Orders
-                //        .AsNoTracking()
-                //        .Include(i => i.Details).ThenInclude(i => i.PurchaseOrder)
-                //        .FirstOrDefaultAsync(o => o.Id == order.Id);
-                if (order == null)
-                    throw new ApiException("سفارش یافت نشد !");
+                var ord = _dbContext.Orders
+                    .Include(o => o.Details).ThenInclude(o => o.PurchaseOrder)
+                    .First(o => o.Id == order.Id);
 
-                var toRemoveDetails = _orderDetail
-                    .Where(s => s.OrderId == order.Id && /*s.Warehouse.WarehouseTypeId != 2 &&*/
-                    !order.Details.Select(d => d.Id).Contains(s.Id));
+                var detailsWithPurchaseOrder = order.Details.Where(d => d.PurchaseOrder != null).ToList();
 
-                foreach (var item in toRemoveDetails.Where(x => x.WarehouseId == 3 && x.PurchaseOrder != null))
+                foreach (var oitem in ord.Details)
                 {
-                    _dbContext.PurchaseOrder.Remove(item.PurchaseOrder);
+                    var _purOrder = await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
+                    if (_purOrder != null)
+                    {
+                        var poDetail = await _dbContext.PurchaseOrderDetails.FirstOrDefaultAsync(p => p.OrderId == oitem.PurchaseOrderId);
+                        if (poDetail != null)
+                            _dbContext.PurchaseOrderDetails.Remove(poDetail);
+                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+
+                        var inv = await _dbContext.ProductInventories
+                            .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
+
+                        if (inv != null)
+                        {
+                            inv.ApproximateInventory -= oitem.ProximateAmount;
+                        }
+                    }
                 }
 
-                _dbContext.OrderDetails.RemoveRange(toRemoveDetails);
+                //var purOrderToRemove=order.Details.Where(d => d.PurchaseOrderId!=null).Select(p=>p.PurchaseOrderId).ToList();
+                //_dbContext.PurchaseOrder.RemoveRange(_dbContext.PurchaseOrder
+                //    .Where(p=> purOrderToRemove.Contains(p.Id)));
+                _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails
+                    .Where(s => s.OrderId == order.Id /*&& !order.Details.Select(d => d.Id).Contains(s.Id)*/));
                 _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices
                     .Where(s => s.OrderId == order.Id && !order.OrderServices.Select(d => d.Id).Contains(s.Id)));
                 _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
                     .Where(s => s.OrderId == order.Id && !order.OrderPayments.Select(d => d.Id).Contains(s.Id)));
 
-                foreach (var oitem in order.Details.Where(d => d.PurchaseOrderId!=null))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
-                {
-                    var _purOrder =await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
-                    if (_purOrder != null)
-                    {
-                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+                //foreach (var oitem in order.Details.Where(d => d.PurchaseOrderId!=null))//.GroupBy(g=> new { g.ProductBrandId,g.Id}))
+                //{
+                //    var _purOrder =await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
+                //    if (_purOrder != null)
+                //    {
+                //        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
 
-                        var inv = await _dbContext.ProductInventories
-                            .FirstAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
+                //        var inv = await _dbContext.ProductInventories
+                //            .FirstAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
 
-                        inv.ApproximateInventory -= _purOrder.Details.Sum(d=>d.ProximateAmount);
-                    }
-                }
+                //        inv.ApproximateInventory -= _purOrder.Details.Sum(d=>d.ProximateAmount);
+                //    }
+                //}
 
                 #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
                 foreach (var oitem in order.Details.Where(d => d.Id != 0))
@@ -441,8 +456,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }
                 #endregion
 
-                _orders.Update(order);
-                await _dbContext.SaveChangesAsync();
+                using (_dbContext)
+                {
+                    _orders.Update(order);
+                    await _dbContext.SaveChangesAsync();
+                }
 
                 return order;
             }
@@ -455,6 +473,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ApproveOrderInvoiceType(Order order)
         {
+            foreach(var item in order.Details)
+            {
+                var inv =await _officialWarehosesInv
+                    .FirstOrDefaultAsync(i => i.ProductId == _dbContext.ProductBrands
+                                            .First(b=>b.Id==(item.AlternativeProductBrandId ?? item.ProductBrandId)).ProductId
+                    && i.WarehouseId==2);
+                if(inv!=null)
+                {
+                    inv.ApproximateInventory -= item.AlternativeProductAmount==0 ? (double)item.ProximateAmount : (double)item.AlternativeProductAmount;
+                }
+
+                _officialWarehosesInv.Update(inv);
+            }
             _orders.Update(order);
             await _dbContext.SaveChangesAsync();
             return true;

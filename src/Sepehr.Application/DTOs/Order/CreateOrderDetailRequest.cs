@@ -36,7 +36,8 @@ namespace Sepehr.Application.DTOs.Order
         public string? PurchaseSettlementDate { get; set; } = string.Empty;
         public required string CargoSendDate { get; set; }
 
-        public CreatePurchaseOrderCommand? PurchaseOrder { get; set; }
+        public CreatePurchaseOrderDto? PurchaseOrder { get; set; }
+        public int WarehouseTypeId { get; set; }
     }
 
     public class UpdateOrderDetailRequest1
