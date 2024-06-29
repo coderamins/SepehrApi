@@ -45,7 +45,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             private readonly ICargoAnnouncementRepositoryAsync _cargoAnnouncement;
             private readonly IMapper _mapper;
 
-            public UpdateOrderCommandHandler(IOrderRepositoryAsync orderRepository, 
+            public UpdateOrderCommandHandler(IOrderRepositoryAsync orderRepository,
                 IProductInventoryRepositoryAsync productInventory,
                 ICargoAnnouncementRepositoryAsync cargoAnnouncement,
                 IMapper mapper,
@@ -62,36 +62,30 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             {
                 try
                 {
-                    var order = await _orderRepository.GetOrderById(command.Id);
+                    var order = await _orderRepository.GetByIdAsync(command.Id);
 
                     if (order == null)
                         throw new ApiException($"سفارش یاقت نشد !");
                     else
                     {
                         #region در صورتی که تعدادی از کالاها از انبار واسط باشند یک سفارش خرید هم ثبت می شود
-                        List<ProductInventory> productTypes =
-                            await _productInventory.GetProductInventory(command.Details);
 
-                        List<PurchaseOrder> _lstPurchaseOrder = new List<PurchaseOrder>();
-                        if (productTypes.Count() > 0)
-                        {
-                            foreach (var item in command.Details
-                                                .Where(t => productTypes.Select(p => p.ProductBrandId)
-                                                .Contains(t.ProductBrandId)))
-                            {
-                                var purOrderDetail = _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
+                        //foreach (var item in command.Details
+                        //                    .Where(t => t.WarehouseTypeId == 2))
+                        //{
+                        //    var purOrderDetail = _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
 
-                                var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(command);
-                                newPurOrder.Details.Clear();
+                        //    var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(command);
+                        //    newPurOrder.Details.Clear();
 
-                                newPurOrder.Details.Add(purOrderDetail);
-                                item.PurchaseOrder = newPurOrder;
-                                //item.PurchaseOrder.TotalAmount = purOrderDetail.ProximateAmount * purOrderDetail.Price;
-                                //item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
+                        //    newPurOrder.Details.Add(purOrderDetail);
+                        //    newPurOrder.OrderServices.Clear();
+                        //    newPurOrder.OrderPayments.Clear();
+                        //    item.PurchaseOrder = newPurOrder;
+                        //    //item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
+                        //    //item.PurchaseOrder.TotalAmount = item.Price * item.ProximateAmount;
+                        //}
 
-                            }
-
-                        }
                         #endregion
 
                         order = _mapper.Map(command, order);

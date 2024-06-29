@@ -21,6 +21,7 @@ namespace Sepehr.Application.Features.PurchaseOrders.Command.CreatePurchaseOrder
 {
     public partial class CreatePurchaseOrderCommand : IRequest<Response<PurchaseOrder>>
     {
+        public Guid? Id { get; set; }
         public required Guid CustomerId { get; set; }
         public decimal TotalAmount { get; set; }
         public string? Description { get; set; }
