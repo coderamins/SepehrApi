@@ -815,11 +815,11 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.PurchaseOrderTransferDetails, opt => opt.MapFrom(d => d.TransferDetails));
             CreateMap<TransferPurchaseOrderDetailDto, PurchaseOrderTransferDetail>();
 
-            CreateMap<PurchaseOrderTransferRemittanceUnloadingPermitCommand, PurchaseOrderTransferRemittanceUnloadingPermit>()
+            CreateMap<PurOrderTransRemittUnloadingPermitCommand, PurchaseOrderTransferRemittanceUnloadingPermit>()
                 .ForMember(m => m.PurchaseOrderTransferRemittanceUnloadingPermitDetails, opt => opt.
                 MapFrom(d => d.PurchaseOrderTransferRemittanceUnloadingPermitDetails));
 
-            CreateMap<PurchaseOrderTransferRemittanceUnloadingPermitDetailDto, PurchaseOrderTransferRemittanceUnloadingPermitDetail>();
+            CreateMap<PurOrderTransRemittUnloadingPermitDetailDto, PurchaseOrderTransferRemittanceUnloadingPermitDetail>();
             CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, PurchaseOrderTransferRemittance>()
                 .ForMember(m => m.Created, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())

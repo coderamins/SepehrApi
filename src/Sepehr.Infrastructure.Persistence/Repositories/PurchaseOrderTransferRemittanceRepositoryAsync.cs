@@ -265,7 +265,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             var transferPermit = await _transferRemittances
                 .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit)
                 .FirstOrDefaultAsync(o =>
-            o.PurchaseOrderTransferRemittanceEntrancePermit.Id == purchaseOrderTransferRemittanceEntrancePermitId);
+                        o.PurchaseOrderTransferRemittanceEntrancePermit.Id == purchaseOrderTransferRemittanceEntrancePermitId);
 
             return transferPermit.PurchaseOrderTransferRemittanceEntrancePermit;
         }
@@ -286,8 +286,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (transferRemitt.TransferRemittanceStatusId >= 3)
                     throw new ApiException("تخلیه حواله قبلا بصورت کامل انجام شده !");
 
-                #region اگر مجموع اقلام انتقال داده شده با مجموع اقلام خروج خورده یکسان باشد وضعیت حواله انتقال به تخلیه شده تبدیل خواهد شد
                 transferRemitt = _mapper.Map(purchaseOrderTransferRemittanceUnloadingPermit, transferRemitt);
+
+                #region اگر مجموع اقلام انتقال داده شده با مجموع اقلام خروج خورده یکسان باشد وضعیت حواله انتقال به تخلیه شده تبدیل خواهد شد
 
                 var calcUnloadedSum = await
                     _orderTransferRemittanceUnloadingPermits.AsNoTracking()
@@ -303,6 +304,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (transPermitAmounts >= unloadedAmounts)
                     transferRemitt.TransferRemittanceStatusId = 3;//---تخلیه شده
                 #endregion
+
+                foreach(var item in transferRemitt.Details)
+                {
+
+                }
 
                 _transferRemittances.Update(transferRemitt);
 

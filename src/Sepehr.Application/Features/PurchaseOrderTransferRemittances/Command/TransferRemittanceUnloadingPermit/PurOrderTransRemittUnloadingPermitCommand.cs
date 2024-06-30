@@ -10,7 +10,7 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 {
-    public class PurchaseOrderTransferRemittanceUnloadingPermitCommand : IRequest<Response<PurchaseOrderTransferRemittanceUnloadingPermit>>
+    public class PurOrderTransRemittUnloadingPermitCommand : IRequest<Response<PurchaseOrderTransferRemittanceUnloadingPermit>>
     {
         public Guid PurchaseOrderTransferRemittanceEntrancePermitId { get; set; }
         public string DriverAccountNo { get; set; } = string.Empty;
@@ -28,10 +28,10 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 
         public string Description { get; set; } = string.Empty;
 
-        public virtual required List<PurchaseOrderTransferRemittanceUnloadingPermitDetailDto> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
+        public virtual required List<PurOrderTransRemittUnloadingPermitDetailDto> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
 
-        public class CreateLadingExitPermitCommandHandler : IRequestHandler<PurchaseOrderTransferRemittanceUnloadingPermitCommand,
+        public class CreateLadingExitPermitCommandHandler : IRequestHandler<PurOrderTransRemittUnloadingPermitCommand,
             Response<PurchaseOrderTransferRemittanceUnloadingPermit>>
         {
             private readonly IMapper _mapper;
@@ -47,7 +47,7 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
                 _mapper = mapper;
             }
             public async Task<Response<PurchaseOrderTransferRemittanceUnloadingPermit>> Handle(
-                PurchaseOrderTransferRemittanceUnloadingPermitCommand command,
+                PurOrderTransRemittUnloadingPermitCommand command,
                 CancellationToken cancellationToken)
             {
                 var purchTransferEntraPermit = await _purchaseOrderTransferRemittanceRepo

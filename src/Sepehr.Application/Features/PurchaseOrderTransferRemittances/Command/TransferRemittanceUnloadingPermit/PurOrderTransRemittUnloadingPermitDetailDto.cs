@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Application.Features.PurchaseOrderTransferRemittances.Command.TransferRemittanceUnloadingPermit
 {
-    public class PurchaseOrderTransferRemittanceUnloadingPermitDetailDto
+    public class PurOrderTransRemittUnloadingPermitDetailDto
     {
         public int PurchaseOrderTransferRemittanceDetailId { get; set; }
         public decimal UnloadedAmount { get; set; }
