@@ -10,7 +10,5 @@ namespace Sepehr.Domain.Entities.UserEntities
 
         public virtual ICollection<RoleMenu> RoleMenus { get; set; } = new List<RoleMenu>();
         public virtual ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
-
-
     }
 }
