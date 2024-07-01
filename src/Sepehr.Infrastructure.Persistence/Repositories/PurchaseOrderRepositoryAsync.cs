@@ -232,6 +232,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.OriginWarehouse)
                 .Include(c => c.DestinationWarehouse)
                 .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
+                .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Brand).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer).AsNoTracking()
@@ -589,7 +590,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ApprovePurchaseOrder(PurchaseOrder order)
         {
-            foreach (var item in order.Details) {
+            var purOrder = await _purchaseOrders
+                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(d => d.Product)
+                .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(d => d.Product)
+                .FirstAsync(o => o.Id == order.Id);
+
+            foreach (var item in purOrder.Details) {
                 var inv =await _ofWarehoseInventories
                     .Include(ow=>ow.ProductBrand)
                     .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId &&
@@ -607,6 +613,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }                
             }
 
+            _purchaseOrders.Update(order);
             await _dbContext.SaveChangesAsync();
             return true;
         }
