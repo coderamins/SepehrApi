@@ -18,6 +18,23 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _dbContext=dbContext;
         }
 
+        public async Task<LadingExitPermit> CreateLadingExitPermit(LadingExitPermit ladingExitPermit)
+        {
+            var _ladingExitPermit =await 
+                _productLadingExitPermits
+                .Include(e=>e.LadingExitPermitDetails).ThenInclude(c=>c.CargoAnnounceDetail).ThenInclude(c=>c.OrderDetail)
+                .FirstAsync(o => o.Id == ladingExitPermit.Id);
+            
+
+            foreach(var item in _ladingExitPermit.LadingExitPermitDetails)
+            {
+                var inv = _dbContext.ProductInventories.FirstOrDefault(o => o.ProductBrandId == item.CargoAnnounceDetail.OrderDetail.ProductBrandId);
+                //inv. item.RealAmount;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public async Task<IQueryable<LadingExitPermit>> GetAllLadingExitPermits(GetAllLadingExitPermitsParameter validFilter)
         {
             return _productLadingExitPermits

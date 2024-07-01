@@ -28,6 +28,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<OrderService> _purchaseOrderServices;
         private readonly DbSet<OrderPayment> _purchaseOrderPayments;
         private readonly DbSet<ProductInventory> _productInventory;
+        private readonly DbSet<OfficialWarehoseInventory> _ofWarehoseInventories;
         private readonly DbSet<Warehouse> _warehouses;
         private readonly DbSet<PurchaseOrderTransfer> _purchaseOrderTransfers;
         private readonly IEmailService _emailService;
@@ -55,6 +56,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
             _dapContext = dapContext;
             _productInventory = dbContext.Set<ProductInventory>();
+            _ofWarehoseInventories = dbContext.Set<OfficialWarehoseInventory>();
             _mapper = mapper;
         }
 
@@ -585,5 +587,28 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
         }
 
+        public async Task<bool> ApprovePurchaseOrder(PurchaseOrder order)
+        {
+            foreach (var item in order.Details) {
+                var inv =await _ofWarehoseInventories
+                    .Include(ow=>ow.ProductBrand)
+                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId &&
+                                              i.WarehouseId == 2);
+
+                if(inv==null)
+                {
+                    var oInv= _mapper.Map<OfficialWarehoseInventory>(item);
+                    _ofWarehoseInventories.Add(oInv);
+                }
+                else
+                {
+                    inv.ApproximateInventory += (double)(item.AlternativeProductAmount == 0 ? item.ProximateAmount : item.AlternativeProductAmount);
+                    _ofWarehoseInventories.Update(inv); 
+                }                
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

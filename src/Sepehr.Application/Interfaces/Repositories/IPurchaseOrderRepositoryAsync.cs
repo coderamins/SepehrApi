@@ -27,5 +27,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task UpdatePurchaseOrderDetail(ICollection<PurchaseOrderDetail> details, int warehouseId);
         Task<PurchaseOrder?> GetPurchaseOrderByIdAsQueryble(Guid purchaseOrderId);
         Task<PurchaseOrderTransfer> TranserPurchaseOrder(TransferPurchaseOrderCommand command);
+        Task<bool> ApprovePurchaseOrder(PurchaseOrder order);
     }
 }

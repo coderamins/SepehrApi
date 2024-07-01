@@ -11,6 +11,9 @@ namespace Sepehr.Domain.Entities
     {
         public int ProductBrandId { get; set; }
         public int WarehouseId { get; set; }
+        /// <summary>
+        /// موجودی تقریبی
+        /// </summary>
         public decimal ApproximateInventory { get; set; }
         /// <summary>
         /// مووجودی در راه
@@ -25,7 +28,11 @@ namespace Sepehr.Domain.Entities
         /// </summary>
         public decimal PurchaseInventory { get; set; }
 
+        /// <summary>
+        /// موجودی کف/واقعی
+        /// </summary>
         public double FloorInventory { get; set; }
+
         public double MaxInventory { get; set; }
         public double MinInventory { get; set; }
         public decimal Thickness { get; set; }

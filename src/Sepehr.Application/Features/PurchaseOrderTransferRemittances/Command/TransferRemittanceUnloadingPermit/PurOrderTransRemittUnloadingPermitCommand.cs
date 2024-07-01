@@ -61,7 +61,7 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
                         _mapper.Map<PurchaseOrderTransferRemittanceUnloadingPermit>(command);
 
                     PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloading = await _purchaseOrderTransferRemittanceRepo
-                        .CreatePurchaseOrderTransferRemittanceUnloadingPermit(purchaseOrderTransferRemittanceUnloadingPermit);
+                        .CreatePOrderUnloadingPermit(purchaseOrderTransferRemittanceUnloadingPermit);
 
                     return new Response<PurchaseOrderTransferRemittanceUnloadingPermit>(purchaseOrderTransferRemittanceUnloading,
                         new ErrorMessageFactory().MakeError("مجوز تخلیه", ErrorType.UpdatedSuccess));

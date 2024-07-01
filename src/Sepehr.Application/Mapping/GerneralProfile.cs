@@ -509,6 +509,13 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())
                 .ForMember(m => m.Created, opt => opt.Ignore());
 
+            CreateMap<PurchaseOrderDetail, OfficialWarehoseInventory>()
+                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.ProductBrand.ProductId))
+                .ForMember(m => m.WarehouseId, opt => opt.MapFrom(d => 2))
+                .ForMember(m => m.ApproximateInventory, opt => opt.MapFrom(d => d.AlternativeProductAmount == 0 ? d.ProximateAmount : d.AlternativeProductAmount));
+
+
+
             CreateMap<PurchaseOrderService, OrderServiceViewModel>()
                 .ForMember(m => m.ServiceDesc, opt => opt.MapFrom(s => s.Service.Description));
 

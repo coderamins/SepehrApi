@@ -270,7 +270,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return transferPermit.PurchaseOrderTransferRemittanceEntrancePermit;
         }
 
-        public async Task<PurchaseOrderTransferRemittanceUnloadingPermit> CreatePurchaseOrderTransferRemittanceUnloadingPermit
+        public async Task<PurchaseOrderTransferRemittanceUnloadingPermit> CreatePOrderUnloadingPermit
             (PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloadingPermit)
         {
             try
@@ -305,10 +305,35 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     transferRemitt.TransferRemittanceStatusId = 3;//---تخلیه شده
                 #endregion
 
-                foreach(var item in transferRemitt.Details)
+                #region موجودی کف (واقعی) محصول اضافه می شود 
+                foreach (var item in transferRemitt.Details)
                 {
+                    foreach(var udetail in item.PurOTransRemittUnloadingPermitDetail)
+                    {
+                        var inv = await _productInventory
+                            .FirstOrDefaultAsync(i => i.ProductBrandId == udetail.PurchaseOrderTransferRemittanceDetail.ProductBrandId &&
+                            i.WarehouseId == udetail.PurchaseOrderTransferRemittanceDetail.TransferRemittance.DestinationWarehouseId);
+                        
+                        if (inv == null) {
+                            _productInventory.Add(new ProductInventory
+                            {
+                                ProductBrandId = udetail.PurchaseOrderTransferRemittanceDetail.ProductBrandId,
+                                WarehouseId = udetail.PurchaseOrderTransferRemittanceDetail.TransferRemittance.DestinationWarehouseId,
+                                ApproximateInventory = 0,
+                                FloorInventory = (double)udetail.UnloadedAmount,
+                                IsActive = true,
+                                //CreatedBy = Guid.Parse(_userService.UserId),
+                            });
 
+                        }
+                        else
+                        {
+                            inv.FloorInventory += (double)udetail.UnloadedAmount;
+                            _productInventory.Update(inv);
+                        }
+                    }
                 }
+                #endregion
 
                 _transferRemittances.Update(transferRemitt);
 
@@ -317,10 +342,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                 await _dbContext.SaveChangesAsync();
                 return UnloadingPermit.Entity;
+
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }

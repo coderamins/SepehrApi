@@ -68,8 +68,9 @@ namespace Sepehr.Application.Features.LadingExitPermits.Command.CreateLadingExit
 
                 var ladingExitPermit = _mapper.Map<LadingExitPermit>(request);
 
-                await _ladingPermitRepository.UpdateAsync(ladingPermit);
-                await _ladingExitPermitRepository.AddAsync(ladingExitPermit);
+                //await _ladingPermitRepository.UpdateAsync(ladingPermit);
+                //await _ladingExitPermitRepository.AddAsync(ladingExitPermit);
+                await _ladingExitPermitRepository.CreateLadingExitPermit(ladingExitPermit);
 
                 return new Response<LadingExitPermit>(ladingExitPermit, new ErrorMessageFactory().MakeError("مجوز خروج", ErrorType.CreatedSuccess));
             }

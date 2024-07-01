@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DTOs\NewFolder\**" />
     <Compile Remove="Features\DriverFareAmounts\Queries\**" />
-    <EmbeddedResource Remove="DTOs\NewFolder\**" />
     <EmbeddedResource Remove="Features\DriverFareAmounts\Queries\**" />
-    <None Remove="DTOs\NewFolder\**" />
     <None Remove="Features\DriverFareAmounts\Queries\**" />
   </ItemGroup>
 

@@ -55,11 +55,13 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                     }
 
                     List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);
-                    orderAttachments.ForEach(a=>a.OrderId=command.OrderId);
+                    //orderAttachments.ForEach(a=>a.OrderId=command.OrderId);
                     orderAttachments.ForEach(a=>a.AttachmentType=AttachmentType.ApproveInvoiceType);
 
-                    await _orderRepository.AddAttachmnets(orderAttachments,command.OrderId);
-                    await _orderRepository.UpdateAsync(order);
+                    //await _orderRepository.AddAttachmnets(orderAttachments,command.OrderId);
+                    //await _orderRepository.UpdateAsync(order);
+
+                    await _orderRepository.ApprovePurchaseOrder(order);
                     return new Response<bool>(true,"تایید فاکتور سفارش با موفقیت انجام شد .");
 
                 }
