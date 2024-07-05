@@ -590,32 +590,41 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ApprovePurchaseOrder(PurchaseOrder order)
         {
-            var purOrder = await _purchaseOrders
-                .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(d => d.Product)
-                .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(d => d.Product)
-                .FirstAsync(o => o.Id == order.Id);
+            try
+            {
+                var purOrder = await _purchaseOrders
+                        .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).ThenInclude(d => d.Product)
+                        .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(d => d.Product)
+                        .FirstAsync(o => o.Id == order.Id);
 
-            foreach (var item in purOrder.Details) {
-                var inv =await _ofWarehoseInventories
-                    .Include(ow=>ow.ProductBrand)
-                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId &&
-                                              i.WarehouseId == 2);
-
-                if(inv==null)
+                foreach (var item in purOrder.Details)
                 {
-                    var oInv= _mapper.Map<OfficialWarehoseInventory>(item);
-                    _ofWarehoseInventories.Add(oInv);
+                    var inv = await _ofWarehoseInventories
+                        .Include(ow => ow.ProductBrand)
+                        .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId &&
+                                                  i.WarehouseId == 2);
+
+                    if (inv == null)
+                    {
+                        var oInv = _mapper.Map<OfficialWarehoseInventory>(item);
+                        _ofWarehoseInventories.Add(oInv);
+                    }
+                    else
+                    {
+                        inv.ApproximateInventory += (double)(item.AlternativeProductAmount == 0 ? item.ProximateAmount : item.AlternativeProductAmount);
+                        _ofWarehoseInventories.Update(inv);
+                    }
                 }
-                else
-                {
-                    inv.ApproximateInventory += (double)(item.AlternativeProductAmount == 0 ? item.ProximateAmount : item.AlternativeProductAmount);
-                    _ofWarehoseInventories.Update(inv); 
-                }                
-            }
 
-            _purchaseOrders.Update(order);
-            await _dbContext.SaveChangesAsync();
-            return true;
+                _purchaseOrders.Update(order);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
                     new WarehouseType{Description="امانی"},
                     new WarehouseType{Description="مبادی"},
                     new WarehouseType{Description="رسمی"},
-                    new WarehouseType{Description="مجازی"}
+                    new WarehouseType{Description="خرید"}
                 };
 
             foreach (var item in brands)
