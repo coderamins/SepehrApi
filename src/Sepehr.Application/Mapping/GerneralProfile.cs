@@ -872,6 +872,9 @@ namespace Sepehr.Application.Mapping
             CreateMap<RevokeLadingExitPermitCommand, LadingExitPermit>();
 
             CreateMap<GetAllLadingExitPermitsQuery, GetAllLadingExitPermitsParameter>();
+            CreateMap<CreateLadingExitPermitAttachment, LadingExitPermit>()
+                .ForMember(m=>m.LadingExitPermitDetails,opt=>opt.Ignore());
+            
             CreateMap<LadingExitPermitDetailDto, LadingExitPermitDetail>();
             CreateMap<LadingExitPermitDetail, LadingExitPermitDetailViewModel>()
                 .ForMember(m => m.LadingAmount, opt => opt.MapFrom(d => d.CargoAnnounceDetail.LadingAmount))
