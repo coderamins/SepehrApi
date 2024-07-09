@@ -13,7 +13,5 @@ namespace Sepehr.Application.DTOs
         public required string FileData { get; set; }
         [JsonIgnore]
         public AttachmentType AttachmentType { get; set; }
-        [JsonIgnore]
-        public int? LadingLicenseId { get; internal set; }
     }
 }

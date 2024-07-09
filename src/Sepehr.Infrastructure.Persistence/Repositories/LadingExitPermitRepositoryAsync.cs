@@ -64,9 +64,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 _dbContext.LadingExitPermitDetails
                 .Where(d => !ladingExitPermit.LadingExitPermitDetails.Select(e => e.Id).Contains(d.Id)));
 
-            var updateladingExitPermit= _productLadingExitPermits.Update(ladingExitPermit);
+            var updateladingExitPermit = _productLadingExitPermits.Update(ladingExitPermit);
 
             return updateladingExitPermit.Entity;
         }
+
     }
 }

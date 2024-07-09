@@ -63,6 +63,14 @@ namespace Sepehr.WebApi.Controller
             return Ok(await Mediator.Send(command));
         }
 
+        // PUT api/<controller>/5
+        [HasPermission("AddAttachments")]
+        [HttpPut("AddAttachments")]
+        public async Task<IActionResult> AddAttachments(CreateLadingExitPermitAttachment command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
         // DELETE api/<controller>/5
         [HasPermission("DeleteLadingExitPermit")]
         [HttpDelete("{id}")]
