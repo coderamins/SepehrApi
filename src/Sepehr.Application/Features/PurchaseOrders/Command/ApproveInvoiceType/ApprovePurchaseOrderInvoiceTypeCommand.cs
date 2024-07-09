@@ -15,7 +15,7 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
         public Guid OrderId { get; set; }
         public int InvoiceTypeId { get; set; }
         public string InvoiceApproveDescription { get; set; } = string.Empty;
-        public int? CustomerOfficialCompanyId { get; set; }
+        //public int? CustomerOfficialCompanyId { get; set; }
         public int OrderStatusId { get; set; }
 
         public required List<ApproveInvoiceOrderDetail> Details { get; set; }
@@ -37,32 +37,38 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
             {
                 try
                 {
-                    var order = await _orderRepository.GetPurchaseOrderById(command.OrderId);
-                    if (order.InvoiceTypeId != 2)
+                    if (command.Attachments != null)
+                        command.Attachments.ForEach(a => a.AttachmentType = AttachmentType.ApproveInvoiceType);
+
+                    var order = await _orderRepository.GetByIdAsync(command.OrderId);
+                    if (order == null)
+                        throw new ApiException("سفارش یافت نشد !");
+                    if (order.InvoiceTypeId != (int)Domain.Enums.PurchaseInvoiceType.Official)
                         throw new ApiException("فاکتور سفارش رسمی نمی باشد !");
 
                     if (order.OrderStatusId == command.OrderStatusId)
-                        throw new ApiException(string.Format( "{0} قبلا انجام شده است !"
-                            ,command.OrderStatusId==2 ? "تایید حسابداری سفارش":"عدم تایید حسابداری سفارش"));
-                    
-                    order = _mapper.Map(command, order);
-                    foreach (var item in command.Details)
-                    {
-                        var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
-                        d.AlternativeProductBrandId = item.AlternativeProductBrandId;
-                        d.AlternativeProductPrice = item.AlternativeProductPrice;
-                        d.AlternativeProductAmount = item.AlternativeProductAmount;
-                    }
+                        throw new ApiException(string.Format("{0} قبلا انجام شده است !"
+                            , command.OrderStatusId == 2 ? "تایید حسابداری سفارش" : "عدم تایید حسابداری سفارش"));
 
-                    List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);
-                    //orderAttachments.ForEach(a=>a.OrderId=command.OrderId);
-                    orderAttachments.ForEach(a=>a.AttachmentType=AttachmentType.ApproveInvoiceType);
+                    order = _mapper.Map(command, order);
+                    order.Details.Clear();
+                    //foreach (var item in command.Details)
+                    //{
+                    //    var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
+                    //    d.AlternativeProductBrandId = item.AlternativeProductBrandId;
+                    //    d.AlternativeProductPrice = item.AlternativeProductPrice;
+                    //    d.AlternativeProductAmount = item.AlternativeProductAmount;
+                    //}
+
+                    //List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);
+                    ////.ForEach(a=>a.OrderId=command.OrderId);
+                    //orderAttachments.ForEach(a=>a.AttachmentType=AttachmentType.ApproveInvoiceType);
 
                     //await _orderRepository.AddAttachmnets(orderAttachments,command.OrderId);
                     //await _orderRepository.UpdateAsync(order);
 
                     await _orderRepository.ApprovePurchaseOrder(order);
-                    return new Response<bool>(true,"تایید فاکتور سفارش با موفقیت انجام شد .");
+                    return new Response<bool>(true, "تایید فاکتور سفارش با موفقیت انجام شد .");
 
                 }
                 catch (Exception e)

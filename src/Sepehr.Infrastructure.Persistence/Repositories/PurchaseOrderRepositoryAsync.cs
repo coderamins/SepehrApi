@@ -622,7 +622,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using SixLabors.Fonts;
+using SixLabors.ImageSharp;
 using SixLaborsCaptcha.Core;
 
 namespace Sepehr.Application.Features.Captcha
@@ -170,10 +171,10 @@ namespace Sepehr.Application.Features.Captcha
             var slc = new SixLaborsCaptchaModule(new SixLaborsCaptchaOptions
             {                
                 DrawLines = 7,
-                TextColor = new SixLabors.ImageSharp.Color[] { SixLabors.ImageSharp.Color.Blue, SixLabors.ImageSharp.Color.Black },
+                TextColor = new Color[] { Color.Blue, Color.Black },
 
-                FontFamilies = new string[] { "Arial", "Verdana", "Times New Roman" },
-                FontStyle = SixLabors.Fonts.FontStyle.Regular,
+                FontFamilies = new string[] { "Tahoma" },
+                FontStyle = SixLabors.Fonts.FontStyle.Bold,
             });
 
             key = Extensions.GetUniqueKey(6,chars);

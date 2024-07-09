@@ -16,6 +16,10 @@ namespace Sepehr.Domain.Entities
         public ExitType ExitType { get; set; }
         public int OriginWarehouseId { get; set; }
         public int DestinationWarehouseId { get; set; }
+        /// <summary>
+        /// سفارش واسطه ای می باشد یا نه
+        /// </summary>
+        public bool IsIntermediary { get; set; } = false;
 
         /// <summary>
         /// کاربر تایید کننده

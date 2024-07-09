@@ -329,8 +329,9 @@ namespace Sepehr.Application.Mapping
                 //                    d.ProximateAmount - d.LadingLicenseDetails.Sum(l=>l.LadingAmount)))
                 .ForMember(m => m.PurchaseSettlementDate, d => d.MapFrom(d => (d.PurchaseSettlementDate ?? DateTime.Now).ToShamsiDate())).ReverseMap();
 
-            CreateMap<ApproveInvoiceOrderDetail, OrderDetail>()
-                .ForMember(m => m.Price, opt => opt.Ignore()).MaxDepth(1);
+            CreateMap<ApproveInvoiceOrderDetail, OrderDetail>();
+                //.ForMember(m => m.AlternativeProductAmount, opt => opt.MapFrom(d=>d.alter)).MaxDepth(1);
+                //.ForMember(m => m.Price, opt => opt.Ignore()).MaxDepth(1);
 
             #endregion
 
@@ -503,8 +504,10 @@ namespace Sepehr.Application.Mapping
             CreateMap<AttachmentDto, Attachment>()
                 .ForMember(m => m.FileData, opt => opt.MapFrom(d => ConvertToByte(d.FileData)));
 
+            CreateMap<ApproveInvoiceOrderDetail, PurchaseOrderDetail>();
             CreateMap<ApprovePurchaseOrderInvoiceTypeCommand, PurchaseOrder>()
-                .ForPath(m => m.Details, opt => opt.Ignore())
+                //.ForPath(m => m.OrderStatusId, opt => opt.Ignore())
+                //.ForPath(m => m.Details, opt => opt.Ignore())
                 .ForMember(m => m.OrderCode, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())
                 .ForMember(m => m.Created, opt => opt.Ignore());

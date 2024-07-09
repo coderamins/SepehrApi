@@ -25,6 +25,7 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
         public string? Address2 { get; set; }
         public string? Representative { get; set; }
         public int SettlementDay { get; set; }
+        public string CustomerCharacteristics { get; set; } = string.Empty;
         public SettlementType SettlementType { get; set; } = SettlementType.BeforeExit;
         /// <summary>
         /// آیا تامین کننده می باشد؟

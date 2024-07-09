@@ -42,7 +42,7 @@ namespace Sepehr.Infrastructure.Shared.Services
                         { "Mobiles",string.Join(",",smsRequest.Mobile ) },
                     };
 
-                    byte[] bytes = client.UploadValues("https://portal.amootsms.com/rest/SendSimple", data);
+                    byte[] bytes = client.UploadValues("+", data);
 
                     string json = System.Text.UTF8Encoding.UTF8.GetString(bytes);//خروجی
                 }

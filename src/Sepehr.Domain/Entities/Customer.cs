@@ -50,6 +50,7 @@ namespace Sepehr.Domain.Entities
 
         public SettlementType SettlementType { get; set; }
         public int SettlementDay { get; set; }
+        public string CustomerCharacteristics { get; set; }
 
 
         public required virtual CustomerValidity CustomerValidity { get; set; }

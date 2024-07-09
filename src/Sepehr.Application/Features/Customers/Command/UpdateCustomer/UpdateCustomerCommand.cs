@@ -32,6 +32,7 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
         public string? Representative { get; set; }
         public SettlementType SettlementType { get; set; }
         public int SettlementDay { get; set; }
+        public string CustomerCharacteristics { get; set; } = string.Empty;  
         public bool IsSupplier { get; set; }
 
         public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Response<string>>

@@ -26,11 +26,11 @@ namespace Sepehr.Domain.Entities
         public int? ProductSubUnitId { get; set; }
         public double? ExchangeRate { get; set; }
 
-        #region جهت اعلان های مختلف موجودی به کاربر 
-        public int MaxInventory { get; set; }//---حداکثر موجودی
-        public int MinInventory { get; set; }//---حداقل موجودی
-        public int InventotyCriticalPoint { get; set; }//---نقطه بحرانی
-        #endregion
+        //#region جهت اعلان های مختلف موجودی به کاربر 
+        //public int MaxInventory { get; set; }//---حداکثر موجودی
+        //public int MinInventory { get; set; }//---حداقل موجودی
+        //public int InventotyCriticalPoint { get; set; }//---نقطه بحرانی
+        //#endregion
 
         public string? Description { get; set; }
 

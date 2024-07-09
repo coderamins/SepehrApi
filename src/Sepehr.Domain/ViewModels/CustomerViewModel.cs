@@ -33,6 +33,7 @@ namespace Sepehr.Domain.ViewModels
         public string? Address2 { get; set; }
         public string? Representative { get; set; }
         public bool IsSupplier { get; set; }
+        public string CustomerCharacteristics { get; set; }= string.Empty;
 
         public SettlementType SettlementType { get; set; }
         public int SettlementDay { get; set; }
