@@ -31,7 +31,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
         public OrderType OrderTypeId { get; set; }
         public bool IsTemporary { get; set; }
         public int? CustomerOfficialCompanyId { get; set; }
-        public string DeliverDate { get; set; }
+        public string DeliverDate { get; set; } = string.Empty;
 
         public virtual List<OrderDetailRequest> Details { get; set; }
         public virtual List<OrderPaymentDto>? OrderPayments { get; set; }
@@ -62,7 +62,7 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             {
                 try
                 {
-                    var order = await _orderRepository.GetByIdAsync(command.Id);
+                    var order = await _orderRepository.GetOrderById(command.Id);
 
                     if (order == null)
                         throw new ApiException($"سفارش یاقت نشد !");
