@@ -391,24 +391,23 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     }
 
                     //oitem.Id = 0;
-
+                    if (order.OrderTypeId == OrderType.Urgant) { 
                     var inv1 = await _productInventory.FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId &&
                                                 x.WarehouseId == oitem.WarehouseId && x.Warehouse.WarehouseTypeId!=2);
                     if (inv1 != null)
                     {
-                        inv1.ApproximateInventory -= oitem.ProximateAmount;
+                        inv1.ApproximateInventory += oitem.ProximateAmount;
 
                         _productInventory.Update(inv1);
                     }
 
                     if (order.InvoiceTypeId == 1)
                     {
-                        var prodOfficialInventory = await _productInventory
-                            .FirstOrDefaultAsync(i => i.ProductBrandId == oitem.ProductBrandId &&
-                                        i.WarehouseId == oitem.WarehouseId);
+                        var prodOfficialInventory = await _officialWarehosesInv
+                            .FirstOrDefaultAsync(i => i.ProductId == oitem.ProductId);
 
                         if (prodOfficialInventory != null)
-                            _productInventory.Update(prodOfficialInventory);
+                            _officialWarehosesInv.Update(prodOfficialInventory);
                     }
 
                 }
@@ -458,7 +457,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         }
                         _productInventory.Update(prodInventory);
                     }
-
                 }
 
                 #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
