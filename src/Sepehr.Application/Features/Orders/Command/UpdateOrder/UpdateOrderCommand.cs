@@ -68,26 +68,6 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
                         throw new ApiException($"سفارش یاقت نشد !");
                     else
                     {
-                        #region در صورتی که تعدادی از کالاها از انبار واسط باشند یک سفارش خرید هم ثبت می شود
-
-                        //foreach (var item in command.Details
-                        //                    .Where(t => t.WarehouseTypeId == 2))
-                        //{
-                        //    var purOrderDetail = _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
-
-                        //    var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(command);
-                        //    newPurOrder.Details.Clear();
-
-                        //    newPurOrder.Details.Add(purOrderDetail);
-                        //    newPurOrder.OrderServices.Clear();
-                        //    newPurOrder.OrderPayments.Clear();
-                        //    item.PurchaseOrder = newPurOrder;
-                        //    //item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
-                        //    //item.PurchaseOrder.TotalAmount = item.Price * item.ProximateAmount;
-                        //}
-
-                        #endregion
-
                         order = _mapper.Map(command, order);
                         await _orderRepository.UpdateOrder(order);
 

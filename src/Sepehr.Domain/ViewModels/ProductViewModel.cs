@@ -42,6 +42,8 @@ namespace Sepehr.Domain.ViewModels
         public string CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public double Inventory { get; set; }
+        public double ApproximateInventory { get; set; }
+        public double FloorInventory { get; set; }
         public decimal PurchaseInventory { get; set; }
         public string WarehouseName { get; set; }
         public int WarehouseId { get; set; }

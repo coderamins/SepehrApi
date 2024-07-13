@@ -143,6 +143,15 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
             #region Product Inventory
+
+            CreateMap<ProductBrand, ProductInventory>()
+                .ForMember(m=>m.ProductBrandId,opt=>opt.MapFrom(d=>d.Id))
+                .ForMember(m =>m.IsActive,opt=>opt.MapFrom(d=> true));
+
+            CreateMap<Product, OfficialWarehoseInventory>()
+                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id))
+                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
+
             CreateMap<ProductInventory, ProductInventoryViewModel>()
                 .ForMember(m => m.WarehouseName, d => d.MapFrom(d => d.Warehouse.Name))
                 .ForMember(m => m.WarehouseType, d => d.MapFrom(d => d.Warehouse.WarehouseType.Description));
@@ -384,6 +393,14 @@ namespace Sepehr.Application.Mapping
                 //.ForMember(m => m.OrderTypeId, opt => opt.MapFrom(d =>
                 //            DateTime.Compare(d.DeliverDate, DateTime.Now.AddDays(3)) <= 0 ? OrderType.Urgant : OrderType.PreSale))
                 .ForMember(m => m.OrderSendType, opt => opt.Ignore())
+                .AfterMap((src, dest) => dest.InvoiceType = null)
+                .AfterMap((src, dest) => dest.OrderSendType = null)
+                .AfterMap((src, dest) => dest.CustomerOfficialCompany = null)
+                .AfterMap((src, dest) => dest.OrderExitType = null)
+                .AfterMap((src, dest) => dest.Customer = null)
+                .AfterMap((src, dest) => dest.FarePaymentType = null)
+                .AfterMap((src, dest) => dest.OrderStatus = null)
+                .ForMember(m => m.InvoiceType, opt => opt.Ignore())
                 .ForMember(m => m.OrderCode, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())
                 .ForMember(m => m.Details, opt => opt.MapFrom(d => d.Details))
@@ -416,21 +433,21 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.OrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
                 .ForMember(m => m.FarePaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
-            CreateMap<CreateOrderCommand, CreatePurchaseOrderCommand>()
-                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
-                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
-                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
-                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
-                .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
-                .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+            //CreateMap<CreateOrderCommand, CreatePurchaseOrderCommand>()
+            //    .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
+            //    .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
+            //    .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
+            //    .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
+            //    .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
+            //    .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
-            CreateMap<UpdateOrderCommand, CreatePurchaseOrderCommand>()
-                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
-                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
-                .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
-                .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
-                .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
-                .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
+            //CreateMap<UpdateOrderCommand, CreatePurchaseOrderCommand>()
+            //    .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(d => d.Details.Sum(x => x.ProximateAmount * x.Price)))
+            //    .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(d => d.Details.First().PurchaserCustomerId))
+            //    .ForMember(dest => dest.DestinationWarehouseId, opt => opt.MapFrom(src => "3"))
+            //    .ForMember(dest => dest.OriginWarehouseId, opt => opt.MapFrom(src => "3"))
+            //    .ForMember(m => m.PurchaseOrderSendTypeId, opt => opt.MapFrom(d => d.OrderSendTypeId))
+            //    .ForMember(m => m.PaymentTypeId, opt => opt.MapFrom(d => d.PaymentTypeId));
 
             CreateMap<CreatePurchaseOrderDto, PurchaseOrder>()
                 .ForMember(m => m.ExitType, opt => opt.MapFrom(d => ExitType.Usual))

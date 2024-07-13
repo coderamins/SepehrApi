@@ -12,8 +12,8 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             //Seed Default User
             var brands =
                 new List<PurchaseInvoiceType> {
-                    new PurchaseInvoiceType{Desc="فاکتور رسمی"},
-                    new PurchaseInvoiceType{Desc="فاکتور غیررسمی "}
+                    new PurchaseInvoiceType{Desc="رسمی"},
+                    new PurchaseInvoiceType{Desc="غیر رسمی "}
                 };
 
             foreach (var item in brands)

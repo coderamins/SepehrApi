@@ -21,24 +21,24 @@ namespace Sepehr.Application.Features.Warehouses.Command.CreateWarehouse
 }
     public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, Response<Warehouse>>
     {
-        private readonly IWarehouseRepositoryAsync _brandRepository;
+        private readonly IWarehouseRepositoryAsync _warehouseRepository;
         private readonly IMapper _mapper;
         public CreateWarehouseCommandHandler(
             IWarehouseRepositoryAsync brandRepository, 
             IMapper mapper)
         {
-            _brandRepository = brandRepository;
+            _warehouseRepository = brandRepository;
             _mapper = mapper;
         }
 
         public async Task<Response<Warehouse>> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
         {
-            var allwarehouses =await _brandRepository.GetAllAsync();
+            var allwarehouses =await _warehouseRepository.GetAllAsync();
             if (allwarehouses.Any(w=>w.Name.Equals(request.Name)))
                 throw new ApiException(new ErrorMessageFactory().MakeError("انبار", ErrorType.DuplicateForCreate));
 
             var pbrand = _mapper.Map<Warehouse>(request);
-            await _brandRepository.AddAsync(pbrand);
+            await _warehouseRepository.CreateWarehouse(pbrand);
 
             return new Response<Warehouse>(pbrand, new ErrorMessageFactory().MakeError("انبار", ErrorType.CreatedSuccess));
         }

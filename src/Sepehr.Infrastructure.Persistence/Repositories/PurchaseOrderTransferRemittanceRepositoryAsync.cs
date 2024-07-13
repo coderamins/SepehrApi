@@ -276,7 +276,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             try
             {
                 var transferRemitt = await _transferRemittances.AsNoTracking()
-                        .Include(t => t.Details).AsNoTracking()
+                        .Include(t => t.Details).ThenInclude(d=>d.PurOTransRemittUnloadingPermitDetail).AsNoTracking()
                         .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit).AsNoTracking()
                         .FirstOrDefaultAsync(t =>
                         t.PurchaseOrderTransferRemittanceEntrancePermit.Id == purchaseOrderTransferRemittanceUnloadingPermit.PurchaseOrderTransferRemittanceEntrancePermitId);

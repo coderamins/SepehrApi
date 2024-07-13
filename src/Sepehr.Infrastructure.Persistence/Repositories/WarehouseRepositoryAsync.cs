@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
@@ -7,11 +8,50 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 {
     public class WarehouseRepositoryAsync : GenericRepositoryAsync<Warehouse>, IWarehouseRepositoryAsync
     {
+        private readonly ApplicationDbContext _dbContext;
         private readonly DbSet<Warehouse> _warehouses;
+        private readonly DbSet<ProductBrand> _productBrandRepo;
+        private readonly DbSet<Product> _productRepo;
+        private readonly DbSet<ProductInventory> _productInventoryRepo;
+        private readonly DbSet<OfficialWarehoseInventory> _offProductInventoryRepo;
+        private readonly IMapper _mapper;
 
-        public WarehouseRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
+        public WarehouseRepositoryAsync(ApplicationDbContext dbContext,
+            IMapper mapper) : base(dbContext)
         {
             _warehouses = dbContext.Set<Warehouse>();
+            _productBrandRepo = dbContext.Set<ProductBrand>();
+            _productRepo = dbContext.Set<Product>();
+            _productInventoryRepo = dbContext.Set<ProductInventory>();
+            _offProductInventoryRepo = dbContext.Set<OfficialWarehoseInventory>();
+            _mapper = mapper;
+            _dbContext = dbContext;
+        }
+
+        public async Task<Warehouse> CreateWarehouse(Warehouse pbrand)
+        {
+            var newWhouse=await _warehouses.AddAsync(pbrand);
+
+            var allProds =await _productRepo.ToListAsync();
+            var allProdBrans = await _productBrandRepo.ToListAsync();
+
+            foreach (var item in allProdBrans)
+            {
+                var newInv = _mapper.Map<ProductInventory>(item);
+                newInv.WarehouseId = newWhouse.Entity.Id;
+                _productInventoryRepo.Add(newInv);
+            }
+
+            foreach (var item in allProds)
+            {
+                var newInv = _mapper.Map<OfficialWarehoseInventory>(item);
+                newInv.WarehouseId = newWhouse.Entity.Id;
+                _offProductInventoryRepo.Add(newInv);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return newWhouse.Entity;
         }
 
         public async Task<List<Warehouse>> GetAllWarehousesAsync(int? WarehouseTypeId, Guid? CustomerId)

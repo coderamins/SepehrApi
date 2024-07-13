@@ -26,6 +26,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<OrderService> _orderServices;
         private readonly DbSet<OrderPayment> _orderPayments;
         private readonly DbSet<Warehouse> _warehouses;
+        private readonly DbSet<CargoAnnounceDetail> _announceDetails;
         private readonly DbSet<ProductInventory> _productInventory;
         private readonly DbSet<OfficialWarehoseInventory> _officialWarehosesInv;
         private readonly IEmailService _emailService;
@@ -47,6 +48,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _orderServices = dbContext.Set<OrderService>();
             _orderDetail = dbContext.Set<OrderDetail>();
             _warehouses = dbContext.Set<Warehouse>();
+            _announceDetails = dbContext.Set<CargoAnnounceDetail>();
             _orders = dbContext.Set<Order>();
             _emailService = emailService;
             _smsService = smsService;
@@ -195,15 +197,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _orders.AsNoTracking().Where(o => o.Id == orderId)
                 .Include(o => o.OrderServices).ThenInclude(s => s.Service).AsNoTracking()
-                .Include(o => o.OrderPayments)
-                .Include(o => o.OrderStatus)
-                .Include(c => c.Customer)
-                .Include(c => c.OrderSendType)
+                .Include(o => o.OrderPayments).AsNoTracking()
+                .Include(o => o.OrderStatus).AsNoTracking()
+                .Include(c => c.Customer).AsNoTracking()
+                .Include(c => c.OrderSendType).AsNoTracking()
                 .Include(c => c.InvoiceType)
                 .Include(c => c.Attachments)
-                .Include(c => c.FarePaymentType)
-                .Include(c => c.OrderExitType)
-                .Include(c => c.CustomerOfficialCompany)
+                .Include(c => c.FarePaymentType).AsNoTracking()
+                .Include(c => c.OrderExitType).AsNoTracking()
+                .Include(c => c.CustomerOfficialCompany).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(o => o.PurchaseOrder)
                 .Include(o => o.Details).ThenInclude(o => o.CargoAnnounces)
                 .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
@@ -216,7 +218,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
                 .Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
-                .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType).FirstOrDefaultAsync();
+                .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IQueryable<Order>> GetAllOrdersAsync(GetAllOrdersParameter param)
@@ -358,53 +361,70 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             try
             {
-                //var ord = _dbContext.Orders
-                //            .Include(o => o.Details).ThenInclude(o => o.PurchaseOrder)
-                //            .First(o => o.Id == order.Id);
+                var deletedDetails = _dbContext.OrderDetails
+                    .Where(s => s.OrderId == order.Id && !order.Details.Select(d => d.Id).Contains(s.Id)).ToList();
 
-                _dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails
-                    .Where(s => s.OrderId == order.Id /*&& !order.Details.Select(d => d.Id).Contains(s.Id)*/));
+                _dbContext.OrderDetails.RemoveRange(deletedDetails);
                 _dbContext.OrderServices.RemoveRange(_dbContext.OrderServices
                     .Where(s => s.OrderId == order.Id /*&& !order.OrderServices.Select(d => d.Id).Contains(s.Id)*/));
                 _dbContext.OrderPayments.RemoveRange(_dbContext.OrderPayments
                     .Where(s => s.OrderId == order.Id /*&& !order.OrderPayments.Select(d => d.Id).Contains(s.Id)*/));
 
-
-                foreach (var oitem in order.Details)
+                foreach (var item in deletedDetails)
                 {
-                    var _purOrder = await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
+                    if (_announceDetails.Any(a => a.OrderDetailId == item.Id))
+                        throw new ApiException("برای کالابرند با کد {0} قبلا بارنامه صادر شده و امکان حذف آن میسر نیست !");
+
+                    var _purOrder = await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == item.PurchaseOrderId);
                     if (_purOrder != null)
                     {
-                        var poDetail = await _dbContext.PurchaseOrderDetails.FirstOrDefaultAsync(p => p.OrderId == oitem.PurchaseOrderId);
+                        var poDetail = await _dbContext.PurchaseOrderDetails.FirstOrDefaultAsync(p => p.OrderId == item.PurchaseOrderId);
                         if (poDetail != null)
                             _dbContext.PurchaseOrderDetails.Remove(poDetail);
 
-                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == item.PurchaseOrderId));
 
-                        var inv = await _dbContext.ProductInventories
-                            .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
+                        //var poinv = await _dbContext.ProductInventories
+                        //    .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
 
-                        if (inv != null)
-                        {
-                            inv.ApproximateInventory -= oitem.ProximateAmount;
-                        }
+                        //if (poinv != null)
+                        //    poinv.ApproximateInventory -= item.ProximateAmount;
                     }
 
-                    //oitem.Id = 0;
-                    if (order.OrderTypeId == OrderType.Urgant) { 
-                    var inv1 = await _productInventory.FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId &&
-                                                x.WarehouseId == oitem.WarehouseId && x.Warehouse.WarehouseTypeId!=2);
-                    if (inv1 != null)
+
+                    var inv = await _productInventory.FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId &&
+                            x.WarehouseId == item.WarehouseId /*&& x.Warehouse.WarehouseTypeId!=2*/);
+
+                    if (inv == null)
                     {
-                        inv1.ApproximateInventory += oitem.ProximateAmount;
-
-                        _productInventory.Update(inv1);
+                        inv = _productInventory.AddAsync(new ProductInventory
+                        {
+                            //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
+                            ApproximateInventory = 0,
+                            ProductBrandId = item.ProductBrandId,
+                            OrderPoint = 0,
+                            MinInventory = 0,
+                            MaxInventory = 0,
+                            IsActive = true,
+                            FloorInventory = 0,
+                            WarehouseId = item.WarehouseId,
+                            Created = DateTime.Now,
+                            CreatedBy = Guid.Parse(_authenticatedUser.UserId),
+                        }).Result.Entity;
                     }
+
+                    //----اگر محصول از انبار واسه باشد پس ابتدا موجودی باید کسر گردد
+                    if (inv != null && _warehouses.First(w => w.Id == item.WarehouseId).WarehouseTypeId == 2)
+                        inv.ApproximateInventory -= item.ProximateAmount;
+
+                    //----اگر سفارش از نوع سفارش فوری یا تایید شده حسابداری باشد از موجودی اضافه خواهد شد
+                    if (order.OrderTypeId == OrderType.Urgant || order.OrderStatusId==(int)OrderStatusEnum.AccApproved)
+                        inv.ApproximateInventory += item.ProximateAmount;
 
                     if (order.InvoiceTypeId == 1)
                     {
                         var prodOfficialInventory = await _officialWarehosesInv
-                            .FirstOrDefaultAsync(i => i.ProductId == oitem.ProductId);
+                            .FirstOrDefaultAsync(i => i.ProductId == item.ProductId);
 
                         if (prodOfficialInventory != null)
                             _officialWarehosesInv.Update(prodOfficialInventory);
@@ -412,56 +432,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                 }
 
-                foreach (var prodBrand in order.Details)
+                #region برای جزئیاتی که جدید اضافه شده اند
+                foreach (var oitem in order.Details)
                 {
-                    var prodInventory = await _productInventory
-                        .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
-                                    i.WarehouseId == prodBrand.WarehouseId);
+                    #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
 
-                    if (prodInventory == null)
-                    {
-                        foreach (var wh in _warehouses.Where(w => w.WarehouseTypeId != 5).ToList())
-                        {
-                            await _productInventory.AddAsync(new ProductInventory
-                            {
-                                //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
-                                ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount : 0) - prodBrand.ProximateAmount,
-                                ProductBrandId = prodBrand.ProductBrandId,
-                                OrderPoint = 0,
-                                MinInventory = 0,
-                                MaxInventory = 0,
-                                IsActive = true,
-                                FloorInventory = 0,
-                                WarehouseId = wh.Id,
-                                Created = DateTime.Now,
-                                CreatedBy = Guid.Parse(_authenticatedUser.UserId),
-                            });
-                        }
-                    }
-                    else
-                    {
-                        //----اگر کالای از انبار واسطه باشه به موجودی 
-                        if (prodBrand.WarehouseId == 3)
-                        {
-                            prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
-                        }
-                        _productInventory.Update(prodInventory);
-
-                        prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
-                        if (order.InvoiceTypeId == 1 || order.InvoiceTypeId == 2)
-                        {
-                            var prodOfficialInventory = await _productInventory
-                                .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
-                                            i.WarehouseId == prodBrand.WarehouseId);
-
-                        }
-                        _productInventory.Update(prodInventory);
-                    }
-                }
-
-                #region بررسی می شود که کالای مورد ویرایش اگر دارای بارگیری باشد، مقدار بارگیری شده از مقدار اصلی کمتر نباشد
-                foreach (var oitem in order.Details.Where(d => d.Id != 0))
-                {
                     var od = order.Details.FirstOrDefault(d => d.Id == oitem.Id);
                     if (od != null)
                     {
@@ -475,7 +450,67 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                 od_cAnncs.First(d => d.OrderDetailId == od.Id).OrderDetail.ProductBrand.Brand.Name
                                 ));
                     }
+                    #endregion
+
+                    var _purOrder = await _dbContext.PurchaseOrder.FirstOrDefaultAsync(p => p.Id == oitem.PurchaseOrderId);
+                    if (_purOrder != null)
+                    {
+                        var poDetail = await _dbContext.PurchaseOrderDetails.FirstOrDefaultAsync(p => p.OrderId == oitem.PurchaseOrderId);
+                        if (poDetail != null)
+                            _dbContext.PurchaseOrderDetails.Remove(poDetail);
+
+                        _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == oitem.PurchaseOrderId));
+
+                        //var poinv = await _dbContext.ProductInventories
+                        //    .FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
+
+                        //if (poinv != null)
+                        //{
+                        //    poinv.ApproximateInventory -= oitem.ProximateAmount;
+                        //}
+                    }
+
+
+                    var inv = await _productInventory.FirstOrDefaultAsync(x => x.ProductBrandId == oitem.ProductBrandId &&
+                                                x.WarehouseId == oitem.WarehouseId /*&& x.Warehouse.WarehouseTypeId!=2*/);
+
+                    if (inv == null)
+                    {
+                        inv = _productInventory.AddAsync(new ProductInventory
+                        {
+                            //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
+                            ApproximateInventory = 0,
+                            ProductBrandId = oitem.ProductBrandId,
+                            OrderPoint = 0,
+                            MinInventory = 0,
+                            MaxInventory = 0,
+                            IsActive = true,
+                            FloorInventory = 0,
+                            WarehouseId = oitem.WarehouseId,
+                            Created = DateTime.Now,
+                            CreatedBy = Guid.Parse(_authenticatedUser.UserId),
+                        }).Result.Entity;
+                    }
+
+                    //----اگر محصول از انبار واسه باشد پس ابتدا موجودی باید اضافه گردد
+                    if (inv != null && _warehouses.First(w => w.Id == oitem.WarehouseId).WarehouseTypeId == 2)
+                        inv.ApproximateInventory += oitem.ProximateAmount;
+
+                    //----اگر سفارش از نوع سفارش فوری باشد از موجودی کسر خواهد شد
+                    if (order.OrderTypeId == OrderType.Urgant || order.OrderStatusId == (int)OrderStatusEnum.AccApproved)
+                        inv.ApproximateInventory -= oitem.ProximateAmount;
+
+                    if (order.InvoiceTypeId == 1)
+                    {
+                        var prodOfficialInventory = await _officialWarehosesInv
+                            .FirstOrDefaultAsync(i => i.ProductId == oitem.ProductId);
+
+                        if (prodOfficialInventory != null)
+                            _officialWarehosesInv.Update(prodOfficialInventory);
+                    }
+
                 }
+
                 #endregion
 
                 using (_dbContext)
@@ -485,10 +520,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }
 
                 return order;
+
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
