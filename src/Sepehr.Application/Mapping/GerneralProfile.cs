@@ -145,8 +145,8 @@ namespace Sepehr.Application.Mapping
             #region Product Inventory
 
             CreateMap<ProductBrand, ProductInventory>()
-                .ForMember(m=>m.ProductBrandId,opt=>opt.MapFrom(d=>d.Id))
-                .ForMember(m =>m.IsActive,opt=>opt.MapFrom(d=> true));
+                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id))
+                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
 
             CreateMap<Product, OfficialWarehoseInventory>()
                 .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id))
@@ -198,6 +198,9 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region Products
+
+            CreateMap<Product, OfficialWarehoseInventory>()
+                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id));
 
             CreateMap<ProductDetail, ProductDetailViewModel>();
 
@@ -300,6 +303,9 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region ProductBrands
+            CreateMap<ProductBrand, ProductInventory>()
+                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id));
+
             CreateMap<ProductBrand, ProductBrandViewModel>()
                 .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product.ProductName))
                 .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.Brand.Name))
@@ -339,8 +345,8 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.PurchaseSettlementDate, d => d.MapFrom(d => (d.PurchaseSettlementDate ?? DateTime.Now).ToShamsiDate())).ReverseMap();
 
             CreateMap<ApproveInvoiceOrderDetail, OrderDetail>();
-                //.ForMember(m => m.AlternativeProductAmount, opt => opt.MapFrom(d=>d.alter)).MaxDepth(1);
-                //.ForMember(m => m.Price, opt => opt.Ignore()).MaxDepth(1);
+            //.ForMember(m => m.AlternativeProductAmount, opt => opt.MapFrom(d=>d.alter)).MaxDepth(1);
+            //.ForMember(m => m.Price, opt => opt.Ignore()).MaxDepth(1);
 
             #endregion
 
@@ -893,8 +899,8 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<GetAllLadingExitPermitsQuery, GetAllLadingExitPermitsParameter>();
             CreateMap<CreateLadingExitPermitAttachment, LadingExitPermit>()
-                .ForMember(m=>m.LadingExitPermitDetails,opt=>opt.Ignore());
-            
+                .ForMember(m => m.LadingExitPermitDetails, opt => opt.Ignore());
+
             CreateMap<LadingExitPermitDetailDto, LadingExitPermitDetail>();
             CreateMap<LadingExitPermitDetail, LadingExitPermitDetailViewModel>()
                 .ForMember(m => m.LadingAmount, opt => opt.MapFrom(d => d.CargoAnnounceDetail.LadingAmount))

@@ -21,5 +21,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> UpdateProductInventory(List<OrderDetailRequest> details);
         Task<bool> UpdateProductInventory(List<CreatePurchaseOrderDetailRequest> details);
         Task<bool> UpdateProductInventory(Guid orderId, List<OrderDetailRequest> details,InventoryActionType actionType);
+        Task CreateInventoryToNewProduct(Guid productId);
+        Task CreateInventoryToNewProductBrand(int brandId);
     }
 }

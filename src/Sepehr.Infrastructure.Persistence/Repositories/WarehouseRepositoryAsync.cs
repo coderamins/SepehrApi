@@ -28,9 +28,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Warehouse> CreateWarehouse(Warehouse pbrand)
+        public async Task<Warehouse> CreateWarehouse(Warehouse warehouse)
         {
-            var newWhouse=await _warehouses.AddAsync(pbrand);
+            var newWhouse=await _warehouses.AddAsync(warehouse);
 
             var allProds =await _productRepo.ToListAsync();
             var allProdBrans = await _productBrandRepo.ToListAsync();
@@ -39,14 +39,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 var newInv = _mapper.Map<ProductInventory>(item);
                 newInv.WarehouseId = newWhouse.Entity.Id;
-                _productInventoryRepo.Add(newInv);
+                await _productInventoryRepo.AddAsync(newInv);
             }
 
             foreach (var item in allProds)
             {
                 var newInv = _mapper.Map<OfficialWarehoseInventory>(item);
                 newInv.WarehouseId = newWhouse.Entity.Id;
-                _offProductInventoryRepo.Add(newInv);
+                await _offProductInventoryRepo.AddAsync(newInv);
             }
 
             await _dbContext.SaveChangesAsync();

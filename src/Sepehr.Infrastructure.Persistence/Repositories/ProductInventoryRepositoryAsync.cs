@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.Order;
 using Sepehr.Application.DTOs.Product;
@@ -17,19 +18,29 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<ProductInventory> _productInventory;
         private readonly DbSet<Order> _order;
         private readonly DbSet<Warehouse> _warehouses;
+        private readonly DbSet<OfficialWarehoseInventory> _offWHouseInventory;
         private readonly DbSet<CargoAnnounce> _cargoAnnounces;
         private readonly DbSet<ProductInventoryHistory> _inventoryHistories;
+        private readonly DbSet<Product> _products;
+        private readonly DbSet<ProductBrand> _productBrands;
         public readonly DapperContext _dapperContext;
+        public readonly IMapper _mapper;
 
-        public ProductInventoryRepositoryAsync(ApplicationDbContext dbContext,
+        public ProductInventoryRepositoryAsync(
+            IMapper mapper,
+            ApplicationDbContext dbContext,
             DapperContext dapContext) : base(dbContext)
         {
+            _productBrands = dbContext.Set<ProductBrand>();
+            _products = dbContext.Set<Product>();
+            _offWHouseInventory = dbContext.Set<OfficialWarehoseInventory>();
             _productInventory = dbContext.Set<ProductInventory>();
             _order = dbContext.Set<Order>();
             _warehouses = dbContext.Set<Warehouse>();
             _cargoAnnounces = dbContext.Set<CargoAnnounce>();
             _inventoryHistories = dbContext.Set<ProductInventoryHistory>();
             _dapperContext = dapContext;
+            _mapper = mapper;
         }
 
         public async Task<ProductInventory?> GetProductInventory(int productBrandId, int warehouseId)
@@ -356,6 +367,36 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     _prodInvents.Add(p);
             }
             return _prodInvents;
+        }
+
+        /// <summary>
+        /// ایجاد رکورد موجودی به ازای همه انبارهای رسمی برای محصول جدید
+        /// </summary>
+        public async Task CreateInventoryToNewProduct(Guid productId)
+        {
+            var all_offWHouses = await _warehouses.Where(w=>w.WarehouseTypeId==(int)EWarehouseType.OfficialWarehouse).ToListAsync();
+            var prod = await _products.FindAsync(productId);
+            foreach (var item in all_offWHouses)
+            {
+                var newInv = _mapper.Map<OfficialWarehoseInventory>(prod);
+                newInv.WarehouseId = item.Id;
+                await _offWHouseInventory.AddAsync(newInv);
+            }
+        }
+
+        /// <summary>
+        /// ایجاد رکورد موجودی به ازای همه انبارها به جز انبارهای رسمی برای محصول برند جدید
+        /// </summary>
+        public async Task CreateInventoryToNewProductBrand(int brandId)
+        {
+            var all_warehouses = await _warehouses.Where(w=>w.WarehouseTypeId!=(int)EWarehouseType.OfficialWarehouse).ToListAsync();
+            var prod = await _productBrands.FindAsync(brandId);
+            foreach (var item in all_warehouses)
+            {
+                var newInv = _mapper.Map<ProductInventory>(prod);
+                newInv.WarehouseId = item.Id;
+                await _productInventory.AddAsync(newInv);
+            }
         }
     }
 }

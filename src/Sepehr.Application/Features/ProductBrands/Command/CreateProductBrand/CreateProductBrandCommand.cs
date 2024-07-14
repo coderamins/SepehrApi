@@ -21,13 +21,16 @@ namespace Sepehr.Application.Features.ProductBrands.Command.CreateProductBrand
     public class CreateProductBrandCommandHandler : IRequestHandler<CreateProductBrandCommand, Response<ProductBrand>>
     {
         private readonly IProductBrandRepositoryAsync _brandRepository;
+        private readonly IProductInventoryRepositoryAsync _prodInventoryRepo;
         private readonly IMapper _mapper;
         public CreateProductBrandCommandHandler(
             IProductBrandRepositoryAsync brandRepository, 
-            IMapper mapper)
+            IMapper mapper,
+            IProductInventoryRepositoryAsync prodInventoryRepo)
         {
             _brandRepository = brandRepository;
             _mapper = mapper;
+            _prodInventoryRepo = prodInventoryRepo;
         }
 
         public async Task<Response<ProductBrand>> Handle(CreateProductBrandCommand request, CancellationToken cancellationToken)
@@ -40,6 +43,9 @@ namespace Sepehr.Application.Features.ProductBrands.Command.CreateProductBrand
 
             var pbrand = _mapper.Map<ProductBrand>(request);
             await _brandRepository.AddAsync(pbrand);
+
+            //---ایجاد رکورد موجودی به ازای همه انبارها به جر انبارهای رسمی
+            await _prodInventoryRepo.CreateInventoryToNewProductBrand(pbrand.Id);
 
             return new Response<ProductBrand>(pbrand, new ErrorMessageFactory().MakeError("برند", ErrorType.CreatedSuccess));
         }

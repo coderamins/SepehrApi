@@ -34,18 +34,21 @@ namespace Sepehr.Application.Features.Products.Command.CreateProduct
     }
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Response<Product>>
     {
+        private readonly IProductInventoryRepositoryAsync _prodInventoryRepo;
         private readonly IProductRepositoryAsync _productRepository;
         private readonly IMapper _mapper;
-        public CreateProductCommandHandler(IProductRepositoryAsync productRepository, IMapper mapper)
+        public CreateProductCommandHandler(
+            IProductInventoryRepositoryAsync prodInventoryRepo,
+            IProductRepositoryAsync productRepository,
+            IMapper mapper)
         {
+            _prodInventoryRepo = prodInventoryRepo;
             _productRepository = productRepository;
             _mapper = mapper;
         }
 
         public async Task<Response<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            //request.ProductCode = await GenerateProductCode();
-
             try
             {
                 var product = _mapper.Map<Product>(request);
@@ -55,11 +58,14 @@ namespace Sepehr.Application.Features.Products.Command.CreateProduct
                 product.ProductCode = newProdCode;
 
                 await _productRepository.AddAsync(product);
+
+                //---ایجاد رکورد موجودی به ازای همه انبارهای رسمی
+                await _prodInventoryRepo.CreateInventoryToNewProduct(product.Id);
+
                 return new Response<Product>(product, "محصول جدید با موفقیت ایجاد گردید .");
             }
             catch (Exception r)
             {
-
                 throw;
             }
         }
