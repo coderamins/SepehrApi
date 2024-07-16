@@ -43,7 +43,7 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                     var order = await _orderRepository.GetByIdAsync(command.OrderId);
                     if (order == null)
                         throw new ApiException("سفارش یافت نشد !");
-                    if (order.InvoiceTypeId != (int)Domain.Enums.PurchaseInvoiceType.Official)
+                    if (order.InvoiceTypeId != (int)Domain.Enums.EPurchaseInvoiceType.Official)
                         throw new ApiException("فاکتور سفارش رسمی نمی باشد !");
 
                     if (order.OrderStatusId == command.OrderStatusId)
