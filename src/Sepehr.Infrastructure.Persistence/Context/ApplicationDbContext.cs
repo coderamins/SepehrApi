@@ -97,6 +97,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PurchaseOrderFarePaymentType> PurchaseOrderFarePaymentTypes { get; set; }
         public DbSet<PurchaseOrderSendType> PurchaseOrderSendTypes { get; set; }
 
+        public DbSet<Audit> AuditLogs { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity<int>>())
@@ -132,6 +134,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             }
 
+            BeforeSaveChanges();
             return base.SaveChangesAsync(cancellationToken);
         }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -294,7 +297,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
         }
 
-        private void OnBeforeSaveChanges(string userId)
+        private void BeforeSaveChanges()
         {
             ChangeTracker.DetectChanges();
             var auditEntries = new List<AuditEntry>();
@@ -304,7 +307,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                     continue;
                 var auditEntry = new AuditEntry(entry);
                 auditEntry.TableName = entry.Entity.GetType().Name;
-                auditEntry.UserId = userId;
+                auditEntry.UserId = _authenticatedUser.UserId;
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties)
                 {
