@@ -298,6 +298,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         }
 
         private void BeforeSaveChanges()
+        
         {
             ChangeTracker.DetectChanges();
             var auditEntries = new List<AuditEntry>();

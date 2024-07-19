@@ -16,7 +16,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DapperContext(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("SepehrConnection");
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
         }
         public IDbConnection CreateConnection()
             => new SqlConnection(_connectionString);
