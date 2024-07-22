@@ -18,6 +18,7 @@ namespace Sepehr.Application.Features.LadingPermits.Queries.GetAllLadingPermits
         public int PageSize { get; set; }
         public bool? HasExitPermit { get; set; }
 
+
     }
     public class GetAllLadingPermitsQueryHandler :
          IRequestHandler<GetAllLadingPermitsQuery, PagedResponse<IEnumerable<LadingPermitViewModel>>>

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml.Style;
+using Sepehr.Application.DTOs;
 using Sepehr.Application.DTOs.CargoAnnounce;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces;
@@ -28,6 +29,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
         public string Description { get; set; }=string.Empty;
 
         public required List<CargoAnnounceDetailDto> CargoAnnounceDetails { get; set; }
+        public List<AttachmentDto>? Attachments { get; set; }
 
     }
     public class CreateCargoAnncCommandHandler : IRequestHandler<CreateCargoAnncCommand, Response<CargoAnnounce>>

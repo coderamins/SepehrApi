@@ -95,6 +95,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product)
                 .Where(t =>
+                (t.OriginWarehouseId==validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
                 (t.Id == validFilter.Id || validFilter.Id == null) &&
                 (t.TransferRemittanceStatusId == validFilter.TransferRemittStatusId || validFilter.TransferRemittStatusId == null) &&
                 ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||

@@ -26,6 +26,7 @@ namespace Sepehr.Domain.ViewModels
         public string Description { get; set; }=string.Empty;
         public string ShippingName { get; set; }=string.Empty;
         public bool HasExitPermit { get; set; }
+        public List<AttachmentViewModel> Attachments { get; set; } = new List<AttachmentViewModel>();
 
         public CargoAnncOrderViewModel Order { get; set; }
         public LadingPermitViewModel LadingPermit { get; set; }

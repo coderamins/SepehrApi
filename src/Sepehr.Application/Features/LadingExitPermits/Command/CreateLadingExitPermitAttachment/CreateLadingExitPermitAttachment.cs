@@ -49,7 +49,7 @@ namespace Sepehr.Application.Features.LadingExitPermits.Command.UpdateLadingExit
                     throw new ApiException(new ErrorMessageFactory().MakeError("مجوز خروج", ErrorType.NotFound));
                 else
                 {
-                    await _ladingExitPermitRepository.UpdateAsync(ladingExitPermit);
+                    await _ladingExitPermitRepository.UpdateLadingExitPermit(ladingExitPermit);
                     return new Response<bool>(true,
                         new ErrorMessageFactory().MakeError("مجوز خروج", ErrorType.UpdatedSuccess));
                 }

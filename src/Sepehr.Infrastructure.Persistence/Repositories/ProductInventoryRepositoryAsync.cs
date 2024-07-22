@@ -389,13 +389,26 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         /// </summary>
         public async Task CreateInventoryToNewProductBrand(int brandId)
         {
-            var all_warehouses = await _warehouses.Where(w=>w.WarehouseTypeId!=(int)EWarehouseType.OfficialWarehouse).ToListAsync();
-            var prod = await _productBrands.FindAsync(brandId);
-            foreach (var item in all_warehouses)
+            try
             {
-                var newInv = _mapper.Map<ProductInventory>(prod);
-                newInv.WarehouseId = item.Id;
-                await _productInventory.AddAsync(newInv);
+                List<ProductInventory> productInventories = new List<ProductInventory>();
+
+                var all_warehouses = await _warehouses.Where(w => w.WarehouseTypeId != (int)EWarehouseType.OfficialWarehouse).ToListAsync();
+                var prod = await _productBrands.FindAsync(brandId);
+                foreach (var item in all_warehouses)
+                {
+                    var newInv = _mapper.Map<ProductInventory>(prod);
+                    //newInv.Id = null;
+                    newInv.WarehouseId = item.Id;
+                    productInventories.Add(newInv);
+                }
+
+                await _productInventory.AddRangeAsync(productInventories);
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
         }
     }

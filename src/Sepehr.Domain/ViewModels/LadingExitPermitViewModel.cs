@@ -18,8 +18,8 @@ namespace Sepehr.Domain.ViewModels
         public string? ExitPermitDescription { get; set; }
         public decimal? FareAmount { get; set; }
         public bool? HasExitPermit { get; set; }
-
-        public LadingPermitViewModel LadingPermit { get; set; }
-        public List<LadingExitPermitDetailViewModel> LadingExitPermitDetails { get; set; }
+        public List<AttachmentViewModel> Attachments { get; set; } = new List<AttachmentViewModel>();
+        public LadingPermitViewModel? LadingPermit { get; set; }
+        public List<LadingExitPermitDetailViewModel> LadingExitPermitDetails { get; set; } = new List<LadingExitPermitDetailViewModel>();
     }
 }

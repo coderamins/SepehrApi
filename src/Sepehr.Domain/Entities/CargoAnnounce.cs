@@ -33,6 +33,7 @@ namespace Sepehr.Domain.Entities
         public string Description { get; set; }=string.Empty;
 
         public virtual required Order Order { get; set; }
+        public ICollection<Attachment>? Attachments { get; set; }
         public virtual required VehicleType VehicleType { get; set; }
         //public required virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<LadingPermit> LadingPermits { get; set; } = new List<LadingPermit>();

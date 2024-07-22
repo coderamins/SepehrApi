@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +22,10 @@ namespace Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransfer
         public bool? IsEntranced { get; set; }
         public int? TransferEntransePermitNo { get; set; }
         public int? TransferRemittStatusId { get; set; }
+        /// <summary>
+        /// فروشنده
+        /// </summary>
+        public Guid? MarketerId { get; set; }
     }
     public class GetAllTransferRemittancesQueryHandler :
          IRequestHandler<GetAllTransferRemittancesQuery, PagedResponse<IEnumerable<TransferRemittanceViewModel>>>

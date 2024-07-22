@@ -60,6 +60,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<CargoAnnounce?> GetCargoAnnounceInfo(Guid id)
         {
             return await _cargoAnnouncements
+                .Include(t => t.Attachments)
                 .Include(c => c.LadingPermits.Where(l => l.IsActive))
                 .Include(ca => ca.Order).ThenInclude(o => o.Details).ThenInclude(od => od.ProductBrand).ThenInclude(p => p.Product)
                 .Include(ca => ca.Order).ThenInclude(o => o.Details).ThenInclude(od => od.CargoAnnounces)

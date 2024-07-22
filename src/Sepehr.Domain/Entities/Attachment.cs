@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
 {
-    public class Attachment:BaseEntity<Guid>
+    public class Attachment : BaseEntity<Guid>
     {
         public required byte[] FileData { get; set; }
         public Guid? ReceivePayId { get; set; }
@@ -19,6 +19,7 @@ namespace Sepehr.Domain.Entities
         public Guid? PurOrderTransRemittanceEntrancePermitId { get; set; }
         public Guid? LadingExitPermitId { get; set; }
         public AttachmentType? AttachmentType { get; set; } = 0;
+        public Guid? CargoAnnounceId { get; set; }
 
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual ReceivePay? ReceivePay { get; set; }

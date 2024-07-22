@@ -143,12 +143,8 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
             #region Product Inventory
-
-            CreateMap<ProductBrand, ProductInventory>()
-                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id))
-                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
-
             CreateMap<Product, OfficialWarehoseInventory>()
+                .ForMember(m => m.Id, opt => opt.Ignore())
                 .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
 
@@ -303,8 +299,6 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region ProductBrands
-            CreateMap<ProductBrand, ProductInventory>()
-                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id));
 
             CreateMap<ProductBrand, ProductBrandViewModel>()
                 .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product.ProductName))
@@ -316,6 +310,11 @@ namespace Sepehr.Application.Mapping
             CreateMap<UpdateProductBrandCommand, ProductBrand>();
 
             CreateMap<GetAllProductBrandsQuery, GetAllProductBrandsParameter>();
+
+            CreateMap<ProductBrand, ProductInventory>()
+                .ForMember(m => m.Id, opt => opt.Ignore())
+                .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id))
+                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
 
             #endregion
 

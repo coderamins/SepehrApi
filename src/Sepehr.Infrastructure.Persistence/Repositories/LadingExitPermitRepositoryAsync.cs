@@ -87,11 +87,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Id).AsQueryable();
         }
 
-
         public async Task<LadingExitPermit?> GetLadingExitPermitInfo(Guid LadingExitPermitId)
         {
             return await _productLadingExitPermits
                 .Include(t => t.LadingPermit)
+                .Include(t => t.Attachments)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.ProductBrand).ThenInclude(t => t.Brand)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductMainUnit)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductSubUnit)
@@ -106,7 +106,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Where(d => !ladingExitPermit.LadingExitPermitDetails.Select(e => e.Id).Contains(d.Id)));
 
             var updateladingExitPermit = _productLadingExitPermits.Update(ladingExitPermit);
-
+            await _dbContext.SaveChangesAsync();
             return updateladingExitPermit.Entity;
         }
 
