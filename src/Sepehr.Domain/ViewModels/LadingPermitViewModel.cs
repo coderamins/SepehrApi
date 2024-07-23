@@ -13,6 +13,7 @@ namespace Sepehr.Domain.ViewModels
         public required Guid CargoAnnounceId { get; set; }
         public bool? HasExitPermit { get; set; } = false;
         public string? Description { get; set; }
+        public string CreatorName { get; set; } = string.Empty;
 
         public virtual CargoAnncViewModel CargoAnnounce { get; set; }
 

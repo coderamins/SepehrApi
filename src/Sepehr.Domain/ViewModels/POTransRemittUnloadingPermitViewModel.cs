@@ -12,6 +12,7 @@ namespace Sepehr.Domain.ViewModels
         public Guid Id { get; set; }
         public int UnloadingPermitCode { get; set; }
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
         public List<AttachmentViewModel>? Attachments { get; set; }
 
         public List<POrderTransRemittUnloadingPermitDetailViewModel>? UnloadingPermitDetail { get; set; }

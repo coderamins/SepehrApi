@@ -18,7 +18,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<PurchaseOrderTransferRemittanceUnloadingPermit?> GetRemittanceUnloadingPermitInfo(Guid Id)
         {
-            return await _remittUnloadingPermits.FirstOrDefaultAsync(x => x.Id == Id);
+            return await _remittUnloadingPermits
+                .Include(c => c.ApplicationUser)
+                .FirstOrDefaultAsync(x => x.Id == Id);
         }
     }
 }

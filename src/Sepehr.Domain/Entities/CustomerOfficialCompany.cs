@@ -24,6 +24,7 @@ namespace Sepehr.Domain.Entities
         public string? Tel2 { get; set; }
         [StringLength(500)]
         public string? Address { get; set; }
+        public string CreatorName { get; set; } = string.Empty;
 
         public required virtual Customer Customer { get; set; }
     }

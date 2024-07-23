@@ -18,6 +18,7 @@ namespace Sepehr.Domain.ViewModels
         public int Inventory { get; set; }
         public int WarehouseId { get; set; }
         public string WarehouseName { get; set; } = string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
         //public ProductViewModel ProductInfo { get; set; }
 
     }

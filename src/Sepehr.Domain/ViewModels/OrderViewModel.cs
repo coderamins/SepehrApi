@@ -20,7 +20,7 @@ namespace Sepehr.Domain.ViewModels
         /// </summary>
         public decimal TotalLoadedAmount { get; set; }
         public decimal RemainingLadingAmount { get; set; }
-
+        public string CreatorName { get; set; } = string.Empty;
 
         public CustomerViewModel Customer { get; set; } = new CustomerViewModel();
         public CustomerOfficialCompanyViewModel CustomerOfficialCompany { get; set; } = new CustomerOfficialCompanyViewModel();

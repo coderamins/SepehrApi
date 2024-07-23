@@ -175,8 +175,10 @@ namespace Sepehr.Application.Mapping
 
 
             CreateMap<PurchaseOrderTransferRemittanceEntrancePermit, POTransRemittEntrancePermitViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.PurchaseOrderTransferRemittanceUnloadingPermits));
-            CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, POTransRemittUnloadingPermitViewModel>();
+            CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, POTransRemittUnloadingPermitViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))));
             CreateMap<PurchaseOrderTransferRemittance, TransferRemittanceViewModel>()
                 .ForMember(m => m.DestinationWarehouseName, opt => opt.MapFrom(d => d.DestinationWarehouse.Name))
                 .ForMember(m => m.EntrancePermit, opt => opt.MapFrom(d => d.PurchaseOrderTransferRemittanceEntrancePermit))
@@ -244,6 +246,7 @@ namespace Sepehr.Application.Mapping
 
             #region ProductPrices
             CreateMap<ProductPrice, ProductPriceViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(p => p.ProductId, opt => opt.MapFrom(b => b.ProductBrand.Product.Id))
                 //.ForMember(p => p.ProductCode, opt => opt.MapFrom(b => b.ProductBrand.Product.ProductCode))
                 .ForMember(p => p.ProductName, opt => opt.MapFrom(b => b.ProductBrand.Product.ProductName))
@@ -262,6 +265,7 @@ namespace Sepehr.Application.Mapping
 
             #region CustomerOfficialCompany
             CreateMap<CustomerOfficialCompany, CustomerOfficialCompanyViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(p => p.CreatedDate, opt => opt.MapFrom(b => b.Created.ToShamsiDate()));
 
             CreateMap<CreateCustomerOfficialCompanyCommand, CustomerOfficialCompany>();
@@ -368,6 +372,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<CompleteAnnouncementCommand, Order>();
 
             CreateMap<Order, OrderViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName)))
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
                 .ForMember(m => m.RegisterDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(m => m.DeliverDate, opt => opt.MapFrom(d => d.DeliverDate.ToShamsiDate()))
@@ -501,6 +506,7 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<CompleteAnnouncementCommand, PurchaseOrder>();
             CreateMap<PurchaseOrder, PurchaseOrderViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName)))
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
                 .ForMember(m => m.OriginWarehouseDesc, opt => opt.MapFrom(d => d.OriginWarehouse.Name))
                 .ForMember(m => m.DestinationWarehouseDesc, opt => opt.MapFrom(d => d.DestinationWarehouse.Name))
@@ -751,6 +757,7 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<GetAllLadingPermitsQuery, GetAllLadingPermitsParameter>();
             CreateMap<LadingPermit, LadingPermitViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
             CreateMap<UpdateLadingPermitCommand, LadingLicense>()
@@ -890,6 +897,7 @@ namespace Sepehr.Application.Mapping
 
             #region LadingExitPermits            
             CreateMap<LadingExitPermit, LadingExitPermitViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser==null ? "":(string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(t => t.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(t => t.CreatedBy, opt => opt.MapFrom(d => string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName)));
 
@@ -921,6 +929,7 @@ namespace Sepehr.Application.Mapping
 
             #region RentPayments
             CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, RentsViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.ReferenceDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(m => m.TotalAmount, opt => opt.MapFrom(d => d.FareAmount))
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.UnloadingPermitCode))
@@ -932,6 +941,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.AccountOwnerName, opt => opt.MapFrom(d => ""));
 
             CreateMap<LadingExitPermit, RentsViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.ReferenceDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(m => m.TotalAmount, opt => opt.MapFrom(d => d.FareAmount))
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.LadingExitPermitCode))
@@ -944,6 +954,7 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<LadingExitPermit, RentPaymentViewModel>();
             CreateMap<RentPayment, RentPaymentViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(m => m.DriverName, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName :
                                                                d.PurchaseOrderTransferRemittanceUnloadingPermit.DriverName))

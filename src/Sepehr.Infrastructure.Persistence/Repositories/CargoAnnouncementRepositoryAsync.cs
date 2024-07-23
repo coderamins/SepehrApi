@@ -49,6 +49,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ApplicationUser)
                 .Where(c =>
                 c.IsActive == true &&
+                (c.CargoAnnounceNo == validFilter.CargoAnnounceNo || validFilter.CargoAnnounceNo==null) &&
                 (c.IsComplete == validFilter.IsCompletlyLading || !validFilter.IsCompletlyLading) &&
                 (c.Order.CustomerId == validFilter.CustomerId || validFilter.CustomerId == null) &&
                 (c.Order.OrderCode == validFilter.OrderCode || validFilter.OrderCode == null) &&

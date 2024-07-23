@@ -22,7 +22,7 @@ namespace Sepehr.Domain.ViewModels
         public string? Tel1 { get; set; }
         public string? Tel2 { get; set; }
         public string? Address { get; set; }
-
+        public string CreatorName { get; set; } = string.Empty;
         public CustomerViewModel Customer { get; set; }
     }
 }

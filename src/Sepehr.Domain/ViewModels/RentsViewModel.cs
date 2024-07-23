@@ -26,7 +26,7 @@ namespace Sepehr.Domain.ViewModels
         public decimal TotalAmount { get; set; }
         public decimal TotalPayableAmount { get; set; }
         public decimal TotalLadingAmount { get; set; }
-
+        public string CreatorName { get; set; } = string.Empty;
         //public RentsViewModel()
         //{
         //    TotalPayableAmount = TotalAmount + OtherCosts;

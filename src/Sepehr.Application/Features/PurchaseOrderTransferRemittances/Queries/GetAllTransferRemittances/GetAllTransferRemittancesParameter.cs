@@ -18,5 +18,6 @@ namespace Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransfer
         /// </summary>
         public bool? IsEntranced { get; set; }
         public int? TransferEntransePermitNo { get; set; }
+        public Guid? MarketerId { get; set; }
     }
 }

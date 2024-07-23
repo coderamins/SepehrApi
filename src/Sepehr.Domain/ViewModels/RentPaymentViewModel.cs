@@ -19,6 +19,7 @@ namespace Sepehr.Domain.ViewModels
         public int ReferenceCode { get; set; }
         public string OrderType { get; set; }=string.Empty;
         public string DriverAccountNo { get; set; }=string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
 }

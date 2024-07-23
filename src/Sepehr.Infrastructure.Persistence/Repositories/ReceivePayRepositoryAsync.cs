@@ -25,15 +25,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<ReceivePay>> GetAllReceivePays(GetAllReceivePaysParameter filter)
         {
             return await _receivePays
-                .Where(r =>
-                        (r.ReceivePayStatusId >= filter.StatusId || filter.StatusId == null) &&
-                        (r.Created.Date >= filter.FromDate.ToDateTime("00:00").Date || string.IsNullOrEmpty(filter.FromDate)) &&
-                        (r.Created.Date <= filter.ToDate.ToDateTime("00:00").Date || string.IsNullOrEmpty(filter.ToDate)) &&
-                        ((r.IsAccountingApproval && filter.IsApproved == IsApprovalReceivePay.Approved) ||
-                        (!r.IsAccountingApproval && filter.IsApproved == IsApprovalReceivePay.NotApproved) ||
-                        (r.AccountingDocNo== filter.AccountingDocNo || filter.AccountingDocNo==null) ||
-                        (r.ReceivePayCode== filter.ReceivePayCode || filter.ReceivePayCode == null) ||
-                        filter.IsApproved == IsApprovalReceivePay.None))
+                .Include(c => c.ApplicationUser)
                 .Include(i => i.ReceiveFromCustomer)
                 .Include(i => i.ReceiveFromOrganizationBank).ThenInclude(o=>o.Bank)
                 .Include(i => i.ReceiveFromCashDesk)
@@ -50,17 +42,26 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(i => i.ReceiveFromCompany)
                 .Include(i => i.PayToCompany)
                 .Include(i => i.PayToShareHolder)
-
                 .Include(i => i.PayToCustomer)
                 .Include(i => i.ReceivePaymentTypeFrom)
                 .Include(i => i.ReceivePaymentTypeTo)
                 .Include(i => i.ReceivePayStatus)
+                .Where(r =>
+                        (r.ReceivePayStatusId == filter.StatusId || filter.StatusId == null) &&
+                        (r.Created.Date >= filter.FromDate.ToDateTime("00:00").Date || string.IsNullOrEmpty(filter.FromDate)) &&
+                        (r.Created.Date <= filter.ToDate.ToDateTime("00:00").Date || string.IsNullOrEmpty(filter.ToDate)) &&
+                        ((r.IsAccountingApproval && filter.IsApproved == IsApprovalReceivePay.Approved) ||
+                        (!r.IsAccountingApproval && filter.IsApproved == IsApprovalReceivePay.NotApproved) ||
+                        (r.AccountingDocNo == filter.AccountingDocNo || filter.AccountingDocNo == null) ||
+                        (r.ReceivePayCode == filter.ReceivePayCode || filter.ReceivePayCode == null) ||
+                        filter.IsApproved == IsApprovalReceivePay.None))
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
         public async Task<ReceivePay?> GetReceivePayByIdAsync(Guid id)
         {
             return await _receivePays
+                .Include(c => c.ApplicationUser)
                 .Include(r => r.Attachments)
                 .Include(i => i.ReceiveFromCustomer)
                 .Include(i => i.PayToCustomer)

@@ -25,6 +25,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return
                 await _rentPayments
+                .Include(c => c.ApplicationUser)
                 .Include(r => r.PurchaseOrderTransferRemittanceUnloadingPermit)
                 .Include(r => r.LadingExitPermit).ThenInclude(x=>x.LadingPermit).ThenInclude(x=>x.CargoAnnounce)
                 .Where(x =>
@@ -45,6 +46,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             GetAllRentsToPaymentParameter validParams)
         {
             var ladingExitPermits =await _ladingExitPermits
+                .Include(c => c.ApplicationUser)
                 .Include(x => x.LadingExitPermitDetails)
                 .Where(x=>
                 (x.IsActive && x.FareAmountApproved) &&
@@ -59,6 +61,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             var purOrdTransRemitUnloads =
                 await _purOrdTransRemitUnload
+                .Include(c => c.ApplicationUser)
                 .Include(m => m.PurchaseOrderTransferRemittanceUnloadingPermitDetails)
                 .Include(m => m.PurchaseOrderTransferRemittanceEntrancePermit)
                 .Where(x=>

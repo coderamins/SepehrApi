@@ -18,6 +18,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<ProductPrice>> GetAllProductPrices(GetAllProductPricesParameter filter)
         {
             return await _productPrices
+                .Include(c => c.ApplicationUser)
                 .Include(p => p.ProductBrand).ThenInclude(b=>b.Product).ThenInclude(p=>p.ProductInventories).ThenInclude(i=>i.Warehouse)
                 .Include(p => p.ProductBrand).ThenInclude(b=>b.Brand)
                 //.Include(i => i.ProductBrand)

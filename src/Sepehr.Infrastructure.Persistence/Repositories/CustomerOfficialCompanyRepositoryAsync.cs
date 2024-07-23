@@ -15,7 +15,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _customerOfficialCompanys = dbContext.Set<CustomerOfficialCompany>();
         }
 
-        public async Task<List<CustomerOfficialCompany>> GetAllCustomerOfficialCompanys(GetAllCustomerOfficialCompanysParameter filter)
+        public async Task<List<CustomerOfficialCompany>> GetAllCustomerOfficialCompanies(GetAllCustomerOfficialCompanysParameter filter)
         {
             return await _customerOfficialCompanys
                 .Include(c=>c.Customer)
@@ -25,5 +25,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
+        public async Task<CustomerOfficialCompany?> GetCustomerOfficialCompany(int companyId)
+        {
+            return await _customerOfficialCompanys
+                .Include(c => c.Customer)
+                .FirstOrDefaultAsync(p => p.Id== companyId);
+        }
     }
 }

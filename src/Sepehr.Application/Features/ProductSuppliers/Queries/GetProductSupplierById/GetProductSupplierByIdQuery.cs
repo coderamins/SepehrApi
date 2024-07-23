@@ -31,9 +31,10 @@ namespace Sepehr.Application.Features.ProductSuppliers.Queries.GetProductSupplie
                 CancellationToken cancellationToken
             )
             {
-                var productSupplier = await _productSupplierRepository.GetByIdAsync(query.Id);
+                var productSupplier = await _productSupplierRepository.GetProductSupplierById(query.Id);
                 if (productSupplier == null)
                     throw new ApiException($"محصول یافت نشد !");
+
                 return new Response<ProductSupplier>(productSupplier);
             }
         }

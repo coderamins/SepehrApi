@@ -40,6 +40,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return _ladingPermits
                 .Where(l => l.IsActive)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .Where(l => l.HasExitPermit == filter.HasExitPermit || filter.HasExitPermit == null)
@@ -50,6 +51,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _ladingPermits
                 .Where(l => l.IsActive)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .FirstOrDefaultAsync(p => p.Description == desc);
@@ -59,6 +61,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _ladingPermits
                 .Where(l => l.IsActive)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .FirstOrDefaultAsync(p => p.Id == Id);

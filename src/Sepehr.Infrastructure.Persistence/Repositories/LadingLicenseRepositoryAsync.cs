@@ -39,6 +39,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _ladingLicenses
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.ProductSubUnit)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.ProductSubUnit)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.Product).ThenInclude(l => l.ProductMainUnit)
@@ -51,6 +52,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _ladingLicenses
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.ProductSubUnit)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.ProductSubUnit)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.Product).ThenInclude(l => l.ProductMainUnit)
@@ -62,6 +64,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _ladingLicenses
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.VehicleType)
                 .Include(l => l.ProductSubUnit)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.CargoAnnounce).ThenInclude(l => l.Order)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.ProductSubUnit)
                 .Include(l => l.LadingLicenseDetails).ThenInclude(l => l.OrderDetail).ThenInclude(l => l.Product).ThenInclude(l => l.ProductMainUnit)

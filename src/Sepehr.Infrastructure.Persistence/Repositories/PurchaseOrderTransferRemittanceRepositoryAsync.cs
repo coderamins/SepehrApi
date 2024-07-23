@@ -83,6 +83,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<PurchaseOrderTransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter)
         {
             return await _dbContext.TransferRemittances
+                .Include(c => c.ApplicationUser)
                 .Include(t => t.TransferRemittanceType)
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
@@ -95,7 +96,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product)
                 .Where(t =>
-                (t.OriginWarehouseId==validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
+                (t.OriginWarehouse.CustomerWarehouses.Any(cw=>cw.CustomerId==validFilter.MarketerId) || validFilter.MarketerId==null) &&
+                (t.OriginWarehouseId == validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
                 (t.Id == validFilter.Id || validFilter.Id == null) &&
                 (t.TransferRemittanceStatusId == validFilter.TransferRemittStatusId || validFilter.TransferRemittStatusId == null) &&
                 ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||
@@ -188,6 +190,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByIdAsync(int id)
         {
             return await _dbContext.TransferRemittances
+                .Include(c => c.ApplicationUser)
                 .Include(t => t.TransferRemittanceType)
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
@@ -207,6 +210,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode)
         {
             return await _dbContext.TransferRemittances
+                .Include(c => c.ApplicationUser)
                 .Include(t => t.TransferRemittanceType)
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)

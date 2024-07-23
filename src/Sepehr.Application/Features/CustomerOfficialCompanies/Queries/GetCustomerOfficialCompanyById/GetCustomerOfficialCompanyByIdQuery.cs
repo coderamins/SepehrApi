@@ -31,7 +31,7 @@ namespace Sepehr.Application.Features.CustomerOfficialCompanys.Queries.GetCustom
                 CancellationToken cancellationToken
             )
             {
-                var customerOfficialCompany = await _customerOfficialCompanyRepository.GetByIdAsync(query.Id);
+                var customerOfficialCompany = await _customerOfficialCompanyRepository.GetCustomerOfficialCompanyById(query.Id);
                 if (customerOfficialCompany == null)
                     throw new ApiException($"شرکت رسمی یافت نشد !");
                 return new Response<CustomerOfficialCompany>(customerOfficialCompany);

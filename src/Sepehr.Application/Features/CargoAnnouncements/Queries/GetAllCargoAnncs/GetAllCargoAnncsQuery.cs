@@ -14,6 +14,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Queries.GetAllCargoAnnc
         public int PageSize { get; set; }
         public Guid? OrderId { get; set; }
         public long? OrderCode { get; set; }
+        public int? CargoAnnounceNo { get; set; }
         public Guid? CustomerId { get; set; }
         public bool IsCompletlyLading { get; set; }
     }

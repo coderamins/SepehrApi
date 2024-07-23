@@ -48,6 +48,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _customers
                 .Include(c=>c.CustomerValidity)
+                .Include(c => c.ApplicationUser)
                 .Include(c=>c.CustomerOfficialCompanies)
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
@@ -61,6 +62,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _customers
                 .Include(c => c.CustomerOfficialCompanies)
                 .Include(c => c.CustomerValidity)
+                .Include(c => c.ApplicationUser)
                 .Include(c=>c.ReceivePaymentSourceFrom)
                 .Include(c=>c.ReceivePaymentSourceTo)
                 .Include(c=>c.Orders)
@@ -73,6 +75,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _customers
                 .Include(c => c.CustomerOfficialCompanies)
                 .Include(c => c.CustomerValidity)
+                .Include(c => c.ApplicationUser)
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
                 .Include(c=>c.Orders)

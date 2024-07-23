@@ -13,6 +13,7 @@ namespace Sepehr.Domain.ViewModels
         public required decimal Amount { get; set; }
         public string? PaymentDate { get; set; }
         public int DaysAfterExit { get; set; }
+        public string CreatorName { get; set; } = string.Empty;
         public PaymentType PaymentType { get; set; } = PaymentType.CashePay;
     }
 }

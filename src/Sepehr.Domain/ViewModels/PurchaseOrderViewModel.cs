@@ -15,6 +15,7 @@ namespace Sepehr.Domain.ViewModels
         public int DestinationWarehouseId { get; set; }
         public string OriginWarehouseDesc { get; set; } = string.Empty;
         public string DestinationWarehouseDesc { get; set; }=string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
 
         public CustomerViewModel Customer { get; set; } = new CustomerViewModel();
         public CustomerOfficialCompanyViewModel CustomerOfficialCompany { get; set; }=new CustomerOfficialCompanyViewModel();

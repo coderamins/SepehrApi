@@ -80,6 +80,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return _productLadingExitPermits
                 .Include(t => t.LadingPermit)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.ProductBrand).ThenInclude(t => t.Brand)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductMainUnit)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductSubUnit)
@@ -92,6 +93,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _productLadingExitPermits
                 .Include(t => t.LadingPermit)
                 .Include(t => t.Attachments)
+                .Include(c => c.ApplicationUser)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.ProductBrand).ThenInclude(t => t.Brand)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductMainUnit)
                 .Include(l => l.LadingExitPermitDetails).ThenInclude(t => t.CargoAnnounceDetail).ThenInclude(t => t.OrderDetail).ThenInclude(t => t.Product).ThenInclude(t => t.ProductSubUnit)
