@@ -178,6 +178,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 o.OrderStatusId != (int)OrderStatusEnum.Sended &&
                             !new int[] { (int)OrderStatusEnum.Canceled, (int)OrderStatusEnum.ReturnedBack }.Contains(o.OrderStatusId))//!o.IsCompletlySended)
                 .Include(c => c.Customer).ThenInclude(c => c.CustomerOfficialCompanies)
+                .Include(o => o.ApplicationUser)
                 .Include(o => o.OrderPayments)
                 .Include(o => o.OrderServices).ThenInclude(s => s.Service)
                 .Include(c => c.OrderSendType)

@@ -5,7 +5,8 @@ using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
-    public class ProductSupplierRepositoryAsync : GenericRepositoryAsync<ProductSupplier>, IProductSupplierRepositoryAsync
+    public class ProductSupplierRepositoryAsync : GenericRepositoryAsync<ProductSupplier>
+        , IProductSupplierRepositoryAsync
     {
         private readonly DbSet<ProductSupplier> _productSuppliers;
 
@@ -22,14 +23,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
-        public async Task<ProductSupplier?> GetAllProductSupplierById(Guid suppId)
+        public async Task<ProductSupplier?> GetProductSupplierById(Guid suppId)
         {
             return await _productSuppliers
                 .Include(s => s.Customer).ThenInclude(c => c.CustomerOfficialCompanies)
                 .Include(s => s.Product)
                 .FirstOrDefaultAsync(p => p.Id== suppId);
         }
-
 
     }
 }

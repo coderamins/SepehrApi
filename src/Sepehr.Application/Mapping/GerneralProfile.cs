@@ -180,6 +180,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, POTransRemittUnloadingPermitViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))));
             CreateMap<PurchaseOrderTransferRemittance, TransferRemittanceViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.DestinationWarehouseName, opt => opt.MapFrom(d => d.DestinationWarehouse.Name))
                 .ForMember(m => m.EntrancePermit, opt => opt.MapFrom(d => d.PurchaseOrderTransferRemittanceEntrancePermit))
                 .ForMember(m => m.EntrancePermitId, opt => opt.MapFrom(d => d.PurchaseOrderTransferRemittanceEntrancePermit.Id))

@@ -26,6 +26,7 @@ namespace Sepehr.WebApi.Controller
                     CustomerId=filter.CustomerId,
                     OrderCode=filter.OrderCode,
                     IsCompletlyLading=filter.IsCompletlyLading,
+                    CargoAnnounceNo=filter.CargoAnnounceNo
                 }));
         }
 

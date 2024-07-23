@@ -25,7 +25,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
-        public async Task<CustomerOfficialCompany?> GetCustomerOfficialCompany(int companyId)
+        public async Task<CustomerOfficialCompany?> GetCustomerOfficialCompanyById(int companyId)
         {
             return await _customerOfficialCompanys
                 .Include(c => c.Customer)

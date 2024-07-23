@@ -158,6 +158,7 @@ namespace Sepehr.WebApi.Controller
                     TransferEntransePermitNo=filter.TransferEntransePermitNo,
                     TransferRemittStatusId=filter.TransferRemittStatusId,
                     IsEntranced =filter.IsEntranced,
+                    MarketerId=filter.MarketerId,
                 }));
         }
 

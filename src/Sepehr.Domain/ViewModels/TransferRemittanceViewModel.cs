@@ -35,6 +35,7 @@ namespace Sepehr.Domain.ViewModels
         public string EntrancePermitDate { get; set; } = string.Empty;
         public string DriverAccountNo { get; set; } = string.Empty;
         public string DriverCreditCardNo { get; set; } = string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
 
         public IEnumerable<TransferRemittanceDetailViewModel> Details { get; set; }
         public POTransRemittEntrancePermitViewModel EntrancePermit { get; set; }

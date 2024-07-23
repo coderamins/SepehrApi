@@ -36,7 +36,7 @@ namespace Sepehr.Application.Features.CustomerOfficialCompanys.Queries.GetAllCus
             try
             {
                 var validFilter = _mapper.Map<GetAllCustomerOfficialCompanysParameter>(request);
-                var customerOfficialCompanys = await _customerOfficialCompanyRepository.GetAllCustomerOfficialCompanys(validFilter);
+                var customerOfficialCompanys = await _customerOfficialCompanyRepository.GetAllCustomerOfficialCompanies(validFilter);
 
                 var customerOfficialCompanyViewModel = _mapper.Map<IEnumerable<CustomerOfficialCompanyViewModel>>(customerOfficialCompanys);
                 return new PagedResponse<IEnumerable<CustomerOfficialCompanyViewModel>>(
