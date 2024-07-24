@@ -11,11 +11,11 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<IEnumerable<PurchaseOrderTransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter);
         Task<PurchaseOrderTransferRemittance> UpdateTransferRemittance(PurchaseOrderTransferRemittance transRemittance);
         Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByIdAsync(int id);
-        Task<PurchaseOrderTransferRemittanceEntrancePermit> TransferRemittanceEntrancePermission(
+        Task<EntrancePermit> TransferRemittanceEntrancePermission(
             TransferRemittanceEntrancePermissionCommand entrancePermit);
         Task<PurchaseOrderTransferRemittance> CreateTransferRemittance(PurchaseOrderTransferRemittance transRemittance);
         Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode);
-        Task<PurchaseOrderTransferRemittanceEntrancePermit> PurchaseOrderTransRemittEntrancePermitById(Guid purchaseOrderTransferRemittanceEntrancePermitId);
+        Task<EntrancePermit> PurchaseOrderTransRemittEntrancePermitById(Guid purchaseOrderTransferRemittanceEntrancePermitId);
         Task<PurchaseOrderTransferRemittanceUnloadingPermit> CreatePOrderUnloadingPermit(
             PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloadingPermit);
     }

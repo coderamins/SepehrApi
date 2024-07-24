@@ -71,7 +71,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PurchaseOrderTransferRemittance> TransferRemittances { get; set; }
         public DbSet<PurchaseOrderTransferRemittanceDetail> TransferRemittanceDetails { get; set; }
         public DbSet<PurchaseOrderTransferRemittanceStatus> TransferRemittanceStatus { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceEntrancePermit> PurchaseOrderTransferRemittanceEntrancePermits { get; set; }
+        public DbSet<EntrancePermit> PurchaseOrderTransferRemittanceEntrancePermits { get; set; }
         public DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> PurchaseOrderTransferRemittanceUnloadingPermits { get; set; }
         public DbSet<PurchaseOrderTransferRemittanceUnloadingPermitDetail> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
         public DbSet<ReceivePayStatus> ReceivePayStatus { get; set; }
@@ -246,7 +246,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
-            builder.Entity<PurchaseOrderTransferRemittanceEntrancePermit>()
+            builder.Entity<EntrancePermit>()
                 .Property(p => p.PermitCode)
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
@@ -254,7 +254,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<ShareHolder>().Property(prop => prop.ShareHolderCode)
             .UseIdentityColumn(3030, 1);
 
-            builder.Entity<PurchaseOrderTransferRemittanceEntrancePermit>().Property(prop => prop.PermitCode)
+            builder.Entity<EntrancePermit>().Property(prop => prop.PermitCode)
             .UseIdentityColumn(1001, 1);
 
             builder.Entity<PurchaseOrderTransferRemittanceType>()

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
 {
-    public class PurchaseOrderTransferRemittanceEntrancePermit:AuditableBaseEntity<Guid>
+    public class EntrancePermit:AuditableBaseEntity<Guid>
     {
         public int PermitCode { get; set; }
 

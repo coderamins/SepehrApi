@@ -11,13 +11,13 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceEntrancePermission
 {
-    public class TransferRemittanceEntrancePermissionCommand : IRequest<Response<PurchaseOrderTransferRemittanceEntrancePermit>>
+    public class TransferRemittanceEntrancePermissionCommand : IRequest<Response<EntrancePermit>>
     {
         public int PurchaseOrderTransferRemittanceId { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
 
         public class TransferRemittanceEntrancePermissionHandler : IRequestHandler<TransferRemittanceEntrancePermissionCommand,
-            Response<PurchaseOrderTransferRemittanceEntrancePermit>>
+            Response<EntrancePermit>>
         {
             private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderTransferRemittance;
             private readonly IMapper _mapper;
@@ -29,12 +29,12 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.TransferRemitt
                 _purchaseOrderTransferRemittance = purchaseOrderTransferRemittance;
                 _mapper = mapper;
             }
-            public async Task<Response<PurchaseOrderTransferRemittanceEntrancePermit>> Handle(TransferRemittanceEntrancePermissionCommand command, CancellationToken cancellationToken)
+            public async Task<Response<EntrancePermit>> Handle(TransferRemittanceEntrancePermissionCommand command, CancellationToken cancellationToken)
             {
                 var purchaseOrderTransferRemittance = await _purchaseOrderTransferRemittance
                     .TransferRemittanceEntrancePermission(command);
 
-                return new Response<PurchaseOrderTransferRemittanceEntrancePermit>(
+                return new Response<EntrancePermit>(
                     purchaseOrderTransferRemittance, "مجوز ورود با موفقیت صادر گردید .");
             }
         }

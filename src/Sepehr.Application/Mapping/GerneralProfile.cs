@@ -164,7 +164,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<UpdateTransferRemittanceCommand, PurchaseOrderTransferRemittance>()
                     .ForMember(m => m.DeliverDate, opt => opt.MapFrom(d => d.DeliverDate.ToDateTime("00:00")));
             CreateMap<TransferRemittanceDetailDto, PurchaseOrderTransferRemittanceDetail>();
-            CreateMap<PurchaseOrderTransferRemittance, PurchaseOrderTransferRemittanceEntrancePermit>()
+            CreateMap<PurchaseOrderTransferRemittance, EntrancePermit>()
                 .ForMember(m => m.Id, opt => opt.Ignore());
 
             CreateMap<PurchaseOrderTransferRemittanceDetail, TransferRemittanceDetailViewModel>()
@@ -174,7 +174,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.ProductBrand.Brand.Name));
 
 
-            CreateMap<PurchaseOrderTransferRemittanceEntrancePermit, POTransRemittEntrancePermitViewModel>()
+            CreateMap<EntrancePermit, EntrancePermitViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.PurchaseOrderTransferRemittanceUnloadingPermits));
             CreateMap<PurchaseOrderTransferRemittanceUnloadingPermit, POTransRemittUnloadingPermitViewModel>()
@@ -846,9 +846,9 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region Transfer Purchase Order
-            CreateMap<TransferRemittanceEntrancePermissionCommand, PurchaseOrderTransferRemittanceEntrancePermit>();
+            CreateMap<TransferRemittanceEntrancePermissionCommand, EntrancePermit>();
 
-            CreateMap<PurchaseOrderTransferRemittance, PurchaseOrderTransferRemittanceEntrancePermit>()
+            CreateMap<PurchaseOrderTransferRemittance, EntrancePermit>()
                 .ForMember(m => m.PurchaseOrderTransferRemittanceId, opt => opt.MapFrom(d => d.Id));
             CreateMap<TransferPurchaseOrderCommand, PurchaseOrderTransfer>()
                 .ForMember(m => m.PurchaseOrderId, opt => opt.MapFrom(d => d.OrderId))

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.ViewModels
 {
-    public class POTransRemittEntrancePermitViewModel
+    public class EntrancePermitViewModel
     {
         public Guid Id { get; set; }
         public int PermitCode { get; set; }

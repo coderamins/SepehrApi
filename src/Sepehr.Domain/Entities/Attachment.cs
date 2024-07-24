@@ -25,7 +25,7 @@ namespace Sepehr.Domain.Entities
         public virtual ReceivePay? ReceivePay { get; set; }
         public virtual Order? Order { get; set; }
         public virtual LadingPermit? LadingPermit { get; set; }
-        public virtual PurchaseOrderTransferRemittanceEntrancePermit? PurOrderTransRemittanceEntrancePermit { get; set; }
+        public virtual EntrancePermit? PurOrderTransRemittanceEntrancePermit { get; set; }
         public virtual PurchaseOrderTransferRemittanceUnloadingPermit? PurOrderTransRemittanceUnloadingPermit { get; set; }
 
     }
