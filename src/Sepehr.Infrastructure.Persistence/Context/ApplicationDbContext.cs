@@ -133,9 +133,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 entry.Property(p => p.CreatedBy).IsModified = false;
 
             }
-
+            
+            var saved= base.SaveChangesAsync(cancellationToken);
             BeforeSaveChanges();
-            return base.SaveChangesAsync(cancellationToken);
+            return saved;
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
