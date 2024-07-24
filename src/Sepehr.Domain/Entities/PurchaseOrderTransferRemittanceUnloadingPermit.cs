@@ -28,7 +28,7 @@ namespace Sepehr.Domain.Entities
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
 
         public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
-        public virtual required PurchaseOrderTransferRemittanceEntrancePermit PurchaseOrderTransferRemittanceEntrancePermit { get; set; }
+        public virtual required EntrancePermit PurchaseOrderTransferRemittanceEntrancePermit { get; set; }
         public virtual ICollection<Attachment>? Attachments { get; set; }
         public virtual required ICollection<PurchaseOrderTransferRemittanceUnloadingPermitDetail> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
     }

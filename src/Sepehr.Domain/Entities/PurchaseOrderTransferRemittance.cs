@@ -34,6 +34,6 @@ namespace Sepehr.Domain.Entities
         public virtual required PurchaseOrderTransferRemittanceType TransferRemittanceType { get; set; }
         public virtual required Warehouse OriginWarehouse { get; set; }
         public virtual required Warehouse DestinationWarehouse { get; set; }
-        public virtual PurchaseOrderTransferRemittanceEntrancePermit? PurchaseOrderTransferRemittanceEntrancePermit { get; set; }
+        public virtual EntrancePermit? PurchaseOrderTransferRemittanceEntrancePermit { get; set; }
     }
 }

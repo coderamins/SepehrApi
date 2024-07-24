@@ -8,8 +8,14 @@
 
   <ItemGroup>
     <Compile Remove="Features\DriverFareAmounts\Queries\**" />
+    <Compile Remove="Features\EntrancePermits\Command\CreatePurchaseOrder\**" />
+    <Compile Remove="Features\EntrancePermits\Command\DeletePurchaseOrderById\**" />
     <EmbeddedResource Remove="Features\DriverFareAmounts\Queries\**" />
+    <EmbeddedResource Remove="Features\EntrancePermits\Command\CreatePurchaseOrder\**" />
+    <EmbeddedResource Remove="Features\EntrancePermits\Command\DeletePurchaseOrderById\**" />
     <None Remove="Features\DriverFareAmounts\Queries\**" />
+    <None Remove="Features\EntrancePermits\Command\CreatePurchaseOrder\**" />
+    <None Remove="Features\EntrancePermits\Command\DeletePurchaseOrderById\**" />
   </ItemGroup>
 
   <ItemGroup>

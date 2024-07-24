@@ -17,7 +17,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<ProductInventory> _productInventory;
         private readonly DbSet<PurchaseOrderTransferRemittance> _transferRemittances;
         private readonly DbSet<PurchaseOrderTransferRemittanceDetail> _transferRemittanceDetails;
-        private readonly DbSet<PurchaseOrderTransferRemittanceEntrancePermit> _transRemittEntrancePermits;
+        private readonly DbSet<EntrancePermit> _transRemittEntrancePermits;
         private readonly DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> _orderTransferRemittanceUnloadingPermits;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             IMapper mapper
             ) : base(dbContext)
         {
-            _transRemittEntrancePermits = dbContext.Set<PurchaseOrderTransferRemittanceEntrancePermit>();
+            _transRemittEntrancePermits = dbContext.Set<EntrancePermit>();
             _transferRemittances = dbContext.Set<PurchaseOrderTransferRemittance>();
             _transferRemittanceDetails = dbContext.Set<PurchaseOrderTransferRemittanceDetail>();
             _orderTransferRemittanceUnloadingPermits = dbContext.Set<PurchaseOrderTransferRemittanceUnloadingPermit>();
@@ -96,16 +96,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product)
                 .Where(t =>
-                (t.OriginWarehouse.CustomerWarehouses.Any(cw=>cw.CustomerId==validFilter.MarketerId) || validFilter.MarketerId==null) &&
-                (t.OriginWarehouseId == validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
-                (t.Id == validFilter.Id || validFilter.Id == null) &&
-                (t.TransferRemittanceStatusId == validFilter.TransferRemittStatusId || validFilter.TransferRemittStatusId == null) &&
-                ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||
-                (t.TransferRemittanceStatusId != 2 && validFilter.IsEntranced == false) || validFilter.IsEntranced == null) &&
-                (t.DestinationWarehouseId == validFilter.DestinationWarehouseId || validFilter.DestinationWarehouseId == null) &&
-                (t.PurchaseOrderTransferRemittanceEntrancePermit != null &&
-                t.PurchaseOrderTransferRemittanceEntrancePermit.PermitCode == validFilter.TransferEntransePermitNo
-                || validFilter.TransferEntransePermitNo == null)).ToListAsync();
+                    (t.OriginWarehouse.CustomerWarehouses.Any(cw=>cw.CustomerId==validFilter.MarketerId) || validFilter.MarketerId==null) &&
+                    (t.OriginWarehouseId == validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
+                    (t.Id == validFilter.Id || validFilter.Id == null) &&
+                    (t.TransferRemittanceStatusId == validFilter.TransferRemittStatusId || validFilter.TransferRemittStatusId == null) &&
+                    ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||
+                    (t.TransferRemittanceStatusId != 2 && validFilter.IsEntranced == false) || validFilter.IsEntranced == null) &&
+                    (t.DestinationWarehouseId == validFilter.DestinationWarehouseId || validFilter.DestinationWarehouseId == null) &&
+                    (t.PurchaseOrderTransferRemittanceEntrancePermit != null &&
+                    t.PurchaseOrderTransferRemittanceEntrancePermit.PermitCode == validFilter.TransferEntransePermitNo
+                    || validFilter.TransferEntransePermitNo == null)).ToListAsync();
         }
 
         public async Task<PurchaseOrderTransferRemittance> UpdateTransferRemittance(PurchaseOrderTransferRemittance transRemittance)
@@ -227,7 +227,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(o => o.PurchaseOrderTransferRemittanceEntrancePermit.PermitCode == PermitCode);
         }
 
-        public async Task<PurchaseOrderTransferRemittanceEntrancePermit> TransferRemittanceEntrancePermission(
+        public async Task<EntrancePermit> TransferRemittanceEntrancePermission(
             TransferRemittanceEntrancePermissionCommand entrancePermit)
         {
             try
@@ -244,7 +244,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 transRemit.TransferRemittanceStatusId = 2;
                 _transferRemittances.Update(transRemit);
 
-                var newEntrancePermit = _mapper.Map<PurchaseOrderTransferRemittanceEntrancePermit>(entrancePermit);
+                var newEntrancePermit = _mapper.Map<EntrancePermit>(entrancePermit);
                 //var mappedTransRemittEntrancePermits = new PurchaseOrderTransferRemittanceEntrancePermit
                 //{
                 //    PurchaseOrderTransferRemittance = transRemit,
@@ -264,7 +264,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<PurchaseOrderTransferRemittanceEntrancePermit> PurchaseOrderTransRemittEntrancePermitById
+        public async Task<EntrancePermit> PurchaseOrderTransRemittEntrancePermitById
             (Guid purchaseOrderTransferRemittanceEntrancePermitId)
         {
             var transferPermit = await _transferRemittances
