@@ -12,10 +12,10 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
         {
             //Seed Default User
             var brands =
-                new List<PurchaseOrderTransferRemittanceType> {
-                    new PurchaseOrderTransferRemittanceType{Id=1,RemittanceTypeDesc="طبق برنامه"},
-                    new PurchaseOrderTransferRemittanceType{Id=2,RemittanceTypeDesc="برای رزور"},
-                    new PurchaseOrderTransferRemittanceType{Id=3,RemittanceTypeDesc="برای انبار"},
+                new List<TransferRemittanceType> {
+                    new TransferRemittanceType{Id=1,RemittanceTypeDesc="طبق برنامه"},
+                    new TransferRemittanceType{Id=2,RemittanceTypeDesc="برای رزور"},
+                    new TransferRemittanceType{Id=3,RemittanceTypeDesc="برای انبار"},
                 };
 
             foreach (var item in brands)

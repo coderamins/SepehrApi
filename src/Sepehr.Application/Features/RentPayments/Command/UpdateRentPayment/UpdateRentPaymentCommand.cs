@@ -22,7 +22,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.UpdateRentPayment
         /// <summary>
         /// شماره مجوز تخلیه
         /// </summary>
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? UnloadingPermitId { get; set; }
         /// <summary>
         /// شماره مجوز خروج اعلام بار
         /// </summary>
@@ -43,7 +43,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.UpdateRentPayment
             {
                 var rentPayments = _rentPaymentRepository.GetAllAsQueryable();
 
-                if (rentPayments.Any(s => s.PurchaseOrderTransferRemittanceUnloadingPermitId == command.PurchaseOrderTransferRemittanceUnloadingPermitId 
+                if (rentPayments.Any(s => s.UnloadingPermitId == command.UnloadingPermitId 
                     || s.LadingExitPermitId==command.LadingExitPermitId))
                     throw new ApiException("کرایه با این مشخصات قبلا ایجاد شده است !");
 

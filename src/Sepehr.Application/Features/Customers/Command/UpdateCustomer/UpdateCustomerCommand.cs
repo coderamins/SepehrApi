@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Sepehr.Application.Exceptions;
+using Sepehr.Application.Features.Customers.Command.CreateCustomer;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
@@ -22,18 +23,20 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
         public string FatherName { get; set; } = string.Empty;
         public string NationalCode { get; set; } = string.Empty;
         public required string NationalId { get; set; }
-        public required string Mobile { get; set; }
-        public required string Address1 { get; set; }
+        //public string Mobile { get; set; } = string.Empty;
+        public string Address1 { get; set; } = string.Empty;
         public CustomerType CustomerType { get; set; }
         public required int CustomerValidityId { get; set; }
-        public string? Tel1 { get; set; }
-        public string? Tel2 { get; set; }
+        //public string? Tel1 { get; set; }
+        //public string? Tel2 { get; set; }
         public string? Address2 { get; set; }
         public string? Representative { get; set; }
         public SettlementType SettlementType { get; set; }
         public int SettlementDay { get; set; }
-        public string CustomerCharacteristics { get; set; } = string.Empty;  
+        public string CustomerCharacteristics { get; set; } = string.Empty;
         public bool IsSupplier { get; set; }
+
+        public IEnumerable<CreatePhonebookRequest>? Phonebook { get; set; }
 
         public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Response<string>>
         {
@@ -46,16 +49,22 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
             }
             public async Task<Response<string>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
             {
-                var customer = await _customerRepository.GetByIdAsync(command.Id);
-                customer = _mapper.Map<UpdateCustomerCommand, Customer>(command, customer);
-
+                var customer = await _customerRepository.GetCustomerInfo(command.Id);
                 if (customer == null)
                 {
                     throw new ApiException($"مشتری یافت نشد !");
                 }
                 else
                 {
-                    await _customerRepository.UpdateAsync(customer);
+                    var _cust_old_value= _mapper.Map<Customer>(customer);
+
+                    if (customer.Phonebook != null)
+                        customer.Phonebook.Clear();
+
+                    customer.Orders.Clear();
+                    var updated_customer = _mapper.Map<UpdateCustomerCommand, Customer>(command, customer);
+
+                    await _customerRepository.UpdateCustomer(updated_customer,await _customerRepository.GetCustomerInfo(command.Id));
                     return new Response<string>(customer.Id.ToString(), "");
                 }
             }

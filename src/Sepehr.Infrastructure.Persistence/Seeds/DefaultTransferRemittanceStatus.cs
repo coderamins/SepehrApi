@@ -11,11 +11,11 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
         {
             //Seed Default User
             var trstatus =
-                new List<PurchaseOrderTransferRemittanceStatus> {
-                    new PurchaseOrderTransferRemittanceStatus{Id=1, StatusDesc="در حال بررسی"},
-                    new PurchaseOrderTransferRemittanceStatus{Id=2, StatusDesc="ثبت ورود شده"},
-                    new PurchaseOrderTransferRemittanceStatus{Id=3, StatusDesc="تخلیه شده"},
-                    new PurchaseOrderTransferRemittanceStatus{Id=10, StatusDesc="ابطال شده"},
+                new List<TransferRemittanceStatus> {
+                    new TransferRemittanceStatus{Id=1, StatusDesc="در حال بررسی"},
+                    new TransferRemittanceStatus{Id=2, StatusDesc="ثبت ورود شده"},
+                    new TransferRemittanceStatus{Id=3, StatusDesc="تخلیه شده"},
+                    new TransferRemittanceStatus{Id=10, StatusDesc="ابطال شده"},
                 };
 
             foreach (var item in trstatus)

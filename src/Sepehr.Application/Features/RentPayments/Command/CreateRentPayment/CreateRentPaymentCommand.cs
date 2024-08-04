@@ -71,7 +71,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 #endregion
 
                 #region ثبت پرداخت کرایه تخلیه بار
-                List<PurchaseOrderTransferRemittanceUnloadingPermit> unloadingPermits = new List<PurchaseOrderTransferRemittanceUnloadingPermit>();
+                List<UnloadingPermit> unloadingPermits = new List<UnloadingPermit>();
                 foreach (var item in request.PuOrderTransRemittUnloadingPermitIds)
                 {
                     var unloadingPermit = await _puOrderUnloadPermitRepository.GetByIdAsync(item);
@@ -84,7 +84,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                     rentPaymentDtos.Add(new RentPaymentDto
                     {
                         ReceivePaymentOriginId = request.ReceivePaymentOriginId,
-                        PurchaseOrderTransferRemittanceUnloadingPermitId = item,
+                        TransferRemittanceUnloadingPermitId = item,
                         TotalFareAmount = request.TotalFareAmount,
                         Description = request.Description,
                     });

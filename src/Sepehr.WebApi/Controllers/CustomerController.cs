@@ -26,7 +26,11 @@ namespace Sepehr.WebApi.Controller
                 .Send(new GetAllCustomersQuery()
                 {
                     PageSize = filter.PageSize,
-                    PageNumber = filter.PageNumber
+                    PageNumber = filter.PageNumber,
+                    CustomerCode=filter.CustomerCode,
+                    CustomerName =filter.CustomerName,
+                    PhoneNumber=filter.PhoneNumber,
+                    NationalCode=filter.NationalCode
                 }));
         }
 
@@ -39,7 +43,8 @@ namespace Sepehr.WebApi.Controller
         }
 
         // POST api/<controller>
-        [HasPermission("CreateCustomer")]
+        //[HasPermission("CreateCustomer")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post(CreateCustomerCommand command)
         {

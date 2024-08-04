@@ -13,16 +13,16 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.TransferRemitt
 {
     public class TransferRemittanceEntrancePermissionCommand : IRequest<Response<EntrancePermit>>
     {
-        public int PurchaseOrderTransferRemittanceId { get; set; }
+        public int TransferRemittanceId { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
 
         public class TransferRemittanceEntrancePermissionHandler : IRequestHandler<TransferRemittanceEntrancePermissionCommand,
             Response<EntrancePermit>>
         {
-            private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderTransferRemittance;
+            private readonly ITransferRemittanceRepositoryAsync _purchaseOrderTransferRemittance;
             private readonly IMapper _mapper;
             public TransferRemittanceEntrancePermissionHandler(
-                IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderTransferRemittance,
+                ITransferRemittanceRepositoryAsync purchaseOrderTransferRemittance,
                 IMapper mapper
                 )
             {

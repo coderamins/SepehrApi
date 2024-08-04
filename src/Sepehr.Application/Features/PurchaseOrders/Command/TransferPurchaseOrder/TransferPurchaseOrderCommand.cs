@@ -21,7 +21,7 @@ namespace Sepehr.Application.Features.PurchaseOrders.Command.TransferPurchaseOrd
 
             public TransferPurchaseOrderCommandHandler(
                 IPurchaseOrderRepositoryAsync purchaseOrderRepository,
-                IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderTransferRepository,
+                ITransferRemittanceRepositoryAsync purchaseOrderTransferRepository,
                 IWarehouseRepositoryAsync warehouseRepository,
                 IMapper mapper)
             {

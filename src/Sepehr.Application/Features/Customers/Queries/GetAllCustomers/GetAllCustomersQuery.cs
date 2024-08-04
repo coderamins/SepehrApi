@@ -15,6 +15,10 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int? CustomerCode { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string NationalCode { get; set; } = string.Empty;
     }
     public class GetAllCustomerQueryHandler :
          IRequestHandler<GetAllCustomersQuery, PagedResponse<IEnumerable<CustomerViewModel>>>
@@ -32,7 +36,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
             CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllCustomersParameter>(request);
-            var customer = await _customerRepository.GetAllCustomers();
+            var customer = await _customerRepository.GetAllCustomers(validFilter);
               
             var customerViewModel = _mapper.Map<IEnumerable<CustomerViewModel>>(customer);
             return new PagedResponse<IEnumerable<CustomerViewModel>>(

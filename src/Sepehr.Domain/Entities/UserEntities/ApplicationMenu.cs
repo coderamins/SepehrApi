@@ -15,7 +15,7 @@ namespace Sepehr.Domain.Entities.UserEntities
         public string MenuIcon { get; set; } = string.Empty;
         [ForeignKey("ApplicationMenu")]
         public Guid? ApplicationMenuId { get; set; }
-        public int OrderNo { get; set; }
+        public string? OrderNo { get; set; }
 
         public virtual ICollection<ApplicationMenu> Children { get; set; }=new List<ApplicationMenu>();
         public virtual ICollection<Permission> Permissions { get; set; }=new List<Permission>();

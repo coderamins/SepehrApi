@@ -17,6 +17,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<IEnumerable<Order>> GetAllNotSendedOrders(GetNotAnnouncedOrdersParameter param);
         Task<IQueryable<Order>> GetAllOrdersAsync(GetAllOrdersParameter parameter);
         Task<Order> GetOrderById(Guid id);
+        Task<OrderDetail?> GetOrderDetailInfo(int orderDetailId);
         Task<Order> GetOrderForUpdateInvoiceType(Guid orderId);
         Task<Order> GetOrderInfo(long orderCode);
         Task<bool> IsUniqueBarcodeAsync(string barcode);

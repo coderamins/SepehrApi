@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Sepehr.Application.Exceptions;
-using Sepehr.Application.Features.PurchaseOrderTransferRemittances.Command.TransferRemittanceUnloadingPermit;
+using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceUnloadingPermit;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
@@ -10,9 +10,9 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 {
-    public class PurOrderTransRemittUnloadingPermitCommand : IRequest<Response<PurchaseOrderTransferRemittanceUnloadingPermit>>
+    public class PurOrderTransRemittUnloadingPermitCommand : IRequest<Response<UnloadingPermit>>
     {
-        public Guid PurchaseOrderTransferRemittanceEntrancePermitId { get; set; }
+        public Guid TransferRemittanceEntrancePermitId { get; set; }
         public string DriverAccountNo { get; set; } = string.Empty;
         public string DriverCreditCardNo { get; set; } = string.Empty;
         public decimal? OtherCosts { get; set; }
@@ -28,17 +28,17 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 
         public string Description { get; set; } = string.Empty;
 
-        public virtual required List<PurOrderTransRemittUnloadingPermitDetailDto> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
+        public virtual required List<PurOrderTransRemittUnloadingPermitDetailDto> UnloadingPermitDetails { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
 
         public class CreateLadingExitPermitCommandHandler : IRequestHandler<PurOrderTransRemittUnloadingPermitCommand,
-            Response<PurchaseOrderTransferRemittanceUnloadingPermit>>
+            Response<UnloadingPermit>>
         {
             private readonly IMapper _mapper;
-            private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderTransferRemittanceRepo;
+            private readonly ITransferRemittanceRepositoryAsync _purchaseOrderTransferRemittanceRepo;
             private readonly IAttachmentRepositoryAsync _attachmentRepository;
             public CreateLadingExitPermitCommandHandler(
-                IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderTransferRemittanceRepo,
+                ITransferRemittanceRepositoryAsync purchaseOrderTransferRemittanceRepo,
                 IAttachmentRepositoryAsync attachmentRepository,
                 IMapper mapper)
             {
@@ -46,24 +46,24 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
                 _attachmentRepository = attachmentRepository;
                 _mapper = mapper;
             }
-            public async Task<Response<PurchaseOrderTransferRemittanceUnloadingPermit>> Handle(
+            public async Task<Response<UnloadingPermit>> Handle(
                 PurOrderTransRemittUnloadingPermitCommand command,
                 CancellationToken cancellationToken)
             {
                 var purchTransferEntraPermit = await _purchaseOrderTransferRemittanceRepo
-                    .PurchaseOrderTransRemittEntrancePermitById(command.PurchaseOrderTransferRemittanceEntrancePermitId);
+                    .PurchaseOrderTransRemittEntrancePermitById(command.TransferRemittanceEntrancePermitId);
 
                 if (purchTransferEntraPermit == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("مجوز ورود", ErrorType.NotFound));
                 else
                 {
                     var purchaseOrderTransferRemittanceUnloadingPermit =
-                        _mapper.Map<PurchaseOrderTransferRemittanceUnloadingPermit>(command);
+                        _mapper.Map<UnloadingPermit>(command);
 
-                    PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloading = await _purchaseOrderTransferRemittanceRepo
+                    UnloadingPermit purchaseOrderTransferRemittanceUnloading = await _purchaseOrderTransferRemittanceRepo
                         .CreatePOrderUnloadingPermit(purchaseOrderTransferRemittanceUnloadingPermit);
 
-                    return new Response<PurchaseOrderTransferRemittanceUnloadingPermit>(purchaseOrderTransferRemittanceUnloading,
+                    return new Response<UnloadingPermit>(purchaseOrderTransferRemittanceUnloading,
                         new ErrorMessageFactory().MakeError("مجوز تخلیه", ErrorType.UpdatedSuccess));
                 }
             }

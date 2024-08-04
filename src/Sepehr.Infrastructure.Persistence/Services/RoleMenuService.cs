@@ -110,11 +110,19 @@ namespace Sepehr.Infrastructure.Persistence
             string menus = string.Join(',', _dbContext.RoleMenus.Where(r => uRoles.Contains(r.ApplicationRole.Name)).Select(r => r.ApplicationMenuId));
 
             var appMenus =
-                _dbContext.ApplicationMenus.Include(i => i.Children.Where(c => menus.Contains(c.Id.ToString())))
+                _dbContext.ApplicationMenus
+                .Include(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")))
+                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")))
+                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")))
+                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")))
                 .Where(m => m.ApplicationMenuId == null)
                 .AsQueryable();
 
-            var output = await appMenus.Where(c => _dbContext.ApplicationMenus.Where(a => menus.Contains(a.Id.ToString())).Select(m => m.ApplicationMenuId).Contains(c.Id)).ToListAsync();
+            var output = await appMenus
+                .Where(c => _dbContext.ApplicationMenus.Where(a =>
+                menus.Contains(a.Id.ToString())).Select(m => m.ApplicationMenuId).Contains(c.Id))
+                .OrderBy(m=>m.OrderNo)
+                .ToListAsync();
 
             if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
 
@@ -125,8 +133,11 @@ namespace Sepehr.Infrastructure.Persistence
         public async Task<Response<List<ApplicationMenuViewModel>>> GetAllApplicationMenus()
         {
             var appMenus =
-                await _dbContext.ApplicationMenus.Include(i => i.Children)
+                await _dbContext.ApplicationMenus
+                .Include(i => i.Children)
+                .ThenInclude(c=>c.Children).ThenInclude(c => c.Children).ThenInclude(c => c.Children)
                 .Where(m => m.ApplicationMenuId == null)
+                .OrderBy(m => m.OrderNo)
                 .ToListAsync();
             if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
 

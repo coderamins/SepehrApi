@@ -12,7 +12,7 @@ namespace Sepehr.Application.Features.EntrancePermits.Command.CreateEntrancePerm
 {
     public partial class CreateEntrancePermitCommand : IRequest<Response<EntrancePermit>>
     {
-        public int PurchaseOrderTransferRemittanceId { get; set; }
+        public int TransferRemittanceId { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
     }
 
@@ -48,7 +48,7 @@ namespace Sepehr.Application.Features.EntrancePermits.Command.CreateEntrancePerm
                 //    Message = $"مشتری گرامی \n سفارش شما به شماره {newOrder.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
                 //});
 
-                return new Response<EntrancePermit>(newOrder, $"سفارش جدید با شناسه {_entrancePermit.OrderCode} موفقیت ثبت شد .");
+                return new Response<EntrancePermit>(newOrder, $"مجوز ورود با شناسه {_entrancePermit.PermitCode} موفقیت ثبت شد .");
             }
             catch (Exception e)
             {

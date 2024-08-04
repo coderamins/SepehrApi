@@ -9,7 +9,7 @@ namespace Sepehr.Application.DTOs.RentPayment
     public class RentPaymentDto
     {
         public int ReceivePaymentOriginId { get; set; }
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? TransferRemittanceUnloadingPermitId { get; set; }
         public Guid? LadingExitPermitId { get; set; } 
 
         public required decimal TotalFareAmount { get; set; }

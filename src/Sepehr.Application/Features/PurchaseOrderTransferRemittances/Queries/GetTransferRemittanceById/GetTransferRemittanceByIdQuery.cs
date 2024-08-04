@@ -14,9 +14,9 @@ namespace Sepehr.Application.Features.TransferRemittances.Queries.GetTransferRem
     public class GetTransferRemittanceByIdQueryQueryHandler :
          IRequestHandler<GetTransferRemittanceByIdQuery, Response<TransferRemittanceViewModel>>
     {
-        private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderRepository;
+        private readonly ITransferRemittanceRepositoryAsync _purchaseOrderRepository;
         private readonly IMapper _mapper;
-        public GetTransferRemittanceByIdQueryQueryHandler(IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderRepository, IMapper mapper)
+        public GetTransferRemittanceByIdQueryQueryHandler(ITransferRemittanceRepositoryAsync purchaseOrderRepository, IMapper mapper)
         {
             _purchaseOrderRepository = purchaseOrderRepository;
             _mapper = mapper;

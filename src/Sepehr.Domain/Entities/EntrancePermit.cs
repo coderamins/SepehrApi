@@ -13,10 +13,10 @@ namespace Sepehr.Domain.Entities
         public int PermitCode { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PurchaseOrderTransferRemittanceId { get; set; }        
+        public int TransferRemittanceId { get; set; }        
         
         public virtual ICollection<Attachment>? Attachments { get; set; }
-        public required virtual PurchaseOrderTransferRemittance PurchaseOrderTransferRemittance { get; set; }
-        public virtual ICollection<PurchaseOrderTransferRemittanceUnloadingPermit>? PurchaseOrderTransferRemittanceUnloadingPermits { get; set; }
+        public required virtual TransferRemittance TransferRemittance { get; set; }
+        public virtual ICollection<UnloadingPermit>? UnloadingPermits { get; set; }
     }
 }

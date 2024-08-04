@@ -36,15 +36,9 @@ namespace Sepehr.Application.Features.EntrancePermits.Command.DeleteEntrancePerm
                 CancellationToken cancellationToken
             )
             {
-                var EntrancePermit = await _EntrancePermitRepository.DeleteEntrancePermit(command.Id);
+                await _EntrancePermitRepository.DeleteEntrancePermit(command.Id);
 
-                //var EntrancePermit = await _EntrancePermitRepository.GetByIdAsync(command.Id);
-                //if (EntrancePermit == null)
-                //    throw new ApiException($"سفارش یافت نشد !");
-
-                //await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = EntrancePermit.Id.ToString(), TableName = "_entrancePermit" });
-                //await _EntrancePermitRepository.DeleteAsync(EntrancePermit);
-                return new Response<bool>(true,"سفارش با موفقیت حذف شد .");
+                return new Response<bool>(true,"مجوز ورود با موفقیت حذف شد .");
             }
         }
     }

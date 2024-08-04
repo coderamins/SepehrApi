@@ -13,7 +13,7 @@ namespace Sepehr.Domain.Entities
         /// <summary>
         /// شماره مجوز تخلیه
         /// </summary>
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? UnloadingPermitId { get; set; }
         /// <summary>
         /// شماره مجوز خروج اعلام بار
         /// </summary>
@@ -26,6 +26,6 @@ namespace Sepehr.Domain.Entities
 
         public required virtual ReceivePaymentType ReceivePaymentOrigin { get; set; }
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
-        public virtual PurchaseOrderTransferRemittanceUnloadingPermit? PurchaseOrderTransferRemittanceUnloadingPermit { get; set; }
+        public virtual UnloadingPermit? UnloadingPermit { get; set; }
     }
 }

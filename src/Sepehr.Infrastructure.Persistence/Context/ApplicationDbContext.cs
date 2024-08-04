@@ -67,13 +67,13 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PurchaseOrderTransfer> PurchaseOrderTransfers { get; set; }
         public DbSet<PurchaseOrderTransferDetail> PurchaseOrderTransferDetails { get; set; }
         public DbSet<CustomerWarehouse> CustomerWarehouses { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceType> TransferRemittanceTypes { get; set; }
-        public DbSet<PurchaseOrderTransferRemittance> TransferRemittances { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceDetail> TransferRemittanceDetails { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceStatus> TransferRemittanceStatus { get; set; }
-        public DbSet<EntrancePermit> PurchaseOrderTransferRemittanceEntrancePermits { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> PurchaseOrderTransferRemittanceUnloadingPermits { get; set; }
-        public DbSet<PurchaseOrderTransferRemittanceUnloadingPermitDetail> PurchaseOrderTransferRemittanceUnloadingPermitDetails { get; set; }
+        public DbSet<TransferRemittanceType> TransferRemittanceTypes { get; set; }
+        public DbSet<TransferRemittance> TransferRemittances { get; set; }
+        public DbSet<TransferRemittanceDetail> TransferRemittanceDetails { get; set; }
+        public DbSet<TransferRemittanceStatus> TransferRemittanceStatus { get; set; }
+        public DbSet<EntrancePermit> EntrancePermits { get; set; }
+        public DbSet<UnloadingPermit> UnloadingPermits { get; set; }
+        public DbSet<UnloadingPermitDetail> UnloadingPermitDetails { get; set; }
         public DbSet<ReceivePayStatus> ReceivePayStatus { get; set; }
         public DbSet<ShareHolder> ShareHolders { get; set; }
         public DbSet<PettyCash> PettyCashs { get; set; }
@@ -96,6 +96,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<DriverFareAmountApprove> DriverFareAmountApproves { get; set; }
         public DbSet<PurchaseOrderFarePaymentType> PurchaseOrderFarePaymentTypes { get; set; }
         public DbSet<PurchaseOrderSendType> PurchaseOrderSendTypes { get; set; }
+        public DbSet<PhoneNumberType> PhoneNumberTypes { get; set; }
+        public DbSet<Phonebook> Phonebook { get; set; }
 
         public DbSet<Audit> AuditLogs { get; set; }
 
@@ -107,7 +109,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 {
                     case EntityState.Added:
                         entry.Entity.Created = _dateTime.NowUtc;
-                        entry.Entity.CreatedBy = Guid.Parse(_authenticatedUser.UserId);
+                        entry.Entity.CreatedBy = Guid.Parse(_authenticatedUser.UserId ?? "465C2D61-95DB-4822-9E95-8571247296A6");
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = _dateTime.NowUtc;
@@ -133,9 +135,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 entry.Property(p => p.CreatedBy).IsModified = false;
 
             }
-            
-            var saved= base.SaveChangesAsync(cancellationToken);
-            BeforeSaveChanges();
+
+            if (_authenticatedUser.UserId != null)
+                BeforeSaveChanges();
+
+            var saved = base.SaveChangesAsync(cancellationToken);
             return saved;
         }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -160,7 +164,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             }
 
             builder.Entity<LadingPermit>()
-            .HasIndex(p => new {p.CargoAnnounceId , p.IsActive}).IsUnique();
+            .HasIndex(p => new { p.CargoAnnounceId, p.IsActive }).IsUnique();
 
             // builder.Entity<ChildTable>()
             //     .HasIndex(c => c.IsEnabled); // Index on IsEnabled column for better performance
@@ -205,6 +209,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 
+            builder.Entity<PhoneNumberType>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
             builder.Entity<ReceivePaymentType>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
@@ -213,7 +221,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 
-            builder.Entity<PurchaseOrderTransferRemittanceStatus>()
+            builder.Entity<TransferRemittanceStatus>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 
@@ -258,7 +266,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<EntrancePermit>().Property(prop => prop.PermitCode)
             .UseIdentityColumn(1001, 1);
 
-            builder.Entity<PurchaseOrderTransferRemittanceType>()
+            builder.Entity<TransferRemittanceType>()
                 .Property(p => p.Id)
                 .IsUnicode()
                 .ValueGeneratedNever();
@@ -283,7 +291,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<Customer>().Property(u => u.CustomerCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<ShareHolder>().Property(u => u.ShareHolderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<LadingExitPermit>().Property(u => u.LadingExitPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-            builder.Entity<PurchaseOrderTransferRemittanceUnloadingPermit>().Property(u => u.UnloadingPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder.Entity<UnloadingPermit>().Property(u => u.UnloadingPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             builder.Entity<Customer>().HasMany(p => p.ReceivePaymentSourceFrom)
                     .WithOne(d => d.ReceiveFromCustomer)
@@ -293,16 +301,21 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .WithOne(d => d.PayToCustomer)
                 .HasForeignKey(d => d.PayToCustomerId);
 
+            builder.Entity<Phonebook>()
+                .HasIndex(p => new { p.CustomerId,p.PhoneNumber, p.PhoneNumberTypeId })
+                .IsUnique();
 
             base.OnModelCreating(builder);
 
         }
 
         private void BeforeSaveChanges()
-        
+
         {
             ChangeTracker.DetectChanges();
             var auditEntries = new List<AuditEntry>();
+
+            var originalValues = new Dictionary<string, object>();
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
@@ -332,6 +345,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
                         case EntityState.Modified:
                             if (property.IsModified)
                             {
+                                originalValues[property.Metadata.Name] = entry.Property(property.Metadata.Name).OriginalValue;
+
                                 auditEntry.ChangedColumns.Add(propertyName);
                                 auditEntry.AuditType = AuditType.Update;
                                 auditEntry.OldValues[propertyName] = property.OriginalValue;
@@ -351,6 +366,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());
         }
+
     }
 
 

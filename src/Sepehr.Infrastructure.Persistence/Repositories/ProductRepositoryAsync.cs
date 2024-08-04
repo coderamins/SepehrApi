@@ -16,7 +16,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<Product> _products;
         private readonly DbSet<ProductBrand> _productBrands;
         private readonly DbSet<ProductType> _productTypes;
-        private readonly DbSet<PurchaseOrderTransferRemittance> _transRemittances;
+        private readonly DbSet<TransferRemittance> _transRemittances;
         private readonly DbSet<ProductInventory> _productInventory;
         private readonly DapperContext _dapContext;
         private readonly ApplicationDbContext _dbContext;
@@ -27,7 +27,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _products = dbContext.Set<Product>();
             _productBrands = dbContext.Set<ProductBrand>();
             _productTypes = dbContext.Set<ProductType>();
-            _transRemittances = dbContext.Set<PurchaseOrderTransferRemittance>();
+            _transRemittances = dbContext.Set<TransferRemittance>();
             _productInventory = dbContext.Set<ProductInventory>();
             _dbContext = dbContext;
             _dapContext = dapContext;

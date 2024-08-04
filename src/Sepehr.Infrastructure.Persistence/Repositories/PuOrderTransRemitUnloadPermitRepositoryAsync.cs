@@ -6,17 +6,17 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
     public class PuOrderTransRemitUnloadPermitRepositoryAsync :
-        GenericRepositoryAsync<PurchaseOrderTransferRemittanceUnloadingPermit>, 
+        GenericRepositoryAsync<UnloadingPermit>, 
         IPuOrderTransRemitUnloadPermitRepositoryAsync
     {
-        private readonly DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> _remittUnloadingPermits;
+        private readonly DbSet<UnloadingPermit> _remittUnloadingPermits;
 
         public PuOrderTransRemitUnloadPermitRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _remittUnloadingPermits = dbContext.Set<PurchaseOrderTransferRemittanceUnloadingPermit>();
+            _remittUnloadingPermits = dbContext.Set<UnloadingPermit>();
         }
 
-        public async Task<PurchaseOrderTransferRemittanceUnloadingPermit?> GetRemittanceUnloadingPermitInfo(Guid Id)
+        public async Task<UnloadingPermit?> GetRemittanceUnloadingPermitInfo(Guid Id)
         {
             return await _remittUnloadingPermits
                 .Include(c => c.ApplicationUser)

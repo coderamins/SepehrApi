@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sepehr.Application.Features.PurchaseOrderTransferRemittances.Command.TransferRemittanceUnloadingPermit
+namespace Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceUnloadingPermit
 {
     public class PurOrderTransRemittUnloadingPermitDetailDto
     {
-        public int PurchaseOrderTransferRemittanceDetailId { get; set; }
+        public int TransferRemittanceDetailId { get; set; }
         public decimal UnloadedAmount { get; set; }
 
 

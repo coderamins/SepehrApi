@@ -13,7 +13,7 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnnouncement
 {
-    public partial class CreateCargoAnncCommand : IRequest<Response<CargoAnnounce>>
+    public partial class CreateCargoAnncCommand : IRequest<Response<List<CargoAnnounce>>>
     {
         public Guid OrderId { get; set; }
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
         public List<AttachmentDto>? Attachments { get; set; }
 
     }
-    public class CreateCargoAnncCommandHandler : IRequestHandler<CreateCargoAnncCommand, Response<CargoAnnounce>>
+    public class CreateCargoAnncCommandHandler : IRequestHandler<CreateCargoAnncCommand, Response<List<CargoAnnounce>>>
     {
         private readonly ILogger<CreateCargoAnncCommandHandler> _logger;
         private readonly ICargoAnnouncementRepositoryAsync _cargoAnncRepository;
@@ -52,7 +52,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
             _logger= logger;
         }
 
-        public async Task<Response<CargoAnnounce>> Handle(CreateCargoAnncCommand request, CancellationToken cancellationToken)
+        public async Task<Response<List<CargoAnnounce>>> Handle(CreateCargoAnncCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -66,14 +66,38 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                     (order.CargoAnnounces!=null && order.Details.Sum(od => od.ProximateAmount) == ladingPermitSummery))
                     throw new ApiException("ارسال سفارش تکمیل شده است !");
 
-                var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
+                List<CargoAnnounce> cargoAnnounces = new List<CargoAnnounce>();
+                var orderDetailByWarehouse = order.Details.GroupBy(a => a.WarehouseId).Select(x => x.Key);
+                foreach (var whouse in orderDetailByWarehouse)
+                {
+                    foreach (var item in request.CargoAnnounceDetails)
+                    {
+                        var orderDetail =await _orderRep.GetOrderDetailInfo(item.OrderDetailId);
+                        if(orderDetail!=null && orderDetail.WarehouseId==whouse)
+                        {
+                            var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
+                            
+                            var filteredDetails = cargoAnnc.CargoAnnounceDetails.Where(d => d.OrderDetailId == orderDetail.Id);
+                            ICollection<CargoAnnounceDetail> newDetails = filteredDetails.ToList();
+                            cargoAnnc.CargoAnnounceDetails = newDetails;
 
+                            cargoAnnounces.Add(cargoAnnc);
+                        }                       
+                    }
+                }
+
+                //var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
+
+                //----اگر کاربر ثبت کننده این مقدار را تکمیل شده بفرستد وضعیت سفارش به بارگیری تکمیل شده یا ارسال کامل تبدیل خواهد شد 
                 if (request.IsComplete)
                     order.OrderStatusId = (int)OrderStatusEnum.Sended;
 
                 await _orderRep.UpdateAsync(order);
-                await _cargoAnncRepository.AddAsync(cargoAnnc);
-                return new Response<CargoAnnounce>(cargoAnnc, $"اعلام بار با موفقیت ثبت شد .");
+
+                
+
+                await _cargoAnncRepository.AddAsync(cargoAnnounces);
+                return new Response<List<CargoAnnounce>>(cargoAnnounces, $"اعلام بار با موفقیت ثبت شد .");
             }
             catch (Exception e)
             {

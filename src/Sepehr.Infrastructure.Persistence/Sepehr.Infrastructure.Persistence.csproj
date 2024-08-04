@@ -33,4 +33,8 @@
     <ProjectReference Include="..\Sepehr.Infrastructure.Shared\Sepehr.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

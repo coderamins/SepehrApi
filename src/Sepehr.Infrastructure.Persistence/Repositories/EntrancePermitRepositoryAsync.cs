@@ -5,6 +5,7 @@ using Sepehr.Application.Features.EntrancePermits.Queries.GetAllEntrancePermits;
 using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     public class EntrancePermitRepositoryAsync : GenericRepositoryAsync<EntrancePermit>, IEntrancePermitRepositoryAsync
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<PurchaseOrderTransferRemittance> _transferRemittances;
+        private readonly DbSet<TransferRemittance> _transferRemittances;
         private readonly IMapper _mapper;
         public EntrancePermitRepositoryAsync(
             ApplicationDbContext dbContext,
-            DbSet<PurchaseOrderTransferRemittance> transferRemittances,
             IMapper mapper
             ) : base(dbContext)
         {
             _dbContext = dbContext;
-            _transferRemittances = transferRemittances;
+            _transferRemittances = dbContext.Set<TransferRemittance>();
             _mapper = mapper;
         }
 
@@ -34,7 +34,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             var transRemit = await _dbContext.TransferRemittances
                    .AsNoTracking()
-                   .FirstOrDefaultAsync(o => o.Id == entrancePermit.PurchaseOrderTransferRemittanceId);
+                   .FirstOrDefaultAsync(o => o.Id == entrancePermit.TransferRemittanceId);
 
             if (transRemit == null)
                 throw new ApiException("حواله انتقال یافت نشد !");
@@ -55,7 +55,51 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return newEntrancePermit;
         }
 
+        public async Task DeleteEntrancePermit(Guid id)
+        {
+            var entrancePermit = await _dbContext.EntrancePermits.FirstOrDefaultAsync(x=>x.Id==id);
+
+            if (entrancePermit == null)
+                throw new ApiException("مجوز ورود یافت نشد !");
+
+            var transferRemitt = await _dbContext.TransferRemittances
+                .FirstAsync(x => x.Id == entrancePermit.TransferRemittanceId);
+
+            transferRemitt.TransferRemittanceStatusId =(int)ETransferRemittanceStatus.InProgress;
+            _transferRemittances.Update(transferRemitt);
+
+            _dbContext.EntrancePermits.Remove(entrancePermit);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<EntrancePermit>> GetAllEntrancePermitsAsync(GetAllEntrancePermitsParameter validFilter)
+        {
+            return await
+                _dbContext.EntrancePermits
+                .Include(x=>x.ApplicationUser)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceStatus)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceType)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.OriginWarehouse)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.DestinationWarehouse)
+                .ToListAsync();
+        }
+
+        public async Task<EntrancePermit?> GetEntrancePermitById(Guid id)
+        {
+            return await
+                _dbContext.EntrancePermits
+                .Include(x => x.UnloadingPermits).ThenInclude(x=>x.UnloadingPermitDetails)
+                .Include(x => x.ApplicationUser)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceStatus)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceType)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.OriginWarehouse)
+                .Include(x => x.TransferRemittance).ThenInclude(x => x.DestinationWarehouse)
+                .Include(x => x.Attachments)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<EntrancePermit> UpdateEntrancePermit(EntrancePermit entrancePermit)
         {
             throw new NotImplementedException();
         }

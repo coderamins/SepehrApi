@@ -6,17 +6,17 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.Interfaces.Repositories
 {
-    public interface IPurchaseOrderTransferRemittanceRepositoryAsync : IGenericRepositoryAsync<PurchaseOrderTransferRemittance>
+    public interface ITransferRemittanceRepositoryAsync : IGenericRepositoryAsync<TransferRemittance>
     {
-        Task<IEnumerable<PurchaseOrderTransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter);
-        Task<PurchaseOrderTransferRemittance> UpdateTransferRemittance(PurchaseOrderTransferRemittance transRemittance);
-        Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByIdAsync(int id);
+        Task<IEnumerable<TransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter);
+        Task<TransferRemittance> UpdateTransferRemittance(TransferRemittance transRemittance);
+        Task<TransferRemittance?> GetTransferRemittanceByIdAsync(int id);
         Task<EntrancePermit> TransferRemittanceEntrancePermission(
             TransferRemittanceEntrancePermissionCommand entrancePermit);
-        Task<PurchaseOrderTransferRemittance> CreateTransferRemittance(PurchaseOrderTransferRemittance transRemittance);
-        Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode);
+        Task<TransferRemittance> CreateTransferRemittance(TransferRemittance transRemittance);
+        Task<TransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode);
         Task<EntrancePermit> PurchaseOrderTransRemittEntrancePermitById(Guid purchaseOrderTransferRemittanceEntrancePermitId);
-        Task<PurchaseOrderTransferRemittanceUnloadingPermit> CreatePOrderUnloadingPermit(
-            PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloadingPermit);
+        Task<UnloadingPermit> CreatePOrderUnloadingPermit(
+            UnloadingPermit purchaseOrderTransferRemittanceUnloadingPermit);
     }
 }

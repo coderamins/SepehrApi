@@ -116,14 +116,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             var newOrder = await _orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
-            if (order.Customer != null)
-            {
-                await _smsService.SendAsync(new SmsRequest
-                {
-                    Mobile = order.Customer.Mobile,
-                    Message = $"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
-                });
-            }
+            //if (order.Customer != null)
+            //{
+            //    await _smsService.SendAsync(new SmsRequest
+            //    {
+            //        Mobile = order.Customer.Mobile,
+            //        Message = $"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
+            //    });
+            //}
 
             return newOrder.Entity;
 
@@ -159,13 +159,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             order.OrderStatusId = (int)OrderStatusEnum.Confirmed;
             await _dbContext.SaveChangesAsync();
 
-            await _smsService.SendAsync(new SmsRequest
-            {
-                Mobile = order.Customer.Mobile,
-                Message = $"مشتری گرامی {string.Concat(order.Customer.FirstName, " ", order.Customer.LastName)} عزیز \n " +
-                $"سفارش شما به شماره {order.OrderCode} تکمیل و تایید شد ." +
-                "\n شرکت فولاد سپهر ایرانیان"
-            });
+            //await _smsService.SendAsync(new SmsRequest
+            //{
+            //    Mobile = order.Customer.Mobile,
+            //    Message = $"مشتری گرامی {string.Concat(order.Customer.FirstName, " ", order.Customer.LastName)} عزیز \n " +
+            //    $"سفارش شما به شماره {order.OrderCode} تکمیل و تایید شد ." +
+            //    "\n شرکت فولاد سپهر ایرانیان"
+            //});
 
             return true;
         }
@@ -556,6 +556,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _orders.AsNoTracking().Where(o => o.Id == orderId)
                 .Include(o => o.Details).FirstOrDefaultAsync();
+        }
+
+        public async Task<OrderDetail?> GetOrderDetailInfo(int orderDetailId)
+        {
+            return await _orderDetail.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Id == orderDetailId);
         }
     }
 }

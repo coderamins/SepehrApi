@@ -31,7 +31,7 @@ namespace Sepehr.Domain.Entities
         public Audit ToAudit()
         {
             var audit = new Audit();
-            audit.CreatedBy = Guid.Parse(UserId);
+            audit.CreatedBy = Guid.Parse(UserId ?? "465C2D61-95DB-4822-9E95-8571247296A6");
             audit.Type = AuditType.ToString();
             audit.TableName = TableName;
             audit.Created = DateTime.Now;

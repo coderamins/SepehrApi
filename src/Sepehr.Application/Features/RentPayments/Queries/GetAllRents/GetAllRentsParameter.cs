@@ -9,6 +9,6 @@ namespace Sepehr.Application.Features.RentPayments.Queries.GetAllRentPayments
     public class GetAllRentsParameter :RequestParameter
     {
         public Guid? LadingExitPermitId { get; internal set; }
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; internal set; }
+        public Guid? TransferRemittanceUnloadingPermitId { get; internal set; }
     }
 }

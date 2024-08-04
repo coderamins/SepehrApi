@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Sepehr.Application.Features.PurchaseOrderTransferRemittances.Command.TransferRemittanceUnloadingPermit;
+using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceUnloadingPermit;
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 {
@@ -10,14 +10,14 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
         {
             RuleFor(x => x.DriverMobile).Length(11).WithMessage("شماره موبایل نامعتبر می باشد !");
             //RuleForEach(x => x.Attachments).SetValidator(new FileValidator());
-            RuleForEach(x => x.PurchaseOrderTransferRemittanceUnloadingPermitDetails)
-                .SetValidator(new PurchaseOrderTransferRemittanceUnloadingPermitDetailValidator());
+            RuleForEach(x => x.UnloadingPermitDetails)
+                .SetValidator(new TransferRemittanceUnloadingPermitDetailValidator());
         }
 
-        private class PurchaseOrderTransferRemittanceUnloadingPermitDetailValidator:
+        private class TransferRemittanceUnloadingPermitDetailValidator:
             AbstractValidator<PurOrderTransRemittUnloadingPermitDetailDto>
         {
-            public PurchaseOrderTransferRemittanceUnloadingPermitDetailValidator()
+            public TransferRemittanceUnloadingPermitDetailValidator()
             {
                 RuleFor(x => x.UnloadedAmount).GreaterThan(0).WithMessage("مقدار تخلیه باید بزرگتر از صفر باشد !");
             }

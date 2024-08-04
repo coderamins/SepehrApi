@@ -2,8 +2,8 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.Interfaces.Repositories
 {
-    public interface IPuOrderTransRemitUnloadPermitRepositoryAsync : IGenericRepositoryAsync<PurchaseOrderTransferRemittanceUnloadingPermit>
+    public interface IPuOrderTransRemitUnloadPermitRepositoryAsync : IGenericRepositoryAsync<UnloadingPermit>
     {
-        Task<PurchaseOrderTransferRemittanceUnloadingPermit?> GetRemittanceUnloadingPermitInfo(Guid Id);
+        Task<UnloadingPermit?> GetRemittanceUnloadingPermitInfo(Guid Id);
     }
 }

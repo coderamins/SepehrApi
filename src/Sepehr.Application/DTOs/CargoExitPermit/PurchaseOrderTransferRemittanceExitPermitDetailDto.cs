@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Application.DTOs.CargoExitPermit
 {
-    public class PurchaseOrderTransferRemittanceExitPermitDetailDto
+    public class TransferRemittanceExitPermitDetailDto
     {
         public int LadingLicenseDetailId { get; set; }
         public decimal RealAmount { get; set; }

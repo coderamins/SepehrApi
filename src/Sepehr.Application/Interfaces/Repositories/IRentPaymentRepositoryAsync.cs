@@ -7,7 +7,7 @@ namespace Sepehr.Application.Interfaces.Repositories
     public interface IRentPaymentRepositoryAsync : IGenericRepositoryAsync<RentPayment>
     {
         Task<IEnumerable<RentPayment>> GetAllRentPaymentsAsync(GetAllRentPaymentsParameter validFilter);
-        Task<Tuple<List<LadingExitPermit>?, List<PurchaseOrderTransferRemittanceUnloadingPermit>?>> GetAllRentsAsync(
+        Task<Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>> GetAllRentsAsync(
             GetAllRentsToPaymentParameter validParams);
         Task<RentPayment?> GetRentPaymentInfo(int RentPaymentId);
     }

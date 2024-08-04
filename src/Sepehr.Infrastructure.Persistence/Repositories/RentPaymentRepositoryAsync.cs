@@ -12,11 +12,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     {
         private readonly DbSet<RentPayment> _rentPayments;
         private readonly DbSet<LadingExitPermit> _ladingExitPermits;
-        private readonly DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> _purOrdTransRemitUnload;
+        private readonly DbSet<UnloadingPermit> _purOrdTransRemitUnload;
 
         public RentPaymentRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _purOrdTransRemitUnload = dbContext.Set<PurchaseOrderTransferRemittanceUnloadingPermit>();
+            _purOrdTransRemitUnload = dbContext.Set<UnloadingPermit>();
             _ladingExitPermits = dbContext.Set<LadingExitPermit>();
             _rentPayments = dbContext.Set<RentPayment>();
         }
@@ -26,23 +26,23 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return
                 await _rentPayments
                 .Include(c => c.ApplicationUser)
-                .Include(r => r.PurchaseOrderTransferRemittanceUnloadingPermit)
+                .Include(r => r.UnloadingPermit)
                 .Include(r => r.LadingExitPermit).ThenInclude(x=>x.LadingPermit).ThenInclude(x=>x.CargoAnnounce)
                 .Where(x =>
                 x.IsActive &&
                 (validFilter.RentPaymentCode==x.Id || validFilter.RentPaymentCode==null) &&
                 (
-                (x.PurchaseOrderTransferRemittanceUnloadingPermit!=null && x.PurchaseOrderTransferRemittanceUnloadingPermit.UnloadingPermitCode==validFilter.ReferenceCode) || 
+                (x.UnloadingPermit!=null && x.UnloadingPermit.UnloadingPermitCode==validFilter.ReferenceCode) || 
                 (x.LadingExitPermit!=null && x.LadingExitPermit.LadingExitPermitCode==validFilter.ReferenceCode) || validFilter.ReferenceCode==null) &&
                 (x.Created>=validFilter.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validFilter.FromDate)) &&
                 (x.Created<=validFilter.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validFilter.ToDate)) &&
-                ((x.PurchaseOrderTransferRemittanceUnloadingPermit!=null && x.PurchaseOrderTransferRemittanceUnloadingPermit.DriverName.Contains(validFilter.DriverName)) ||
+                ((x.UnloadingPermit!=null && x.UnloadingPermit.DriverName.Contains(validFilter.DriverName)) ||
                 (x.LadingExitPermit!=null && x.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName.Contains(validFilter.DriverName)) || 
                 string.IsNullOrEmpty(validFilter.DriverName))
                 ).ToListAsync();
         }
 
-        public async Task<Tuple<List<LadingExitPermit>?, List<PurchaseOrderTransferRemittanceUnloadingPermit>?>> GetAllRentsAsync(
+        public async Task<Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>> GetAllRentsAsync(
             GetAllRentsToPaymentParameter validParams)
         {
             var ladingExitPermits =await _ladingExitPermits
@@ -62,8 +62,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             var purOrdTransRemitUnloads =
                 await _purOrdTransRemitUnload
                 .Include(c => c.ApplicationUser)
-                .Include(m => m.PurchaseOrderTransferRemittanceUnloadingPermitDetails)
-                .Include(m => m.PurchaseOrderTransferRemittanceEntrancePermit)
+                .Include(m => m.UnloadingPermitDetails)
+                .Include(m => m.EntrancePermit)
                 .Where(x=>
                 (x.IsActive && x.FareAmountApproved) &&
                 (x.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
@@ -75,7 +75,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 !x.FareAmountPayStatus)
                 .ToListAsync();
 
-            return new Tuple<List<LadingExitPermit>?,List<PurchaseOrderTransferRemittanceUnloadingPermit>?>
+            return new Tuple<List<LadingExitPermit>?,List<UnloadingPermit>?>
                 (ladingExitPermits, purOrdTransRemitUnloads);
         }
 

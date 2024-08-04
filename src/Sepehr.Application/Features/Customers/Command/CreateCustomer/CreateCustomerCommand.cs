@@ -16,12 +16,12 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
         public string FatherName { get; set; } = string.Empty;
         public string NationalCode { get; set; } = string.Empty;
         public required string NationalId { get; set; }
-        public required string Mobile { get; set; }
+        //public required string Mobile { get; set; }
         public required string Address1 { get; set; }
         public CustomerType CustomerType { get; set; }
         public required int CustomerValidityId { get; set; }
-        public string? Tel1 { get; set; }
-        public string? Tel2 { get; set; }
+        //public string? Tel1 { get; set; }
+        //public string? Tel2 { get; set; }
         public string? Address2 { get; set; }
         public string? Representative { get; set; }
         public int SettlementDay { get; set; }
@@ -31,6 +31,8 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
         /// آیا تامین کننده می باشد؟
         /// </summary>
         public bool IsSupplier { get; set; }
+
+        public IEnumerable<CreatePhonebookRequest>? Phonebook { get; set; }
     }
     public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Response<Customer>>
     {

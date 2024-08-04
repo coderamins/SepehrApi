@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sepehr.Application.Features.CustomerLabels.Queries.GetCustomerLabelById;
 using Sepehr.Application.Features.Incomes.Command.CreateIncome;
 using Sepehr.Application.Features.Incomes.Command.DeleteIncomeById;
 using Sepehr.Application.Features.Incomes.Command.UpdateIncome;
@@ -26,7 +27,7 @@ namespace Sepehr.WebApi.Controller
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await Mediator.Send(new GetIncomeByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetCustomerLabelByIdQuery { Id = id }));
         }
 
         // POST api/<controller>

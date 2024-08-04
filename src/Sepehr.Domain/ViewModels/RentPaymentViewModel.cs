@@ -10,7 +10,7 @@ namespace Sepehr.Domain.ViewModels
     {
         public int Id { get; set; }
         public string CreatedDate { get; set; } = string.Empty;
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? UnloadingPermitId { get; set; }
         public Guid? LadingExitPermitId { get; set; }
         public decimal TotalFareAmount { get; set; }
         public decimal OtherCosts { get; set; }

@@ -13,7 +13,7 @@ namespace Sepehr.Domain.ViewModels
         /// </summary>
         public int ReferenceCode { get; set; }
         public Guid? LadingExitPermitId { get; set; }
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? UnloadingPermitId { get; set; }
         public string ReferenceDate { get; set; } = string.Empty;
         public int CargoAnnounceNo { get; set; }
         public string OrderTypeDesc { get; set; } = string.Empty;

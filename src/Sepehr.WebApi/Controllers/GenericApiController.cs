@@ -27,12 +27,14 @@ namespace Sepehr.WebApi.Controller
         private readonly DbSet<OrderStatus> _orderStatus;
         private readonly DbSet<VehicleType> _vehicleTypes;
         private readonly DbSet<Bank> _banks;
+        private readonly DbSet<PhoneNumberType> _phoneNumberTypes;
         private readonly DbSet<OrderExitType> _orderExitTypes;
-        private readonly DbSet<PurchaseOrderTransferRemittanceStatus> _transferRemittanceStatuses;
+        private readonly DbSet<CustomerLabelType> _customerLabelType;
+        private readonly DbSet<TransferRemittanceStatus> _transferRemittanceStatuses;
 
         public GenericApiController(ApplicationDbContext dbContext)
         {
-            _transferRemittanceStatuses=dbContext.Set<PurchaseOrderTransferRemittanceStatus>();
+            _transferRemittanceStatuses=dbContext.Set<TransferRemittanceStatus>();
             _orderSendTypes = dbContext.Set<OrderSendType>();
             _purOrderSendTypes = dbContext.Set<PurchaseOrderSendType>();
             _orderFarePayments = dbContext.Set<FarePaymentType>();
@@ -49,6 +51,8 @@ namespace Sepehr.WebApi.Controller
             _orderStatus = dbContext.Set<OrderStatus>();
             _vehicleTypes = dbContext.Set<VehicleType>();
             _orderExitTypes = dbContext.Set<OrderExitType>();
+            _phoneNumberTypes = dbContext.Set<PhoneNumberType>();
+            _customerLabelType = dbContext.Set<CustomerLabelType>();
             _banks = dbContext.Set<Bank>();
         }
 
@@ -177,6 +181,21 @@ namespace Sepehr.WebApi.Controller
         {
             return Ok(await _orderExitTypes.ToListAsync());
         }
+
+        [HasPermission("GetPhoneNumberTypes")]
+        [HttpGet("GetPhoneNumberTypes")]
+        public async Task<IActionResult> GetPhoneNumberTypes()
+        {
+            return Ok(await _phoneNumberTypes.ToListAsync());
+        }
+
+        [HasPermission("GetCustomerLabelTypes")]
+        [HttpGet("GetCustomerLabelTypes")]
+        public async Task<IActionResult> GetCustomerLabelTypes()
+        {
+            return Ok(await _customerLabelType.ToListAsync());
+        }
+
 
 
     }

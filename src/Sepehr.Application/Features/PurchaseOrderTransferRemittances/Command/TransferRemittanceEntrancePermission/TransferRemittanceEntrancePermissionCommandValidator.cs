@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Sepehr.Application.Features.PurchaseOrderTransferRemittances.Command.TransferRemittanceUnloadingPermit;
+using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceUnloadingPermit;
 using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittanceEntrancePermission;
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
@@ -11,10 +11,10 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
             //RuleForEach(x => x.Attachments).SetValidator(new FileValidator());
         }
 
-        private class PurchaseOrderTransferRemittanceUnloadingPermitDetailValidator:
+        private class TransferRemittanceUnloadingPermitDetailValidator:
             AbstractValidator<PurOrderTransRemittUnloadingPermitDetailDto>
         {
-            public PurchaseOrderTransferRemittanceUnloadingPermitDetailValidator()
+            public TransferRemittanceUnloadingPermitDetailValidator()
             {
                 RuleFor(x => x.UnloadedAmount).GreaterThan(0).WithMessage("مقدار تخلیه باید بزرگتر از صفر باشد !");
             }

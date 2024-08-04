@@ -13,7 +13,7 @@ namespace Sepehr.Domain.Entities
         public Guid? PurOrderTransRemittUnloadingPermitId { get; set; }
         public Guid? LadingExitPermitId { get; set; }
 
-        public virtual PurchaseOrderTransferRemittanceUnloadingPermit? PurOrderTransRemittUnloadingPermit { get; set; }
+        public virtual UnloadingPermit? PurOrderTransRemittUnloadingPermit { get; set; }
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
     }
 }

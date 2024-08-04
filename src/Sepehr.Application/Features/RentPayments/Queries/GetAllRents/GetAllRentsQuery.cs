@@ -17,7 +17,7 @@ namespace Sepehr.Application.Features.RentPayments.Queries.GetAllRentPayments
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public Guid? LadingExitPermitId { get; set; }
-        public Guid? PurchaseOrderTransferRemittanceUnloadingPermitId { get; set; }
+        public Guid? TransferRemittanceUnloadingPermitId { get; set; }
     }
     public class GetAllRentsQueryHandler :
          IRequestHandler<GetAllRentsQuery, Response<IEnumerable<RentsViewModel>>>

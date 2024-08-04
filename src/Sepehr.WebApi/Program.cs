@@ -59,7 +59,6 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services.AddApplicationLayer();
 builder.Services.AddApplication();
-//builder.Services.AddIdentityInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceLogInfrastructure(builder.Configuration);
@@ -118,7 +117,7 @@ using (var scope = scopeFactory.CreateScope())
 {
     var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    #if !DEBUG
+#if DEBUG
     {
         await Sepehr.Infrastructure.Persistence.Seeds.DefaultInvoiceTypes.SeedAsync(applicationDbContext);
         await Sepehr.Infrastructure.Persistence.Seeds.PurchaseInvoiceTypes.SeedAsync(applicationDbContext);
@@ -143,11 +142,12 @@ using (var scope = scopeFactory.CreateScope())
         await Sepehr.Infrastructure.Persistence.Seeds.DefaultOrderExitTypes.SeedAsync(applicationDbContext);
         await Sepehr.Infrastructure.Persistence.Seeds.DefaultPurchaseOrderSendType.SeedAsync(applicationDbContext);
         await Sepehr.Infrastructure.Persistence.Seeds.DefaultPurchaseOrderFarePaymentTypes.SeedAsync(applicationDbContext);
+        await Sepehr.Infrastructure.Persistence.Seeds.DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
 
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         db.Database.Migrate();
     }
-    #endif
+#endif
 
     Log.Information("Finished Seeding Default Data");
     Log.Information("Application Starting");

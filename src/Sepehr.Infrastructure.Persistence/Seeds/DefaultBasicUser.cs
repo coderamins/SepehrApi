@@ -14,7 +14,7 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             var defaultUser =
                 new ApplicationUser
                 {
-                    CreatedBy =Guid.Parse("6A1CE884-F17A-4870-B919-BC0D41A27755"),
+                    CreatedBy =Guid.Parse("465C2D61-95DB-4822-9E95-8571247296A6"),
                     UserName = "sepehruser",
                     Email = "sepehrofficial@info.com",
                     FirstName = "sepehr",
@@ -30,7 +30,7 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
                 var newUser = await dbContext.Users.AddAsync(defaultUser);
                 await dbContext.UserRoles.AddAsync(new UserRole
                 {
-                    RoleId = Guid.Parse("274d65d8-bdaf-4e50-a859-5e44b54b302d"),
+                    RoleId = Guid.Parse("A54DCEEF-54CC-4081-8C01-A8CEC88392ED"),
                     UserId = newUser.Entity.Id
                 });
 

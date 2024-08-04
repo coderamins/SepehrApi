@@ -55,7 +55,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<IAttachmentRepositoryAsync, AttachmentRepositoryAsync>();
             services.AddScoped<IWarehouseRepositoryAsync, WarehouseRepositoryAsync>();
             services.AddScoped<IPurchaseOrderRepositoryAsync, PurchaseOrderRepositoryAsync>();
-            services.AddScoped<IPurchaseOrderTransferRemittanceRepositoryAsync, PurchaseOrderTransferRemittanceRepositoryAsync>();
+            services.AddScoped<ITransferRemittanceRepositoryAsync, TransferRemittanceRepositoryAsync>();
             services.AddScoped<IShareHolderRepositoryAsync, ShareHolderRepositoryAsync>();
             services.AddScoped<IPettyCashRepositoryAsync, PettyCashRepositoryAsync>();
             services.AddScoped<ICashDeskRepositoryAsync, CashDeskRepositoryAsync>();
@@ -66,6 +66,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<ILadingExitPermitRepositoryAsync, LadingExitPermitRepositoryAsync>();
             services.AddScoped<IPuOrderTransRemitUnloadPermitRepositoryAsync, PuOrderTransRemitUnloadPermitRepositoryAsync>();
             services.AddScoped<ILadingPermitRepositoryAsync, LadingPermitRepositoryAsync>();
+            services.AddTransient<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
             services.AddTransient<IExportUtility, ExcelUtility>();
 
             services.AddTransient<IRoleMenuService, RoleMenuService>();
@@ -77,6 +78,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddTransient<IApplicationUserRepositoryAsync, ApplicationUserRepositoryAsync>();
             services.AddTransient<IUserRoleRepositoryAsync, UserRoleRepositoryAsync>();
             services.AddTransient<IDriverFareAmountApproveRepositoryAsync, DriverFareAmountApproveRepositoryAsync>();
+            services.AddTransient<ICustomerLabelRepositoryAsync, CustomerLabelRepositoryAsync>();
             #endregion
 
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

@@ -194,7 +194,7 @@ namespace Sepehr.WebApi.Controller
         public async Task<IActionResult> TransferRemittanceEntrancePermission(
             int id, TransferRemittanceEntrancePermissionCommand command)
         {
-            if (id != command.PurchaseOrderTransferRemittanceId)
+            if (id != command.TransferRemittanceId)
             {
                 return BadRequest();
             }
@@ -202,12 +202,12 @@ namespace Sepehr.WebApi.Controller
         }
 
         [SwaggerOperation("ثبت مجوز تخلیه حواله انتقال")]
-        [HttpPost("PurchaseOrderTransferRemittanceUnloadingPermit/{entranceId}")]
-        [HasPermission("PurchaseOrderTransferRemittanceUnloadingPermit")]
-        public async Task<IActionResult> PurchaseOrderTransferRemittanceUnloadingPermit(
+        [HttpPost("TransferRemittanceUnloadingPermit/{entranceId}")]
+        [HasPermission("TransferRemittanceUnloadingPermit")]
+        public async Task<IActionResult> TransferRemittanceUnloadingPermit(
             Guid entranceId, PurOrderTransRemittUnloadingPermitCommand command)
         {
-            if (entranceId != command.PurchaseOrderTransferRemittanceEntrancePermitId)
+            if (entranceId != command.TransferRemittanceEntrancePermitId)
             {
                 return BadRequest();
             }

@@ -186,13 +186,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             purchaseOrder.OrderStatusId = (int)PurchaseOrderStatusEnum.AccApproved;
             await _dbContext.SaveChangesAsync();
 
-            await _smsService.SendAsync(new SmsRequest
-            {
-                Mobile = purchaseOrder.Customer.Mobile,
-                Message = $"مشتری گرامی {string.Concat(purchaseOrder.Customer.FirstName, " ", purchaseOrder.Customer.LastName)} عزیز \n " +
-                $"سفارش شما به شماره {purchaseOrder.OrderCode} تکمیل و تایید شد ." +
-                "\n شرکت فولاد سپهر ایرانیان"
-            });
+            //await _smsService.SendAsync(new SmsRequest
+            //{
+            //    Mobile = purchaseOrder.Customer.Mobile,
+            //    Message = $"مشتری گرامی {string.Concat(purchaseOrder.Customer.FirstName, " ", purchaseOrder.Customer.LastName)} عزیز \n " +
+            //    $"سفارش شما به شماره {purchaseOrder.OrderCode} تکمیل و تایید شد ." +
+            //    "\n شرکت فولاد سپهر ایرانیان"
+            //});
 
             return true;
         }

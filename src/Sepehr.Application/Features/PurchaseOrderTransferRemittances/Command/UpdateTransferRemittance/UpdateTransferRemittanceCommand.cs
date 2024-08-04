@@ -8,7 +8,7 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.Features.TransferRemittances.Command.UpdateTransferRemittance
 {
-    public partial class UpdateTransferRemittanceCommand : IRequest<Response<PurchaseOrderTransferRemittance>>
+    public partial class UpdateTransferRemittanceCommand : IRequest<Response<TransferRemittance>>
     {
         public int Id { get; set; }
         public int OriginWarehouseId { get; set; }
@@ -28,17 +28,17 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.UpdateTransfer
         public required IEnumerable<TransferRemittanceDetailDto> Details { get; set; }
 
     }
-    public class UpdateTransferRemittanceCommandHandler : IRequestHandler<UpdateTransferRemittanceCommand, Response<PurchaseOrderTransferRemittance>>
+    public class UpdateTransferRemittanceCommandHandler : IRequestHandler<UpdateTransferRemittanceCommand, Response<TransferRemittance>>
     {
-        private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderTransRepo;
+        private readonly ITransferRemittanceRepositoryAsync _purchaseOrderTransRepo;
         private readonly IMapper _mapper;
-        public UpdateTransferRemittanceCommandHandler(IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderRepo, IMapper mapper)
+        public UpdateTransferRemittanceCommandHandler(ITransferRemittanceRepositoryAsync purchaseOrderRepo, IMapper mapper)
         {
             _purchaseOrderTransRepo = purchaseOrderRepo;
             _mapper = mapper;
         }
 
-        public async Task<Response<PurchaseOrderTransferRemittance>> Handle(UpdateTransferRemittanceCommand request, CancellationToken cancellationToken)
+        public async Task<Response<TransferRemittance>> Handle(UpdateTransferRemittanceCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.UpdateTransfer
                 var transRemittance = _mapper.Map(request, transRemitt);
 
                 var updatedTransRemittance = await _purchaseOrderTransRepo.UpdateTransferRemittance(transRemittance);
-                return new Response<PurchaseOrderTransferRemittance>(updatedTransRemittance, "ویرایش حواله با موفقیت انجام شد .");
+                return new Response<TransferRemittance>(updatedTransRemittance, "ویرایش حواله با موفقیت انجام شد .");
             }
             catch (Exception r)
             {

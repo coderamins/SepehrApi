@@ -27,7 +27,7 @@ namespace Sepehr.Domain.Entities
         /// شناسه ملی
         /// </summary>
         public string NationalCode { get; set; } = string.Empty;
-        public required string Mobile { get; set; }
+        //public required string Mobile { get; set; }
         /// <summary>
         /// آیا تامین کننده می باشد؟
         /// </summary>
@@ -54,6 +54,7 @@ namespace Sepehr.Domain.Entities
 
 
         public required virtual CustomerValidity CustomerValidity { get; set; }
+        public virtual ICollection<Phonebook>? Phonebook { get; set; }
         public virtual ICollection<Order>? Orders { get; set; }
         [NotMapped]
         public virtual ICollection<ReceivePay> ReceivePaymentSourceFrom { get; set; } =new List<ReceivePay>();
@@ -61,6 +62,7 @@ namespace Sepehr.Domain.Entities
         public virtual ICollection<ReceivePay> ReceivePaymentSourceTo { get; set; }=new List<ReceivePay>();
         public virtual ICollection<CustomerOfficialCompany> CustomerOfficialCompanies { get; set; } = new List<CustomerOfficialCompany>();
         public virtual ICollection<CustomerWarehouse> CustomerWarehouses { get; set; }
+        public virtual ICollection<CustomerAssignedLabel> CustomerLabels { get; set; }
 
     }
 }

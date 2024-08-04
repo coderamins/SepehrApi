@@ -7,7 +7,7 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.Features.TransferRemittances.Command.CreateTransferRemittance
 {
-    public partial class CreateTransferRemittanceCommand : IRequest<Response<PurchaseOrderTransferRemittance>>
+    public partial class CreateTransferRemittanceCommand : IRequest<Response<TransferRemittance>>
     {
         public int OriginWarehouseId { get; set; }
         public int DestinationWarehouseId { get; set; }
@@ -27,23 +27,23 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.CreateTransfer
 
     }
 
-    public class CreateTransferRemittanceCommandHandler : IRequestHandler<CreateTransferRemittanceCommand, Response<PurchaseOrderTransferRemittance>>
+    public class CreateTransferRemittanceCommandHandler : IRequestHandler<CreateTransferRemittanceCommand, Response<TransferRemittance>>
     {
-        private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _transferRemitRepRepository;
+        private readonly ITransferRemittanceRepositoryAsync _transferRemitRepRepository;
         private readonly IMapper _mapper;
-        public CreateTransferRemittanceCommandHandler(IPurchaseOrderTransferRemittanceRepositoryAsync transferRemitRepRepository, IMapper mapper)
+        public CreateTransferRemittanceCommandHandler(ITransferRemittanceRepositoryAsync transferRemitRepRepository, IMapper mapper)
         {
             _transferRemitRepRepository = transferRemitRepRepository;
             _mapper = mapper;
         }
 
-        public async Task<Response<PurchaseOrderTransferRemittance>> Handle(CreateTransferRemittanceCommand request, CancellationToken cancellationToken)
+        public async Task<Response<TransferRemittance>> Handle(CreateTransferRemittanceCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var transRemittance = _mapper.Map<PurchaseOrderTransferRemittance>(request);
+                var transRemittance = _mapper.Map<TransferRemittance>(request);
                 var newTransRemittance = await _transferRemitRepRepository.CreateTransferRemittance(transRemittance);
-                return new Response<PurchaseOrderTransferRemittance>(newTransRemittance, "ثبت حواله با موفقیت انجام شد .");
+                return new Response<TransferRemittance>(newTransRemittance, "ثبت حواله با موفقیت انجام شد .");
             }
             catch (Exception r)
             {

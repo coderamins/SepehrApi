@@ -30,9 +30,9 @@ namespace Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransfer
     public class GetAllTransferRemittancesQueryHandler :
          IRequestHandler<GetAllTransferRemittancesQuery, PagedResponse<IEnumerable<TransferRemittanceViewModel>>>
     {
-        private readonly IPurchaseOrderTransferRemittanceRepositoryAsync _purchaseOrderRepository;
+        private readonly ITransferRemittanceRepositoryAsync _purchaseOrderRepository;
         private readonly IMapper _mapper;
-        public GetAllTransferRemittancesQueryHandler(IPurchaseOrderTransferRemittanceRepositoryAsync purchaseOrderRepository, IMapper mapper)
+        public GetAllTransferRemittancesQueryHandler(ITransferRemittanceRepositoryAsync purchaseOrderRepository, IMapper mapper)
         {
             _purchaseOrderRepository = purchaseOrderRepository;
             _mapper = mapper;

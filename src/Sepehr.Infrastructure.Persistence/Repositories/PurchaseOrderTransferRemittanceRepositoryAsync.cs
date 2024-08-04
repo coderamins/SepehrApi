@@ -10,33 +10,33 @@ using System.Data;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
-    public class PurchaseOrderTransferRemittanceRepositoryAsync :
-        GenericRepositoryAsync<PurchaseOrderTransferRemittance>,
-        IPurchaseOrderTransferRemittanceRepositoryAsync
+    public class TransferRemittanceRepositoryAsync :
+        GenericRepositoryAsync<TransferRemittance>,
+        ITransferRemittanceRepositoryAsync
     {
         private readonly DbSet<ProductInventory> _productInventory;
-        private readonly DbSet<PurchaseOrderTransferRemittance> _transferRemittances;
-        private readonly DbSet<PurchaseOrderTransferRemittanceDetail> _transferRemittanceDetails;
+        private readonly DbSet<TransferRemittance> _transferRemittances;
+        private readonly DbSet<TransferRemittanceDetail> _transferRemittanceDetails;
         private readonly DbSet<EntrancePermit> _transRemittEntrancePermits;
-        private readonly DbSet<PurchaseOrderTransferRemittanceUnloadingPermit> _orderTransferRemittanceUnloadingPermits;
+        private readonly DbSet<UnloadingPermit> _orderTransferRemittanceUnloadingPermits;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public PurchaseOrderTransferRemittanceRepositoryAsync(
+        public TransferRemittanceRepositoryAsync(
             ApplicationDbContext dbContext,
             IMapper mapper
             ) : base(dbContext)
         {
             _transRemittEntrancePermits = dbContext.Set<EntrancePermit>();
-            _transferRemittances = dbContext.Set<PurchaseOrderTransferRemittance>();
-            _transferRemittanceDetails = dbContext.Set<PurchaseOrderTransferRemittanceDetail>();
-            _orderTransferRemittanceUnloadingPermits = dbContext.Set<PurchaseOrderTransferRemittanceUnloadingPermit>();
+            _transferRemittances = dbContext.Set<TransferRemittance>();
+            _transferRemittanceDetails = dbContext.Set<TransferRemittanceDetail>();
+            _orderTransferRemittanceUnloadingPermits = dbContext.Set<UnloadingPermit>();
             _dbContext = dbContext;
             _mapper = mapper;
             _productInventory = dbContext.Set<ProductInventory>();
         }
 
-        public async Task<PurchaseOrderTransferRemittance> CreateTransferRemittance(PurchaseOrderTransferRemittance transRemittance)
+        public async Task<TransferRemittance> CreateTransferRemittance(TransferRemittance transRemittance)
         {
             foreach (var item in transRemittance.Details)
             {
@@ -80,7 +80,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return transRemittance;
         }
 
-        public async Task<IEnumerable<PurchaseOrderTransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter)
+        public async Task<IEnumerable<TransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter)
         {
             return await _dbContext.TransferRemittances
                 .Include(c => c.ApplicationUser)
@@ -88,8 +88,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
                 .Include(t => t.OriginWarehouse)
-                .Include(t => t.Details).ThenInclude(d => d.PurOTransRemittUnloadingPermitDetail)
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit).ThenInclude(t => t.PurchaseOrderTransferRemittanceUnloadingPermits)
+                .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
+                .Include(t => t.EntrancePermit).ThenInclude(t => t.UnloadingPermits)
                 .Include(t => t.TransferRemittanceStatus)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductSubUnit)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductMainUnit)
@@ -103,12 +103,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||
                     (t.TransferRemittanceStatusId != 2 && validFilter.IsEntranced == false) || validFilter.IsEntranced == null) &&
                     (t.DestinationWarehouseId == validFilter.DestinationWarehouseId || validFilter.DestinationWarehouseId == null) &&
-                    (t.PurchaseOrderTransferRemittanceEntrancePermit != null &&
-                    t.PurchaseOrderTransferRemittanceEntrancePermit.PermitCode == validFilter.TransferEntransePermitNo
+                    (t.EntrancePermit != null &&
+                    t.EntrancePermit.PermitCode == validFilter.TransferEntransePermitNo
                     || validFilter.TransferEntransePermitNo == null)).ToListAsync();
         }
 
-        public async Task<PurchaseOrderTransferRemittance> UpdateTransferRemittance(PurchaseOrderTransferRemittance transRemittance)
+        public async Task<TransferRemittance> UpdateTransferRemittance(TransferRemittance transRemittance)
         {
             try
             {
@@ -187,17 +187,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByIdAsync(int id)
+        public async Task<TransferRemittance?> GetTransferRemittanceByIdAsync(int id)
         {
             return await _dbContext.TransferRemittances
                 .Include(c => c.ApplicationUser)
                 .Include(t => t.TransferRemittanceType)
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit).ThenInclude(t => t.Attachments)
-                .Include(t => t.Details).ThenInclude(d=>d.PurOTransRemittUnloadingPermitDetail)
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit)
-                    .ThenInclude(t => t.PurchaseOrderTransferRemittanceUnloadingPermits)
+                .Include(t => t.EntrancePermit).ThenInclude(t => t.Attachments)
+                .Include(t => t.Details).ThenInclude(d=>d.UnloadingPermitDetail)
+                .Include(t => t.EntrancePermit)
+                    .ThenInclude(t => t.UnloadingPermits)
                     .ThenInclude(t => t.Attachments)
                 .Include(t => t.OriginWarehouse)
                 .Include(t => t.TransferRemittanceStatus)
@@ -207,24 +207,24 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<PurchaseOrderTransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode)
+        public async Task<TransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode)
         {
             return await _dbContext.TransferRemittances
                 .Include(c => c.ApplicationUser)
                 .Include(t => t.TransferRemittanceType)
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit).ThenInclude(t => t.Attachments)
-                .Include(t => t.Details).ThenInclude(d => d.PurOTransRemittUnloadingPermitDetail)
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit)
-                    .ThenInclude(t => t.PurchaseOrderTransferRemittanceUnloadingPermits)
+                .Include(t => t.EntrancePermit).ThenInclude(t => t.Attachments)
+                .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
+                .Include(t => t.EntrancePermit)
+                    .ThenInclude(t => t.UnloadingPermits)
                     .ThenInclude(t => t.Attachments)
                 .Include(t => t.OriginWarehouse)
                 .Include(t => t.TransferRemittanceStatus)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductSubUnit)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductMainUnit)
-                .FirstOrDefaultAsync(o => o.PurchaseOrderTransferRemittanceEntrancePermit.PermitCode == PermitCode);
+                .FirstOrDefaultAsync(o => o.EntrancePermit.PermitCode == PermitCode);
         }
 
         public async Task<EntrancePermit> TransferRemittanceEntrancePermission(
@@ -234,7 +234,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 var transRemit = await _dbContext.TransferRemittances
                        .AsNoTracking()
-                       .FirstOrDefaultAsync(o => o.Id == entrancePermit.PurchaseOrderTransferRemittanceId);
+                       .FirstOrDefaultAsync(o => o.Id == entrancePermit.TransferRemittanceId);
 
                 if (transRemit.TransferRemittanceStatusId == 2)
                     throw new ApiException("مجوز ورود حواله قبلا ثبت شده است !");
@@ -245,10 +245,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 _transferRemittances.Update(transRemit);
 
                 var newEntrancePermit = _mapper.Map<EntrancePermit>(entrancePermit);
-                //var mappedTransRemittEntrancePermits = new PurchaseOrderTransferRemittanceEntrancePermit
+                //var mappedTransRemittEntrancePermits = new EntrancePermit
                 //{
-                //    PurchaseOrderTransferRemittance = transRemit,
-                //    PurchaseOrderTransferRemittanceId = id,
+                //    TransferRemittance = transRemit,
+                //    TransferRemittanceId = id,
                 //    IsActive = true,
                 //};
                 var transRemitEntrancePermit = await _transRemittEntrancePermits.AddAsync(newEntrancePermit);
@@ -268,43 +268,43 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             (Guid purchaseOrderTransferRemittanceEntrancePermitId)
         {
             var transferPermit = await _transferRemittances
-                .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit)
+                .Include(t => t.EntrancePermit)
                 .FirstOrDefaultAsync(o =>
-                        o.PurchaseOrderTransferRemittanceEntrancePermit.Id == purchaseOrderTransferRemittanceEntrancePermitId);
+                        o.EntrancePermit.Id == purchaseOrderTransferRemittanceEntrancePermitId);
 
-            return transferPermit.PurchaseOrderTransferRemittanceEntrancePermit;
+            return transferPermit.EntrancePermit;
         }
 
-        public async Task<PurchaseOrderTransferRemittanceUnloadingPermit> CreatePOrderUnloadingPermit
-            (PurchaseOrderTransferRemittanceUnloadingPermit purchaseOrderTransferRemittanceUnloadingPermit)
+        public async Task<UnloadingPermit> CreatePOrderUnloadingPermit
+            (UnloadingPermit unloadingPermit)
         {
             try
             {
                 var transferRemitt = await _transferRemittances.AsNoTracking()
-                        .Include(t => t.Details).ThenInclude(d=>d.PurOTransRemittUnloadingPermitDetail).AsNoTracking()
-                        .Include(t => t.PurchaseOrderTransferRemittanceEntrancePermit).AsNoTracking()
+                        .Include(t => t.Details).ThenInclude(d=>d.UnloadingPermitDetail).AsNoTracking()
+                        .Include(t => t.EntrancePermit).AsNoTracking()
                         .FirstOrDefaultAsync(t =>
-                        t.PurchaseOrderTransferRemittanceEntrancePermit.Id == purchaseOrderTransferRemittanceUnloadingPermit.PurchaseOrderTransferRemittanceEntrancePermitId);
+                        t.EntrancePermit.Id == unloadingPermit.EntrancePermitId);
 
                 if (transferRemitt == null)
                     throw new ApiException("حواله انتقال یافت نشد !");
                 if (transferRemitt.TransferRemittanceStatusId >= 3)
                     throw new ApiException("تخلیه حواله قبلا بصورت کامل انجام شده !");
 
-                transferRemitt = _mapper.Map(purchaseOrderTransferRemittanceUnloadingPermit, transferRemitt);
+                transferRemitt = _mapper.Map(unloadingPermit, transferRemitt);
 
                 #region اگر مجموع اقلام انتقال داده شده با مجموع اقلام خروج خورده یکسان باشد وضعیت حواله انتقال به تخلیه شده تبدیل خواهد شد
 
                 var calcUnloadedSum = await
                     _orderTransferRemittanceUnloadingPermits.AsNoTracking()
-                    .Include(t => t.PurchaseOrderTransferRemittanceUnloadingPermitDetails).AsNoTracking()
-                    .Where(t => t.PurchaseOrderTransferRemittanceEntrancePermitId == purchaseOrderTransferRemittanceUnloadingPermit.PurchaseOrderTransferRemittanceEntrancePermitId)
+                    .Include(t => t.UnloadingPermitDetails).AsNoTracking()
+                    .Where(t => t.EntrancePermitId == unloadingPermit.EntrancePermitId)
                     .FirstOrDefaultAsync();
 
                 var transPermitAmounts = transferRemitt.Details.Sum(d => d.TransferAmount);
                 var unloadedAmounts = (calcUnloadedSum == null ? 0 :
-                    calcUnloadedSum.PurchaseOrderTransferRemittanceUnloadingPermitDetails.Sum(f => f.UnloadedAmount)) +
-                    purchaseOrderTransferRemittanceUnloadingPermit.PurchaseOrderTransferRemittanceUnloadingPermitDetails.Sum(t => t.UnloadedAmount);
+                    calcUnloadedSum.UnloadingPermitDetails.Sum(f => f.UnloadedAmount)) +
+                    unloadingPermit.UnloadingPermitDetails.Sum(t => t.UnloadedAmount);
 
                 if (transPermitAmounts >= unloadedAmounts)
                     transferRemitt.TransferRemittanceStatusId = 3;//---تخلیه شده
@@ -313,17 +313,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 #region موجودی کف (واقعی) محصول اضافه می شود 
                 foreach (var item in transferRemitt.Details)
                 {
-                    foreach(var udetail in item.PurOTransRemittUnloadingPermitDetail)
+                    foreach(var udetail in item.UnloadingPermitDetail)
                     {
                         var inv = await _productInventory
-                            .FirstOrDefaultAsync(i => i.ProductBrandId == udetail.PurchaseOrderTransferRemittanceDetail.ProductBrandId &&
-                            i.WarehouseId == udetail.PurchaseOrderTransferRemittanceDetail.TransferRemittance.DestinationWarehouseId);
+                            .FirstOrDefaultAsync(i => i.ProductBrandId == udetail.TransferRemittanceDetail.ProductBrandId &&
+                            i.WarehouseId == udetail.TransferRemittanceDetail.TransferRemittance.DestinationWarehouseId);
                         
                         if (inv == null) {
                             _productInventory.Add(new ProductInventory
                             {
-                                ProductBrandId = udetail.PurchaseOrderTransferRemittanceDetail.ProductBrandId,
-                                WarehouseId = udetail.PurchaseOrderTransferRemittanceDetail.TransferRemittance.DestinationWarehouseId,
+                                ProductBrandId = udetail.TransferRemittanceDetail.ProductBrandId,
+                                WarehouseId = udetail.TransferRemittanceDetail.TransferRemittance.DestinationWarehouseId,
                                 ApproximateInventory = 0,
                                 FloorInventory = (double)udetail.UnloadedAmount,
                                 IsActive = true,
@@ -343,7 +343,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 _transferRemittances.Update(transferRemitt);
 
                 var UnloadingPermit = await _orderTransferRemittanceUnloadingPermits
-                    .AddAsync(purchaseOrderTransferRemittanceUnloadingPermit);
+                    .AddAsync(unloadingPermit);
 
                 await _dbContext.SaveChangesAsync();
                 return UnloadingPermit.Entity;
