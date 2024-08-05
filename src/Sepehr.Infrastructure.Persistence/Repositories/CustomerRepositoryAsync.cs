@@ -110,9 +110,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> AssignCustomerLabels(ICollection<CustomerLabel> customerLabels)
         {
-            _
+            throw new NotImplementedException();
         }
 
-
+        public Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

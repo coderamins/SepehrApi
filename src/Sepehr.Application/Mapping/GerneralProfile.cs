@@ -606,15 +606,15 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.Created, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore());
 
-            CreateMap<AssignCustomerLabelCommand, IEnumerable<CustomerAssignedLabel>>()
-               .ConvertUsing(src =>
-               {
-                   return src.AssignedLabels.Select(labelId => new CustomerAssignedLabel
-                   {
-                       CustomerId = src.CustomerId,
-                       CustomerLabelId = labelId,                       
-                   });
-               });
+            CreateMap<AssignCustomerLabelCommand, IEnumerable<CustomerAssignedLabel>>();
+               //.ConvertUsing(src =>
+               //{
+               //    return src.AssignedLabels.Select(labelId => new CustomerAssignedLabel
+               //    {
+               //        CustomerId = src.CustomerId,
+               //        CustomerLabelId = labelId,                       
+               //    });
+               //});
 
             #endregion
 

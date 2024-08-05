@@ -19,7 +19,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<CustomerLabel>> GetAllCustomerLabelsAsync(GetAllCustomerLabelsParameter filter)
         {
             return await _customerLabels
-                .Where(c=> c.CustomerId == filter.CustomerId)
+                //.Where(c=> c.CustomerId == filter.CustomerId)
                 .OrderByDescending(p => p.Id).ToListAsync();
         }
 

@@ -32,7 +32,7 @@ namespace Sepehr.Application.Features.Customers.Command.AssignCustomerLabel
                 if (checkDuplicate == null) { throw new ApiException("مشتری یافت نشد !"); }
 
                 var customer = _mapper.Map<List<CustomerAssignedLabel>>(request);
-                await _customerRepository.AssignCustomerLabels(customer.CustomerLabels);
+                //await _customerRepository.AssignCustomerLabels(customer.CustomerLabels);
                 return new Response<bool>(true, "برچسب های جدید با موفقیت ایجاد شدند .");
             }
             catch (Exception e)
