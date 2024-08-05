@@ -11,10 +11,10 @@ namespace Sepehr.Domain.Entities
     {
         //public Guid CustomerId { get; set; }
         public int CustomerLabelTypeId { get; set; }
-        public string LabelNameCode { get; set; } = string.Empty;
-        public string LabelName { get; set; } = string.Empty;
+        public string? LabelNameCode { get; set; } 
+        public string? LabelName { get; set; }
 
         //public virtual required Customer Customer { get; set; }
-        public virtual required CustomerLabelType CustomerLabelType { get; set; }
+        //public virtual required CustomerLabelType CustomerLabelType { get; set; }
     }
 }

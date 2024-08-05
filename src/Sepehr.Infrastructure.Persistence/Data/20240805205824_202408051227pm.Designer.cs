@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240805205824_202408051227pm")]
+    partial class _202408051227pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -577,6 +580,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("CustomerLabelTypeId");
+
                     b.ToTable("CustomerLabels", "sepdb", t =>
                         {
                             t.HasTrigger("CustomerLabelsTrigger");
@@ -588,8 +593,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerLabelType", b =>
                 {
                     b.Property<int>("Id")
-                        .IsUnicode(true)
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -600,9 +607,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerLabelTypes", "sepdb", t =>
+                    b.ToTable("CustomerLabelType", "sepdb", t =>
                         {
-                            t.HasTrigger("CustomerLabelTypesTrigger");
+                            t.HasTrigger("CustomerLabelTypeTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -3965,7 +3972,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
+                    b.HasOne("Sepehr.Domain.Entities.CustomerLabelType", "CustomerLabelType")
+                        .WithMany()
+                        .HasForeignKey("CustomerLabelTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("CustomerLabelType");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerOfficialCompany", b =>

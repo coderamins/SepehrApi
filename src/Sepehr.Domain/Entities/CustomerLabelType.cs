@@ -1,4 +1,5 @@
-﻿using Sepehr.Domain.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using Sepehr.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

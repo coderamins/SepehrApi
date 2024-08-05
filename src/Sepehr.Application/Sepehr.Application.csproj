@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Customer\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 

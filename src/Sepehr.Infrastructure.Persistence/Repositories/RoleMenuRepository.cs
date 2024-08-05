@@ -28,7 +28,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly IMapper _mapper;
         public RoleMenuRepository(
             IAuthenticatedUserService authenticatedUserService,
-            ApplicationDbContext dbContext,
+            ApplicationDbContext dbContext, 
             IMapper mapper)
         {
             _mapper = mapper;
@@ -106,7 +106,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus()
         {
-            var userRoles = _authenticatedUserService.UserRoles;
+            var userRoles = _authenticatedUserService.UserRoles; 
             string uRoles = string.Join(',', userRoles.ToArray());
             string menus = string.Join(',', _dbContext.RoleMenus.Where(r => uRoles.Contains(r.ApplicationRole.Name)).Select(r => r.ApplicationMenuId));
 
@@ -129,7 +129,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 await _dbContext.ApplicationMenus.Include(i => i.Children)
                 .Where(m => m.ApplicationMenuId == null)
                 .ToListAsync();
-            
             if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
 
             var result = _mapper.Map<List<ApplicationMenuViewModel>>(appMenus);

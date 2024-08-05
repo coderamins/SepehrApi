@@ -11,6 +11,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     public class CustomerRepositoryAsync : GenericRepositoryAsync<Customer>, ICustomerRepositoryAsync
     {
         private readonly DbSet<Customer> _customers;
+        private readonly DbSet<CustomerAssignedLabel> _customerAsignedLabel;
         private readonly DbSet<CustomerWarehouse> _customerWarehouses;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -108,14 +109,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return customer;
         }
 
-        public async Task<bool> AssignCustomerLabels(ICollection<CustomerLabel> customerLabels)
+        public async Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)
         {
-            throw new NotImplementedException();
-        }
+            var customerAsignedLables = await _customerAsignedLabel.Where(x => x.CustomerId == customerLabels.First().CustomerId).ToListAsync();
+            
+            if (customerAsignedLables != null)
+                _customerAsignedLabel.RemoveRange(customerAsignedLables);
 
-        public Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)
-        {
-            throw new NotImplementedException();
+            await _customerAsignedLabel.AddRangeAsync(customerLabels);
+
+            return true;
         }
     }
 }

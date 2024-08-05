@@ -98,6 +98,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PurchaseOrderSendType> PurchaseOrderSendTypes { get; set; }
         public DbSet<PhoneNumberType> PhoneNumberTypes { get; set; }
         public DbSet<Phonebook> Phonebook { get; set; }
+        public DbSet<CustomerLabel> CustomerLabels { get; set; }
+        public DbSet<CustomerAssignedLabel> CustomerAssignedLabels { get; set; }
+        public DbSet<CustomerLabelType> CustomerLabelTypes { get; set; }
 
         public DbSet<Audit> AuditLogs { get; set; }
 
@@ -267,6 +270,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
             .UseIdentityColumn(1001, 1);
 
             builder.Entity<TransferRemittanceType>()
+                .Property(p => p.Id)
+                .IsUnicode()
+                .ValueGeneratedNever();
+
+            builder.Entity<CustomerLabelType>()
                 .Property(p => p.Id)
                 .IsUnicode()
                 .ValueGeneratedNever();

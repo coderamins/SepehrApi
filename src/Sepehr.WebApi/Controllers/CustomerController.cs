@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sepehr.Application.Features.Customers.Command.AssignCustomerLabel;
 using Sepehr.Application.Features.Customers.Command.CreateCustomer;
 using Sepehr.Application.Features.Customers.Command.DeleteCustomerById;
 using Sepehr.Application.Features.Customers.Command.UpdateCustomer;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Features.Customers.Queries.GetCustomerById;
-using Sepehr.Application.Features.Products.Command.CreateProduct;
-using Sepehr.Application.Features.Products.Command.DeleteProductById;
-using Sepehr.Application.Features.Products.Command.UpdateProduct;
-using Sepehr.Application.Features.Products.Queries.GetAllProducts;
-using Sepehr.Application.Features.Products.Queries.GetProductById;
 using Sepehr.Infrastructure.Authentication;
 using Serilog;
 
@@ -75,6 +71,13 @@ namespace Sepehr.WebApi.Controller
         [HasPermission("AllocateCustomerWarehouses")]
         [HttpPost("AllocateCustomerWarehouses")]
         public async Task<IActionResult> AllocateCustomerWarehouses(CustomerWarehousesAllocationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HasPermission("AssignCustomerLabels")]
+        [HttpPost("AssignCustomerLabels")]
+        public async Task<IActionResult> AssignCustomerLabels(AssignCustomerLabelCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
