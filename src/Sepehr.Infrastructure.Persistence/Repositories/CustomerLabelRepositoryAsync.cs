@@ -19,18 +19,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<CustomerLabel>> GetAllCustomerLabelsAsync(GetAllCustomerLabelsParameter filter)
         {
             return await _customerLabels
-                //.Where(c=> c.CustomerId == filter.CustomerId)
-                .OrderByDescending(p => p.Id).ToListAsync();
+                .Include(x => x.Product)
+                .Include(x => x.ProductType)
+                .Include(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
+                .ToListAsync();
         }
 
         public async Task<CustomerLabel?> GetCustomerLabelInfo(CreateCustomerLabelCommand filter)
         {
             return await _customerLabels
+                .Include(x=>x.Product)
+                .Include(x=>x.ProductType)
+                .Include(x=>x.Brand)
+                .Include(x=>x.ProductBrand).ThenInclude(x=>x.Brand)
+                .Include(x=>x.ProductBrand).ThenInclude(x=>x.Product)
                 .FirstOrDefaultAsync(
                     c =>
-                        (c.LabelName == filter.LabelName || string.IsNullOrEmpty(filter.LabelName)) &&
-                        (c.LabelNameCode == filter.LabelNameCode || string.IsNullOrEmpty(filter.LabelNameCode))
-                        );
+                        (c.LabelName == filter.LabelName || string.IsNullOrEmpty(filter.LabelName)));
         }
     }
 }

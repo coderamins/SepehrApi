@@ -45,5 +45,6 @@ namespace Sepehr.Domain.ViewModels
         public List<PhonebookViewModel> Phonebook { get; set; }
         public List<CustomerOfficialCompanyViewModel>? CustomerOfficialCompanies { get; set; }
         public List<WarehouseViewModel>? Warehouses { get; set; }
+        public List<CustomerAssignedLabelViewModel>? CustomerLabels { get; set; }
     }
 }

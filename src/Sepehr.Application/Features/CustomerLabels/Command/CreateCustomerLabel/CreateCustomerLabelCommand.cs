@@ -15,15 +15,27 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.CreateCustomerLabel
 {
     public partial class CreateCustomerLabelCommand : IRequest<Response<CustomerLabel>>
     {
-        //public Guid CustomerId { get; set; }
         /// <summary>
         /// کد نوع برچسب
         /// </summary>
         public int CustomerLabelTypeId { get; set; }
         /// <summary>
-        /// کد نام برچسب
+        /// کد محصول
         /// </summary>
-        public string LabelNameCode { get; set; } = string.Empty;
+        public Guid? ProductId { get; set; }
+        /// <summary>
+        /// کد نوع محصول
+        /// </summary>
+        public int? ProductTypeId { get; set; }
+        /// <summary>
+        /// کد برند
+        /// </summary>
+        public int? BrandId { get; set; }
+        /// <summary>
+        /// کد کالابرند
+        /// </summary>
+        public int? ProductBrandId { get; set; }
+
         /// <summary>
         /// نام برچسب
         /// </summary>
@@ -41,7 +53,7 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.CreateCustomerLabel
 
         public async Task<Response<CustomerLabel>> Handle(CreateCustomerLabelCommand request, CancellationToken cancellationToken)
         {
-            var checkDuplicate =await _customerLabelRepository.GetCustomerLabelInfo(request);
+            var checkDuplicate = await _customerLabelRepository.GetCustomerLabelInfo(request);
             if (checkDuplicate != null)
                 throw new ApiException(new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.DuplicateForCreate));
 

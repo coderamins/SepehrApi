@@ -16,9 +16,30 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.UpdateCustomerLabel
     public class UpdateCustomerLabelCommand : IRequest<Response<string>>
     {
         public int Id { get; set; }
-        public Guid CustomerId { get; set; }
+        /// <summary>
+        /// کد نوع برچسب
+        /// </summary>
         public int CustomerLabelTypeId { get; set; }
-        public string LabelNameCode { get; set; } = string.Empty;
+        /// <summary>
+        /// کد محصول
+        /// </summary>
+        public Guid? ProductId { get; set; }
+        /// <summary>
+        /// کد نوع محصول
+        /// </summary>
+        public int? ProductTypeId { get; set; }
+        /// <summary>
+        /// کد برند
+        /// </summary>
+        public int? BrandId { get; set; }
+        /// <summary>
+        /// کد کالابرند
+        /// </summary>
+        public int? ProductBrandId { get; set; }
+
+        /// <summary>
+        /// نام برچسب
+        /// </summary>
         public string LabelName { get; set; } = string.Empty;
 
         public class UpdateCustomerLabelCommandHandler : IRequestHandler<UpdateCustomerLabelCommand, Response<string>>

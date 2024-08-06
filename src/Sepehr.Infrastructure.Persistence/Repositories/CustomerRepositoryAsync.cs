@@ -20,6 +20,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             _customers = dbContext.Set<Customer>();
             _customerWarehouses = dbContext.Set<CustomerWarehouse>();
+            _customerAsignedLabel = dbContext.Set<CustomerAssignedLabel>();
             _dbContext = dbContext;
             _mapper = mapper;
         }

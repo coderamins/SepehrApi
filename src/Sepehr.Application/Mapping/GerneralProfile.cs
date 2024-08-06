@@ -614,6 +614,8 @@ namespace Sepehr.Application.Mapping
                 LabelId = labelId
             }));
 
+            CreateMap<CustomerAssignedLabelDto, CustomerAssignedLabel>()
+                .ForMember(m => m.CustomerLabelId, d => d.MapFrom(d => d.LabelId));
 
             #endregion
 
@@ -1103,10 +1105,6 @@ namespace Sepehr.Application.Mapping
 
             //CreateMap<IdentityUserRole<Guid>, UserRoleViewModel>();
             #endregion
-            CreateMap<CustomerLabel, CustomerLabelViewModel>();
-            CreateMap<CreateCustomerLabelCommand, CustomerLabel>();
-            CreateMap<UpdateCustomerLabelCommand, CustomerLabel>();
-            CreateMap<GetAllCustomerLabelsQuery, GetAllCustomerLabelsParameter>();
 
             #region Approve FarePayment
             CreateMap<ApproveLadingExitPermitFareAmountCommand, DriverFareAmountApprove>();
@@ -1114,7 +1112,16 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region برچسب های مشتری
+            CreateMap<CustomerLabel, CustomerLabelViewModel>()
+                .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product==null ? "": d.Product.ProductName))
+                .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.Brand==null ? "": d.Brand.Name))
+                .ForMember(m => m.ProductTypeName, opt => opt.MapFrom(d => d.ProductType==null ? "": d.ProductType.Desc))
+                .ForMember(m => m.CustomerLabelTypeDesc, opt => opt.MapFrom(d => d.CustomerLabelType.LabelTypeDesc))
+                .ForMember(m => m.ProductBrandName, opt => opt.MapFrom(d =>  (d.ProductBrand==null ? "": string.Concat(d.ProductBrand.Product.ProductName,' ', d.ProductBrand.Brand.Name))));
 
+            CreateMap<CreateCustomerLabelCommand, CustomerLabel>();
+            CreateMap<UpdateCustomerLabelCommand, CustomerLabel>();
+            CreateMap<GetAllCustomerLabelsQuery, GetAllCustomerLabelsParameter>();
             #endregion
         }
 

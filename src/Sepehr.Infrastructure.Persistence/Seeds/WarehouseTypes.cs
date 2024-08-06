@@ -12,12 +12,12 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             //Seed Default User
             var brands =
                 new List<WarehouseType> {
-                    new WarehouseType{Description="عادی"},
-                    new WarehouseType{Description="واسطه"},
-                    new WarehouseType{Description="امانی"},
-                    new WarehouseType{Description="مبادی"},
-                    new WarehouseType{Description="رسمی"},
-                    new WarehouseType{Description="خرید"}
+                    new WarehouseType{Id=1,Description="واسطه"},
+                    new WarehouseType{Id=2,Description="امانی"},
+                    new WarehouseType{Id=3,Description="مبادی"},
+                    new WarehouseType{Id=4,Description="رسمی"},
+                    new WarehouseType{Id=5,Description="عادی"},
+                    new WarehouseType{Id=6,Description="خرید"}
                 };
 
             foreach (var item in brands)

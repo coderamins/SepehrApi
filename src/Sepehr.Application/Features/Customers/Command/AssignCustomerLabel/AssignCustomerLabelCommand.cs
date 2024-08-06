@@ -36,8 +36,6 @@ namespace Sepehr.Application.Features.Customers.Command.AssignCustomerLabel
                 var customerAssignedLabelDtos = _mapper.Map<IEnumerable<CustomerAssignedLabelDto>>(request);
                 var customerAssignedLabels = _mapper.Map<List<CustomerAssignedLabel>>(customerAssignedLabelDtos);
 
-                var customer = _mapper.Map<List<CustomerAssignedLabel>>(request);
-
                 await _customerRepository.AssignCustomerLabels(customerAssignedLabels);
                 return new Response<bool>(true, "برچسب های جدید با موفقیت ایجاد شدند .");
             }
