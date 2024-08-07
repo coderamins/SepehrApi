@@ -617,6 +617,20 @@ namespace Sepehr.Application.Mapping
             CreateMap<CustomerAssignedLabelDto, CustomerAssignedLabel>()
                 .ForMember(m => m.CustomerLabelId, d => d.MapFrom(d => d.LabelId));
 
+            CreateMap<CustomerAssignedLabel, CustomerAssignedLabelViewModel>()
+                .ForMember(m => m.CustomerLabelName, opt => opt.MapFrom(d =>
+                d.CustomerLabel.Product != null ? d.CustomerLabel.Product.ProductName :
+                d.CustomerLabel.Brand != null ? d.CustomerLabel.Brand.Name :
+                d.CustomerLabel.ProductType != null ? d.CustomerLabel.ProductType.Desc :
+                d.CustomerLabel.ProductBrand != null ? string.Concat(d.CustomerLabel.ProductBrand.Product.ProductName, ' ', d.CustomerLabel.ProductBrand.Brand.Name) :
+                d.CustomerLabel.LabelName
+                ));
+                //.ForMember(m => m.BrandName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
+                //.ForMember(m => m.ProductName, d => d.MapFrom(d => d.CustomerLabel.Product.ProductName))
+                //.ForMember(m => m.ProductTypeName, d => d.MapFrom(d => d.CustomerLabel.ProductType.Desc))
+                //.ForMember(m => m.CustomerLabelName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
+
+
             #endregion
 
             #region ProductSuppliers

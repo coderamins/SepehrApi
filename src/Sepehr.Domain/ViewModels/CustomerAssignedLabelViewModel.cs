@@ -9,6 +9,7 @@ namespace Sepehr.Domain.ViewModels
 {
     public class CustomerAssignedLabelViewModel
     {
+        public int Id { get; set; }
         public int CustomerLabelId { get; set; }
         public Guid CustomerId { get; set; }
 

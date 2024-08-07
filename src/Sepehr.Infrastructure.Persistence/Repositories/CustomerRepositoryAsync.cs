@@ -92,7 +92,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
                 .Include(c => c.Orders)
-                .Include(c => c.CustomerLabels)
+                .Include(c => c.CustomerLabels).ThenInclude(c=>c.CustomerLabel)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
                 .FirstOrDefaultAsync(p => p.Id == Id);
         }
@@ -114,7 +114,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)
         {
-            var customerAsignedLables = await _customerAsignedLabel.Where(x => x.CustomerId == customerLabels.First().CustomerId).ToListAsync();
+            var customerAsignedLables = 
+                await _customerAsignedLabel
+                .Where(x => x.CustomerId == customerLabels
+                .First().CustomerId)
+                .ToListAsync();
             
             if (customerAsignedLables != null)
                 _customerAsignedLabel.RemoveRange(customerAsignedLables);
