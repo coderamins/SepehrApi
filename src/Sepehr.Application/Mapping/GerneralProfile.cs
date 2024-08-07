@@ -1113,6 +1113,13 @@ namespace Sepehr.Application.Mapping
 
             #region برچسب های مشتری
             CreateMap<CustomerLabel, CustomerLabelViewModel>()
+                .ForMember(m => m.LabelName, opt => opt.MapFrom(d =>
+                d.Product!=null ? d.Product.ProductName : 
+                d.Brand != null ? d.Brand.Name : 
+                d.ProductType != null ? d.ProductType.Desc : 
+                d.ProductBrand != null ? string.Concat(d.ProductBrand.Product.ProductName, ' ', d.ProductBrand.Brand.Name) : 
+                d.LabelName
+                ))
                 .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product==null ? "": d.Product.ProductName))
                 .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.Brand==null ? "": d.Brand.Name))
                 .ForMember(m => m.ProductTypeName, opt => opt.MapFrom(d => d.ProductType==null ? "": d.ProductType.Desc))

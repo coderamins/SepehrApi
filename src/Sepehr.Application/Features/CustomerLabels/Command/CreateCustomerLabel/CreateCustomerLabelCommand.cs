@@ -39,7 +39,7 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.CreateCustomerLabel
         /// <summary>
         /// نام برچسب
         /// </summary>
-        public string LabelName { get; set; } = string.Empty;
+        public string? LabelName { get; set; }
     }
     public class CreateCustomerLabelCommandHandler : IRequestHandler<CreateCustomerLabelCommand, Response<CustomerLabel>>
     {
@@ -53,14 +53,22 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.CreateCustomerLabel
 
         public async Task<Response<CustomerLabel>> Handle(CreateCustomerLabelCommand request, CancellationToken cancellationToken)
         {
-            var checkDuplicate = await _customerLabelRepository.GetCustomerLabelInfo(request);
-            if (checkDuplicate != null)
-                throw new ApiException(new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.DuplicateForCreate));
+            try
+            {
+                var checkDuplicate = await _customerLabelRepository.GetCustomerLabelInfo(request);
+                if (checkDuplicate != null)
+                    throw new ApiException(new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.DuplicateForCreate));
 
-            var customerLabel = _mapper.Map<CustomerLabel>(request);
-            await _customerLabelRepository.AddAsync(customerLabel);
+                var customerLabel = _mapper.Map<CustomerLabel>(request);
+                await _customerLabelRepository.AddAsync(customerLabel);
 
-            return new Response<CustomerLabel>(customerLabel, new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.CreatedSuccess));
+                return new Response<CustomerLabel>(customerLabel, new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.CreatedSuccess));
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
     }

@@ -19,6 +19,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<CustomerLabel>> GetAllCustomerLabelsAsync(GetAllCustomerLabelsParameter filter)
         {
             return await _customerLabels
+                .Include(x => x.CustomerLabelType)
                 .Include(x => x.Product)
                 .Include(x => x.ProductType)
                 .Include(x => x.Brand)
@@ -30,14 +31,33 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<CustomerLabel?> GetCustomerLabelInfo(CreateCustomerLabelCommand filter)
         {
             return await _customerLabels
-                .Include(x=>x.Product)
-                .Include(x=>x.ProductType)
-                .Include(x=>x.Brand)
-                .Include(x=>x.ProductBrand).ThenInclude(x=>x.Brand)
-                .Include(x=>x.ProductBrand).ThenInclude(x=>x.Product)
+                .Include(x => x.CustomerLabelType)
+                .Include(x => x.Product)
+                .Include(x => x.ProductType)
+                .Include(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(
                     c =>
-                        (c.LabelName == filter.LabelName || string.IsNullOrEmpty(filter.LabelName)));
+                        ((
+                        (c.LabelName != null && c.LabelName == filter.LabelName) ||
+                        (filter.ProductBrandId != null && c.ProductBrandId == filter.ProductBrandId) ||
+                        (filter.BrandId != null && c.BrandId == filter.BrandId) ||
+                        (filter.ProductTypeId != null && c.ProductTypeId == filter.ProductTypeId) ||
+                        (filter.ProductId != null && c.ProductId == filter.ProductId))
+                         ) && c.CustomerLabelTypeId == filter.CustomerLabelTypeId);
+        }
+
+        public async Task<CustomerLabel?> GetCustomerLabelInfo(int Id)
+        {
+            return await _customerLabels
+                .Include(x => x.CustomerLabelType)
+                .Include(x => x.Product)
+                .Include(x => x.ProductType)
+                .Include(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
+                .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(c =>c.Id==Id);
         }
     }
 }

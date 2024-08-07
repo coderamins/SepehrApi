@@ -23,7 +23,7 @@ namespace Sepehr.WebApi.Controller
         // GET api/<controller>/5
         [HasPermission("GetCustomerLabelById")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetCustomerLabelByIdQuery { Id = id }));
         }

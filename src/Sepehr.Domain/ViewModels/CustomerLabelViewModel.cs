@@ -8,7 +8,7 @@ namespace Sepehr.Domain.ViewModels
 {
     public class CustomerLabelViewModel
     {
-        public Guid CustomerId { get; set; }
+        public int Id { get; set; }
         public int CustomerLabelTypeId { get; set; }
         public string CustomerLabelTypeDesc { get; set; } = string.Empty;
         public string? ProductName { get; set; } = string.Empty;
