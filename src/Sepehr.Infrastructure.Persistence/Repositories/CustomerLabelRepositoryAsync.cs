@@ -25,6 +25,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.Brand)
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
+                .Where(x => 
+                        (x.CustomerLabelTypeId == filter.CustomerLabelTypeId || filter.CustomerLabelTypeId==null))
                 .ToListAsync();
         }
 
@@ -57,7 +59,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.Brand)
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
-                .FirstOrDefaultAsync(c =>c.Id==Id);
+                .FirstOrDefaultAsync(c => c.Id == Id);
         }
     }
 }

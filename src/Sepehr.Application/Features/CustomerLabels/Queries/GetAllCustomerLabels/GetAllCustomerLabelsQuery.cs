@@ -15,8 +15,10 @@ namespace Sepehr.Application.Features.CustomerLabels.Queries.GetAllCustomerLabel
 {
     public class GetAllCustomerLabelsQuery : IRequest<Response<IEnumerable<CustomerLabelViewModel>>>
     {
-        public Guid CustomerId { get; set; }
+        public Guid? CustomerId { get; set; }
+        public int? CustomerLabelTypeId { get; set; }
     }
+
     public class GetAllCustomerLabelsQueryHandler :
          IRequestHandler<GetAllCustomerLabelsQuery, Response<IEnumerable<CustomerLabelViewModel>>>
     {

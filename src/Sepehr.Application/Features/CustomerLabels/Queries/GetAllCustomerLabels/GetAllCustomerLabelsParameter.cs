@@ -8,6 +8,6 @@ namespace Sepehr.Application.Features.Orders.Queries.GetAllOrders
 {
     public class GetAllCustomerLabelsParameter : RequestParameter
     {
-        public Guid CustomerId { get; set; } = Guid.Empty;
+        public int? CustomerLabelTypeId { get; set; }
     }
 }

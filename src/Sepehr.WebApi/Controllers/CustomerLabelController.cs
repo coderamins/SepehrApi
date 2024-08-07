@@ -4,6 +4,7 @@ using Sepehr.Application.Features.CustomerLabels.Command.DeleteCustomerLabelById
 using Sepehr.Application.Features.CustomerLabels.Command.UpdateCustomerLabel;
 using Sepehr.Application.Features.CustomerLabels.Queries.GetAllCustomerLabels;
 using Sepehr.Application.Features.CustomerLabels.Queries.GetCustomerLabelById;
+using Sepehr.Application.Features.Orders.Queries.GetAllOrders;
 using Sepehr.Infrastructure.Authentication;
 
 namespace Sepehr.WebApi.Controller
@@ -14,10 +15,12 @@ namespace Sepehr.WebApi.Controller
 
         [HasPermission("GetAllCustomerLabels")]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] GetAllCustomerLabelsParameter param)
         {
             return Ok(await Mediator
-                .Send(new GetAllCustomerLabelsQuery()));
+                .Send(new GetAllCustomerLabelsQuery{
+                    CustomerLabelTypeId = param.CustomerLabelTypeId
+                }));
         }
 
         // GET api/<controller>/5

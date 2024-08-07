@@ -77,6 +77,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
                 .Include(c => c.Orders)
+                .Include(c => c.CustomerLabels)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
                 .FirstOrDefaultAsync(p => p.NationalId == nationalId);
         }
@@ -91,6 +92,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
                 .Include(c => c.Orders)
+                .Include(c => c.CustomerLabels)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
                 .FirstOrDefaultAsync(p => p.Id == Id);
         }
@@ -119,6 +121,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             await _customerAsignedLabel.AddRangeAsync(customerLabels);
 
+            await _dbContext.SaveChangesAsync();
             return true;
         }
     }
