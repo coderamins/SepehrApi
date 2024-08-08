@@ -87,7 +87,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         (string.Concat(c.FirstName, " ", c.LastName).Contains(filter.CustomerName) || string.IsNullOrEmpty(filter.CustomerName)) &&
                         ((c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.PhoneNumber)) || filter.CustomerCode == null)) &&
                         ((filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
-                            filter.ReportType == CustomerReportType.BothOfThem) && _label_purchased_customers.Contains(c.Id))
+                            filter.ReportType == CustomerReportType.BothOfThem) && 
+                                (_label_purchased_customers.Contains(c.Id) || c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId)))
                         )
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
