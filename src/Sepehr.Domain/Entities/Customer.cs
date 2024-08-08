@@ -23,6 +23,7 @@ namespace Sepehr.Domain.Entities
         public string FatherName { get; set; } = string.Empty;
         public string? OfficialName { get; set; }
         public required string NationalId { get; set; }
+        public string NickName { get; set; }
         /// <summary>
         /// شناسه ملی
         /// </summary>

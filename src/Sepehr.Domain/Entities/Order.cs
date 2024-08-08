@@ -14,6 +14,19 @@ namespace Sepehr.Domain.Entities
     public class Order : AuditableBaseEntity<Guid>
     {
         public long OrderCode { get; set; }
+        public string BusinessCode { get; set; }
+        public Order()
+        {
+            BusinessCode = GenerateUniqueCode();
+        }
+        public static string GenerateUniqueCode()
+        {
+            long ticks = DateTime.Now.Ticks;
+            Random random = new Random();
+            int randomPart = random.Next(1000, 9999 + 1); // Add random digits for extra uniqueness
+            return $"{ticks % 100000}{randomPart:D3}"; // Format random part as three digits
+        }
+
         public Guid CustomerId { get; set; }
         [DataType(DataType.Currency)]
         public decimal TotalAmount { get; set; }

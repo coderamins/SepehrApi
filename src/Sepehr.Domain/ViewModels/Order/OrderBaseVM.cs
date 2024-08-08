@@ -9,7 +9,8 @@ namespace Sepehr.Domain.ViewModels.Order
 {
     public class OrderBaseVM
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
+        public string BussinessCode { get; set; } = string.Empty;
         public string? CustomerName { get; set; }
         public decimal TotalAmount { get; set; }
         public long OrderCode { get; set; }
@@ -37,5 +38,7 @@ namespace Sepehr.Domain.ViewModels.Order
         public string? DischargePlaceAddress { get; set; }
         public string? FreightDriverName { get; set; }
         public string? CarPlaque { get; set; }
+
+
     }
 }

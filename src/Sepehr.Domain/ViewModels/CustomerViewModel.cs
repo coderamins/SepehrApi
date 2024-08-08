@@ -16,6 +16,7 @@ namespace Sepehr.Domain.ViewModels
         public string LastName { get; set; }
         public string FatherName { get; set; } = string.Empty;
         public string? OfficialName { get; set; }
+        public string NickName { get; set; }
         public string NationalId { get; set; }
         /// <summary>
         /// شناسه ملی
