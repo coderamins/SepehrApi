@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Sepehr.Application.Parameters;
+using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
 {
@@ -13,6 +14,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
         public string PhoneNumber { get; set; }=string.Empty;
         public string NationalCode { get; set; } = string.Empty;
 
-        public IEnumerable<int>? CustomerLabelId { get; set; }
+        public int? CustomerLabelId { get; set; }
+        public CustomerReportType ReportType { get; set; }
     }
 }

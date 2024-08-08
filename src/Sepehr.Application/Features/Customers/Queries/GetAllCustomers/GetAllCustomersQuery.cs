@@ -7,6 +7,7 @@ using MediatR;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 
 namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
@@ -19,6 +20,8 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
         public string CustomerName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string NationalCode { get; set; } = string.Empty;
+        public int? CustomerLabelId { get; set; }
+        public CustomerReportType ReportType { get; set; }
     }
     public class GetAllCustomerQueryHandler :
          IRequestHandler<GetAllCustomersQuery, PagedResponse<IEnumerable<CustomerViewModel>>>

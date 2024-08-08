@@ -26,7 +26,9 @@ namespace Sepehr.WebApi.Controller
                     CustomerCode=filter.CustomerCode,
                     CustomerName =filter.CustomerName,
                     PhoneNumber=filter.PhoneNumber,
-                    NationalCode=filter.NationalCode
+                    NationalCode=filter.NationalCode,
+                    CustomerLabelId=filter.CustomerLabelId,
+                    ReportType=filter.ReportType
                 }));
         }
 

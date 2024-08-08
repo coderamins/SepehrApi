@@ -1,9 +1,11 @@
 using AutoMapper;
+using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.CustomerWarehouse;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
@@ -13,6 +15,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<Customer> _customers;
         private readonly DbSet<CustomerAssignedLabel> _customerAsignedLabel;
         private readonly DbSet<CustomerWarehouse> _customerWarehouses;
+        private readonly DbSet<OrderDetail> _orderDetail;
+        private readonly DbSet<CustomerLabel> _customerLabel;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
@@ -21,6 +25,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _customers = dbContext.Set<Customer>();
             _customerWarehouses = dbContext.Set<CustomerWarehouse>();
             _customerAsignedLabel = dbContext.Set<CustomerAssignedLabel>();
+            _orderDetail = dbContext.Set<OrderDetail>();
+            _customerLabel = dbContext.Set<CustomerLabel>();
             _dbContext = dbContext;
             _mapper = mapper;
         }
@@ -49,6 +55,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<List<Customer>> GetAllCustomers(GetAllCustomersParameter filter)
         {
+            List<Guid> _label_purchased_customers = new List<Guid>();
+            if(filter.ReportType==CustomerReportType.ReportByPurchaseHistory || 
+                filter.ReportType == CustomerReportType.BothOfThem)
+            {
+                var _labelInfo =await _customerLabel.FirstAsync(l => l.Id == filter.CustomerLabelId);
+
+                _label_purchased_customers = await
+                    _orderDetail.Where(o =>
+                    (_labelInfo.BrandId != null && o.ProductBrand.BrandId == _labelInfo.BrandId) ||
+                    (_labelInfo.ProductBrandId != null && o.ProductBrandId == _labelInfo.ProductBrandId) ||
+                    (_labelInfo.ProductTypeId != null && o.Product.ProductTypeId == _labelInfo.ProductTypeId) ||
+                    (_labelInfo.ProductId != null && o.Product.Id == _labelInfo.ProductId))
+                    .Select(d => d.Order.CustomerId).ToListAsync();
+            }
+
             return await _customers
                 .Include(c => c.CustomerValidity)
                 .Include(c => c.ApplicationUser)
@@ -59,11 +80,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.Orders)
                 .Include(c => c.Phonebook)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
-                .Where(c =>
+            .Where(c =>
+                        (filter.ReportType==CustomerReportType.ByLabelId && (filter.CustomerLabelId == null || c.CustomerLabels.Select(l=>l.CustomerLabelId).Contains((int)filter.CustomerLabelId))) &&
                         (c.NationalCode == filter.NationalCode || string.IsNullOrEmpty(filter.NationalCode)) &&
                         (c.CustomerCode == filter.CustomerCode || filter.CustomerCode == null) &&
                         (string.Concat(c.FirstName, " ", c.LastName).Contains(filter.CustomerName) || string.IsNullOrEmpty(filter.CustomerName)) &&
-                        ((c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.PhoneNumber)) || filter.CustomerCode == null)))
+                        ((c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.PhoneNumber)) || filter.CustomerCode == null)) &&
+                        ((filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
+                            filter.ReportType == CustomerReportType.BothOfThem) && _label_purchased_customers.Contains(c.Id))
+                        )
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
