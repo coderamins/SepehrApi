@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810113801_202408100306pm")]
+    partial class _202408100306pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3382,6 +3385,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TransferRemittanceDetailId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UnloadingPermitCode")
                         .HasColumnType("int");
 
@@ -3397,6 +3403,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("EntrancePermitId");
+
+                    b.HasIndex("TransferRemittanceDetailId");
 
                     b.ToTable("UnloadingPermits", "sepdb", t =>
                         {
@@ -5046,9 +5054,17 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Sepehr.Domain.Entities.TransferRemittanceDetail", "TransferRemittanceDetail")
+                        .WithMany()
+                        .HasForeignKey("TransferRemittanceDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("EntrancePermit");
+
+                    b.Navigation("TransferRemittanceDetail");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.UnloadingPermitDetail", b =>

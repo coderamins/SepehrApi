@@ -10,7 +10,7 @@ using Sepehr.Domain.Entities;
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 {
-    public class PurOrderTransRemittUnloadingPermitCommand : IRequest<Response<UnloadingPermit>>
+    public class CreateUnloadingPermitCommand : IRequest<Response<UnloadingPermit>>
     {
         public Guid TransferRemittanceEntrancePermitId { get; set; }
         public string DriverAccountNo { get; set; } = string.Empty;
@@ -28,10 +28,10 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 
         public string Description { get; set; } = string.Empty;
 
-        public virtual required List<PurOrderTransRemittUnloadingPermitDetailDto> UnloadingPermitDetails { get; set; }
+        public virtual required List<UnloadingPermitDetailDto> UnloadingPermitDetails { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
 
-        public class CreateLadingExitPermitCommandHandler : IRequestHandler<PurOrderTransRemittUnloadingPermitCommand,
+        public class CreateLadingExitPermitCommandHandler : IRequestHandler<CreateUnloadingPermitCommand,
             Response<UnloadingPermit>>
         {
             private readonly IMapper _mapper;
@@ -47,7 +47,7 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
                 _mapper = mapper;
             }
             public async Task<Response<UnloadingPermit>> Handle(
-                PurOrderTransRemittUnloadingPermitCommand command,
+                CreateUnloadingPermitCommand command,
                 CancellationToken cancellationToken)
             {
                 var purchTransferEntraPermit = await _purchaseOrderTransferRemittanceRepo

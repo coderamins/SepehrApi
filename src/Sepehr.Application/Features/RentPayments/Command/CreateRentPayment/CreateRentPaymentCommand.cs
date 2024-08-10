@@ -29,13 +29,13 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
     {
         private readonly IRentPaymentRepositoryAsync _rentPaymentRepository;
         private readonly ILadingExitPermitRepositoryAsync _ladingExitPermit;
-        private readonly IPuOrderTransRemitUnloadPermitRepositoryAsync _puOrderUnloadPermitRepository;
+        private readonly IUnloadingPermitRepositoryAsync _puOrderUnloadPermitRepository;
         private readonly IMapper _mapper;
         public CreateRentPaymentCommandHandler(
             IRentPaymentRepositoryAsync rentPaymentRepository,
             IMapper mapper,
             ILadingExitPermitRepositoryAsync ladingExitPermit,
-            IPuOrderTransRemitUnloadPermitRepositoryAsync puOrderUnloadPermitRepository)
+            IUnloadingPermitRepositoryAsync puOrderUnloadPermitRepository)
         {
             _rentPaymentRepository = rentPaymentRepository;
             _mapper = mapper;

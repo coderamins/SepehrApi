@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.ViewModels
 {
-    public class POrderTransRemittUnloadingPermitDetailViewModel
+    public class UnloadingPermitDetailViewModel
     {
         public int Id { get; set; }
         public decimal UnloadedAmount { get; set; }

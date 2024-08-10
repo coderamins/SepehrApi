@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\PurchaseOrderTransferRemittances\Command\TransferRemittanceUnloadingPermit\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 

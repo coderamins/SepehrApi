@@ -12,7 +12,7 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
         }
 
         private class TransferRemittanceUnloadingPermitDetailValidator:
-            AbstractValidator<PurOrderTransRemittUnloadingPermitDetailDto>
+            AbstractValidator<UnloadingPermitDetailDto>
         {
             public TransferRemittanceUnloadingPermitDetailValidator()
             {

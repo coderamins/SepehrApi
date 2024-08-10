@@ -132,6 +132,7 @@ using Sepehr.Application.Features.CustomerLabels.Command.UpdateCustomerLabel;
 using Sepehr.Application.Features.CustomerLabels.Queries.GetAllCustomerLabels;
 using Sepehr.Application.Features.Customers.Command.AssignCustomerLabel;
 using Sepehr.Application.DTOs.Customer;
+using Sepehr.Application.Features.UnloadingPermits.Queries.GetAllUnloadingPermits;
 
 namespace Sepehr.Application.Mapping
 {
@@ -180,8 +181,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<EntrancePermit, EntrancePermitViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.UnloadingPermits));
-            CreateMap<UnloadingPermit, POTransRemittUnloadingPermitViewModel>()
-                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))));
+
             CreateMap<TransferRemittance, TransferRemittanceViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.DestinationWarehouseName, opt => opt.MapFrom(d => d.DestinationWarehouse.Name))
@@ -901,16 +901,31 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.PurchaseOrderTransferDetails, opt => opt.MapFrom(d => d.TransferDetails));
             CreateMap<TransferPurchaseOrderDetailDto, PurchaseOrderTransferDetail>();
 
-            CreateMap<PurOrderTransRemittUnloadingPermitCommand, UnloadingPermit>()
-                .ForMember(m => m.UnloadingPermitDetails, opt => opt.
-                MapFrom(d => d.UnloadingPermitDetails));
-
-            CreateMap<PurOrderTransRemittUnloadingPermitDetailDto, UnloadingPermitDetail>();
             CreateMap<UnloadingPermit, TransferRemittance>()
                 .ForMember(m => m.Created, opt => opt.Ignore())
                 .ForMember(m => m.CreatedBy, opt => opt.Ignore())
                 .ForMember(m => m.Id, opt => opt.Ignore())
                 .ForMember(m => m.DeliverDate, opt => opt.MapFrom(d => d.DeliverDate.ToDateTime("00:00")));
+
+            #endregion
+
+            #region مجوز تخلیه
+
+            CreateMap<CreateUnloadingPermitCommand, UnloadingPermit>()
+                .ForMember(m => m.EntrancePermitId, opt => opt.MapFrom(d=>d.TransferRemittanceEntrancePermitId))
+                .ForMember(m => m.UnloadingPermitDetails, opt => opt.
+                MapFrom(d => d.UnloadingPermitDetails));
+
+            CreateMap<UnloadingPermit, UnloadingPermitViewModel>()
+                    .ForMember(m => m.CreatorName, opt =>
+                        opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))));
+
+            CreateMap<UnloadingPermitDetail, UnloadingPermitDetailViewModel>();
+            CreateMap<UnloadingPermitDetail, UnloadingPermitDetailViewModel>();
+
+            CreateMap<UnloadingPermitDetailDto, UnloadingPermitDetail>();
+            CreateMap<GetAllUnloadingPermitsParameter,GetAllUnloadingPermitsQuery>();
+            CreateMap<GetAllUnloadingPermitsQuery,GetAllUnloadingPermitsParameter>();
 
             #endregion
 

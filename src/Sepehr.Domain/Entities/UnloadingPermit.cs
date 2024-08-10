@@ -12,7 +12,6 @@ namespace Sepehr.Domain.Entities
     {
         public Guid EntrancePermitId { get; set; }
         public int UnloadingPermitCode { get; set; }
-        public int TransferRemittanceDetailId { get; set; }
         public string DriverAccountNo { get; set; } = string.Empty;
         public string DriverCreditCardNo { get; set; } = string.Empty;
         public decimal OtherCosts { get; set; }
@@ -27,7 +26,6 @@ namespace Sepehr.Domain.Entities
         public string DeliverDate { get; set; } = string.Empty;
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
 
-        public virtual required TransferRemittanceDetail TransferRemittanceDetail { get; set; }
         public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
         public virtual required EntrancePermit EntrancePermit { get; set; }
         public virtual ICollection<Attachment>? Attachments { get; set; }

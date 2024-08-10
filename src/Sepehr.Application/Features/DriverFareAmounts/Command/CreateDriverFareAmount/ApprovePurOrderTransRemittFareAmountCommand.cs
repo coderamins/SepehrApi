@@ -23,11 +23,11 @@ namespace Sepehr.Application.Features.DriverFareAmounts
     public class ApprovePurOrderTransRemittFareAmountCommandHandler :
         IRequestHandler<ApprovePurOrderTransRemittFareAmountCommand, Response<DriverFareAmountApprove>>
     {
-        private readonly IPuOrderTransRemitUnloadPermitRepositoryAsync _puOrderTransRemitUnload;
+        private readonly IUnloadingPermitRepositoryAsync _puOrderTransRemitUnload;
         private readonly IDriverFareAmountApproveRepositoryAsync _driverFareAmountApprove;
         private readonly IMapper _mapper;
         public ApprovePurOrderTransRemittFareAmountCommandHandler(
-            IPuOrderTransRemitUnloadPermitRepositoryAsync puOrderTransRemitUnload,
+            IUnloadingPermitRepositoryAsync puOrderTransRemitUnload,
             IDriverFareAmountApproveRepositoryAsync driverFareAmountApprove,
             IMapper mapper)
         {

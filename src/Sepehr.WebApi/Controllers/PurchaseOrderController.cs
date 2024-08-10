@@ -205,7 +205,7 @@ namespace Sepehr.WebApi.Controller
         [HttpPost("TransferRemittanceUnloadingPermit/{entranceId}")]
         [HasPermission("TransferRemittanceUnloadingPermit")]
         public async Task<IActionResult> TransferRemittanceUnloadingPermit(
-            Guid entranceId, PurOrderTransRemittUnloadingPermitCommand command)
+            Guid entranceId, CreateUnloadingPermitCommand command)
         {
             if (entranceId != command.TransferRemittanceEntrancePermitId)
             {

@@ -118,7 +118,7 @@ using (var scope = scopeFactory.CreateScope())
 {
     var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-#if DEBUG
+#if !DEBUG
     {
         await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
         await PurchaseInvoiceTypes.SeedAsync(applicationDbContext);

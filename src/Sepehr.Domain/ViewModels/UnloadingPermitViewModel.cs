@@ -1,5 +1,4 @@
-﻿using Sepehr.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.ViewModels
 {
-    public class POTransRemittUnloadingPermitViewModel
+    public class UnloadingPermitViewModel
     {
         public Guid Id { get; set; }
         public int UnloadingPermitCode { get; set; }
@@ -16,6 +15,5 @@ namespace Sepehr.Domain.ViewModels
         public List<AttachmentViewModel>? Attachments { get; set; }
 
         public List<UnloadingPermitDetailViewModel>? UnloadingPermitDetail { get; set; }
-
     }
 }

@@ -4,9 +4,9 @@ using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittance
 
 namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
 {
-    public class PurOrderTransRemittUnloadingPermitCommandValidator : AbstractValidator<PurOrderTransRemittUnloadingPermitCommand>
+    public class CreateUnloadingPermitCommandValidator : AbstractValidator<CreateUnloadingPermitCommand>
     {
-        public PurOrderTransRemittUnloadingPermitCommandValidator()
+        public CreateUnloadingPermitCommandValidator()
         {
             RuleFor(x => x.DriverMobile).Length(11).WithMessage("شماره موبایل نامعتبر می باشد !");
             //RuleForEach(x => x.Attachments).SetValidator(new FileValidator());
@@ -15,7 +15,7 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
         }
 
         private class TransferRemittanceUnloadingPermitDetailValidator:
-            AbstractValidator<PurOrderTransRemittUnloadingPermitDetailDto>
+            AbstractValidator<UnloadingPermitDetailDto>
         {
             public TransferRemittanceUnloadingPermitDetailValidator()
             {
