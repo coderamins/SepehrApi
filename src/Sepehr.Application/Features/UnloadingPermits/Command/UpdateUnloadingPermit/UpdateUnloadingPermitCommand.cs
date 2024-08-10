@@ -15,7 +15,7 @@ namespace Sepehr.Application.Features.UnloadingPermits.Command.UpdateUnloadingPe
 {
     public class UpdateUnloadingPermitCommand : IRequest<Response<string>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Desc { get; set; }
         public bool IsActive { get; set; }
 

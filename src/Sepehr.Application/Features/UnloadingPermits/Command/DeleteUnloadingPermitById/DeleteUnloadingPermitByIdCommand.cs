@@ -12,7 +12,7 @@ namespace Sepehr.Application.Features.UnloadingPermits.Command.DeleteUnloadingPe
 {
     public class DeleteUnloadingPermitByIdCommand : IRequest<Response<bool>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public class
         DeleteUnloadingPermitByIdCommandHandler

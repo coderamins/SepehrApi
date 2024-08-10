@@ -15,7 +15,7 @@ namespace Sepehr.Application.Features.UnloadingPermits.Command.RevokeUnloadingPe
 {
     public class RevokeUnloadingPermitCommand : IRequest<Response<string>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public class RevokeUnloadingPermitCommandHandler : IRequestHandler<RevokeUnloadingPermitCommand, Response<string>>
         {

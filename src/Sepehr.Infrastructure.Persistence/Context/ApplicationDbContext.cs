@@ -263,6 +263,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
+            builder.Entity<UnloadingPermit>()
+                .Property(p => p.UnloadingPermitCode)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
             builder.Entity<ShareHolder>().Property(prop => prop.ShareHolderCode)
             .UseIdentityColumn(3030, 1);
 

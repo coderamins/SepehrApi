@@ -55,7 +55,7 @@ namespace Sepehr.WebApi.Controller
         // PUT api/<controller>/5
         [HasPermission("UpdateUnloadingPermit")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, UpdateUnloadingPermitCommand command)
+        public async Task<IActionResult> Put(Guid id, UpdateUnloadingPermitCommand command)
         {
             if (id != command.Id)
             {
@@ -67,7 +67,7 @@ namespace Sepehr.WebApi.Controller
         // PUT api/<controller>/5
         [HasPermission("RevokeUnloadingPermit")]
         [HttpPut("RevokeUnloadingPermit/{id}")]
-        public async Task<IActionResult> RevokeUnloadingPermit(int id, RevokeUnloadingPermitCommand command)
+        public async Task<IActionResult> RevokeUnloadingPermit(Guid id, RevokeUnloadingPermitCommand command)
         {
             if (id != command.Id)
             {
@@ -79,7 +79,7 @@ namespace Sepehr.WebApi.Controller
         // DELETE api/<controller>/5
         [HasPermission("DeleteUnloadingPermit")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             return Ok(await Mediator
                 .Send(new DeleteUnloadingPermitByIdCommand { Id = id }));
