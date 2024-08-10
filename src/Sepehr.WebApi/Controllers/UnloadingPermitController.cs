@@ -31,7 +31,7 @@ namespace Sepehr.WebApi.Controller
         // GET api/<controller>/5
         [HasPermission("GetUnloadingPermitById")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await Mediator.Send(new GetUnloadingPermitByIdQuery { Id = id }));
         }

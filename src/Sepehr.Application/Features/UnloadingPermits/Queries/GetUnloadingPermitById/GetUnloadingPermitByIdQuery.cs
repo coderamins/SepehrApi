@@ -10,7 +10,7 @@ namespace Sepehr.Application.Features.UnloadingPermits.Queries.GetUnloadingPermi
 {
     public class GetUnloadingPermitByIdQuery : IRequest<Response<UnloadingPermitViewModel>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public class GetUnloadingPermitByIdQueryHandler : IRequestHandler<GetUnloadingPermitByIdQuery, Response<UnloadingPermitViewModel>>
         {
