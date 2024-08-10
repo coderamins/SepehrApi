@@ -56,10 +56,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<List<Customer>> GetAllCustomers(GetAllCustomersParameter filter)
         {
             List<Guid> _label_purchased_customers = new List<Guid>();
-            if(filter.ReportType==CustomerReportType.ReportByPurchaseHistory || 
+            if (filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
                 filter.ReportType == CustomerReportType.BothOfThem)
             {
-                var _labelInfo =await _customerLabel.FirstAsync(l => l.Id == filter.CustomerLabelId);
+                var _labelInfo = await _customerLabel.FirstAsync(l => l.Id == filter.CustomerLabelId);
 
                 _label_purchased_customers = await
                     _orderDetail.Where(o =>
@@ -81,14 +81,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.Phonebook)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
             .Where(c =>
-                        (filter.ReportType==CustomerReportType.ByLabelId && (filter.CustomerLabelId == null || c.CustomerLabels.Select(l=>l.CustomerLabelId).Contains((int)filter.CustomerLabelId))) &&
                         (c.NationalCode == filter.NationalCode || string.IsNullOrEmpty(filter.NationalCode)) &&
                         (c.CustomerCode == filter.CustomerCode || filter.CustomerCode == null) &&
                         (string.Concat(c.FirstName, " ", c.LastName).Contains(filter.CustomerName) || string.IsNullOrEmpty(filter.CustomerName)) &&
                         ((c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.PhoneNumber)) || filter.CustomerCode == null)) &&
-                        ((filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
-                            filter.ReportType == CustomerReportType.BothOfThem) && 
-                                (_label_purchased_customers.Contains(c.Id) || c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId)))
+                        ((_label_purchased_customers.Contains(c.Id) && new CustomerReportType[] { CustomerReportType.ReportByPurchaseHistory, CustomerReportType.BothOfThem }.Contains(filter.ReportType)) ||
+                        (filter.CustomerLabelId != null &&
+                            new CustomerReportType[] { CustomerReportType.ByLabelId, CustomerReportType.BothOfThem }.Contains(filter.ReportType) &&
+                            c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId) || filter.CustomerLabelId==null))
                         )
                 .OrderByDescending(p => p.Created).ToListAsync();
         }

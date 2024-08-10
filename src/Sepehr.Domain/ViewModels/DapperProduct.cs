@@ -40,6 +40,7 @@ namespace Sepehr.Domain.ViewModels
         public decimal Thickness { get; set; }
         public int WarehouseId { get; set; }
         public double ApproximateInventory { get; set; }
+        public double OnTransitInventory { get; set; }
         public double FloorInventory { get; set; }
         public double MaxInventory { get; set; }
         public double MinInventory { get; set; }

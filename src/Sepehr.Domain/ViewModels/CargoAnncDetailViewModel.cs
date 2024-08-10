@@ -16,6 +16,7 @@ namespace Sepehr.Domain.ViewModels
         public decimal RealAmount { get; set; }
         public int PackageCount { get; set; }
 
-        public OrderDetailViewModel OrderDetail { get; set; }
+        public OrderDetailViewModel? OrderDetail { get; set; }
+        public LadingExitPermitDetailViewModel? LadingExitPermitDetail { get; set; }
     }
 }

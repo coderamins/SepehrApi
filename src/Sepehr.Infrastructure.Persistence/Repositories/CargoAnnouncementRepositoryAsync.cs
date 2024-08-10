@@ -72,6 +72,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(ca => ca.Order).ThenInclude(o => o.FarePaymentType)
                 .Include(ca => ca.Order).ThenInclude(o => o.OrderServices)
                 .Include(ca => ca.Order).ThenInclude(o => o.OrderSendType)
+                .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.LadingExitPermitDetail).ThenInclude(x=>x.LadingExitPermit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.Product).ThenInclude(p => p.ProductSubUnit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.Product).ThenInclude(p => p.ProductMainUnit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.ProductBrand).ThenInclude(b => b.Brand)

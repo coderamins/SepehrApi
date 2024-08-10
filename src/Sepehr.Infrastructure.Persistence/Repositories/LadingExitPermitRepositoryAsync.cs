@@ -60,10 +60,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         CreatedBy = Guid.Parse(_authenticatedUser.UserId),
                     }).Result.Entity;
 
-                of_inv.FloorInventory -= (double)item.RealAmount;
-                inv.FloorInventory -= (double)item.RealAmount;
+                if (of_inv != null)
+                {
+                    of_inv.FloorInventory -= (double)item.RealAmount;
+                    _officialInventory.Update(of_inv);
+                }
 
-                _officialInventory.Update(of_inv);
+                inv.FloorInventory -= (double)item.RealAmount;
+                inv.ApproximateInventory += cargoAnncDetail.LadingAmount - item.RealAmount;
+
                 _inventory.Update(inv);
                 //inv. item.RealAmount;
             }

@@ -23,5 +23,6 @@ namespace Sepehr.Domain.Entities
 
         public required virtual CargoAnnounce CargoAnnounce { get; set; }
         public required virtual OrderDetail OrderDetail { get; set; }
+        public virtual LadingExitPermitDetail? LadingExitPermitDetail { get; set; }  
     }
 }

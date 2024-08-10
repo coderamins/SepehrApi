@@ -30,7 +30,7 @@ namespace Sepehr.Domain.ViewModels
         public int ProductBrandId { get; set; }
         public string ProductBrandName { get; set; } = string.Empty;
         public int WarehouseTypeId { get; set; }
-
+        public double OnTransitInventory { get; set; }
         public int MaxInventory { get; set; } //---حداکثر موجودی
         public int MinInventory { get; set; } //---حداقل موجودی
         public int InventotyCriticalPoint { get; set; } //---نقطه بحرانی

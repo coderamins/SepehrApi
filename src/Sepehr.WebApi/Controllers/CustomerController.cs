@@ -8,6 +8,7 @@ using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Features.Customers.Queries.GetCustomerById;
 using Sepehr.Infrastructure.Authentication;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller
 {
@@ -15,6 +16,7 @@ namespace Sepehr.WebApi.Controller
     public class CustomerController : BaseApiController
     {
         [HasPermission("GetAllCustomers")]
+        [SwaggerOperation("ReportType= ReportByPurchaseHistory=1,\r\nByLabelId=2,\r\nBothOfThem")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllCustomersParameter filter)
         {

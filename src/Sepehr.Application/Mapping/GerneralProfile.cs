@@ -150,10 +150,6 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
             #region Product Inventory
-            CreateMap<Product, OfficialWarehoseInventory>()
-                .ForMember(m => m.Id, opt => opt.Ignore())
-                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id))
-                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
 
             CreateMap<ProductInventory, ProductInventoryViewModel>()
                 .ForMember(m => m.WarehouseName, d => d.MapFrom(d => d.Warehouse.Name))
@@ -210,9 +206,10 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region Products
-
             CreateMap<Product, OfficialWarehoseInventory>()
-                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id));
+                .ForMember(m => m.ProductId, opt => opt.MapFrom(d => d.Id))
+                .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true))
+                .ForMember(m => m.Id, opt => opt.Ignore());
 
             CreateMap<ProductDetail, ProductDetailViewModel>();
 
@@ -356,9 +353,10 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.TotalLoadedAmount, d => d.MapFrom(d => d.CargoAnnounces == null ? 0 : d.CargoAnnounces.Sum(c => c.LadingAmount)))
                 .ForMember(m => m.RemainingLadingAmount, d => d.MapFrom(d => d.CargoAnnounces == null ? d.ProximateAmount :
                                                          d.ProximateAmount - d.CargoAnnounces.Sum(c => c.LadingAmount)))
-                //.ForMember(m => m.RemainingAmountToLadingLicence, d => 
-                //        d.MapFrom(d => d.LadingLicenseDetails==null ? d.ProximateAmount:
-                //                    d.ProximateAmount - d.LadingLicenseDetails.Sum(l=>l.LadingAmount)))
+                .ForMember(m => m.RemainingAmountToLadingLicence, d =>
+                        d.MapFrom(d => d.CargoAnnounces == null ? d.ProximateAmount :
+                                    d.ProximateAmount - d.CargoAnnounces.Sum(l => l.LadingExitPermitDetail.RealAmount)))
+
                 .ForMember(m => m.PurchaseSettlementDate, d => d.MapFrom(d => (d.PurchaseSettlementDate ?? DateTime.Now).ToShamsiDate())).ReverseMap();
 
             CreateMap<ApproveInvoiceOrderDetail, OrderDetail>();
