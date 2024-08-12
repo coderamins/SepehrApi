@@ -14,10 +14,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         ITransferWarehouseInventoryRepositoryAsync
     {
         private readonly DbSet<ProductInventory> _productInventory;
-        private readonly DbSet<TransferWarehouseInventory> _transferWarehouseInventorys;
-        private readonly DbSet<TransferWarehouseInventoryDetail> _transferWarehouseInventoryDetails;
-        private readonly DbSet<EntrancePermit> _transRemittEntrancePermits;
-        private readonly DbSet<UnloadingPermit> _orderTransferWarehouseInventoryUnloadingPermits;
+        private readonly DbSet<TransferWarehouseInventory> _transferInventories;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
@@ -26,10 +23,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             IMapper mapper
             ) : base(dbContext)
         {
-            _transRemittEntrancePermits = dbContext.Set<EntrancePermit>();
-            _transferWarehouseInventorys = dbContext.Set<TransferWarehouseInventory>();
-            _transferWarehouseInventoryDetails = dbContext.Set<TransferWarehouseInventoryDetail>();
-            _orderTransferWarehouseInventoryUnloadingPermits = dbContext.Set<UnloadingPermit>();
+            _transferInventories = dbContext.Set<TransferWarehouseInventory>();
             _dbContext = dbContext;
             _mapper = mapper;
             _productInventory = dbContext.Set<ProductInventory>();
@@ -37,41 +31,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<TransferWarehouseInventory> CreateTransferWarehouseInventory(TransferWarehouseInventory transRemittance)
         {
-            foreach (var item in transRemittance.Details)
-            {
-                var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
-                                    w.WarehouseId == transRemittance.OriginWarehouseId
-                                    && w.ProductBrandId == item.ProductBrandId);
-                if (_originWarehouse == null)
-                    throw new ApiException(string.Format("موجودی خرید برای کالا برند {0} یافت نشد !",
-                        _dbContext.Set<ProductBrand>().AsNoTracking().First(b => b.Id == item.ProductBrandId).Brand.Name));
-
-                var _destWarehouse = await _productInventory.FirstOrDefaultAsync(w =>
-                                    w.WarehouseId == transRemittance.DestinationWarehouseId
-                                    && w.ProductBrandId == item.ProductBrandId);
-
-                //----موجودی خرید انبار مبدا کم می شود
-                _originWarehouse.PurchaseInventory -= item.TransferAmount;
-                _productInventory.Update(_originWarehouse);
-
-                //----موجودی در راه انبار مقصد زیاد می شود
-                if (_destWarehouse == null)
-                {
-                    await _dbContext.ProductInventories
-                        .AddAsync(new ProductInventory
-                        {
-                            OnTransitInventory = item.TransferAmount,
-                            ProductBrandId = item.ProductBrandId,
-                            WarehouseId = transRemittance.OriginWarehouseId,
-                            IsActive = true,
-                        });
-                }
-                else
-                {
-                    _destWarehouse.OnTransitInventory += item.TransferAmount;
-                    _productInventory.Update(_destWarehouse);
-                }
-            }
+            var _prodInventory=_dbContext.Set<ProductInventory>().FirstOrDefaultAsync();
 
             var transRemitt = await _transferWarehouseInventorys.AddAsync(transRemittance);
             await _dbContext.SaveChangesAsync();

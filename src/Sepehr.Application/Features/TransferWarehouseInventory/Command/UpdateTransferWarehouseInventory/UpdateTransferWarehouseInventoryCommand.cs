@@ -33,8 +33,6 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Updat
                 if (transRemitt == null)
                     throw new ApiException("حواله انتقال یافت نشد !");
 
-                if (transRemitt.TransferWarehouseInventoryStatusId > 1)
-                    throw new ApiException("حواله انتقال امکان ویرایش ندارد !");
 
                 var transRemittance = _mapper.Map(request, transRemitt);
 

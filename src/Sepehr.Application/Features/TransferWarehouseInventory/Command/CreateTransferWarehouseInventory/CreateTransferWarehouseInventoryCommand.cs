@@ -28,9 +28,12 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
         {
             try
             {
-                var transRemittance = _mapper.Map<TransferWarehouseInventory>(request);
-                var newTransRemittance = await _transferRemitRepRepository.CreateTransferWarehouseInventory(transRemittance);
-                return new Response<TransferWarehouseInventory>(newTransRemittance, "ثبت حواله با موفقیت انجام شد .");
+                var transferInventory = _mapper.Map<TransferWarehouseInventory>(request);
+
+                var newTransRemittance = await _transferRemitRepRepository
+                    .CreateTransferWarehouseInventory(transferInventory);
+
+                return new Response<TransferWarehouseInventory>(newTransRemittance, "ثبت انتقال موفقیت انجام شد .");
             }
             catch (Exception r)
             {
