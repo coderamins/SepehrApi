@@ -12,7 +12,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Updat
     {
         public int Id { get; set; }
         public int OriginWarehouseId { get; set; }
-        public int Amount { get; set; }
+        public List<TransferWarehouseInventoryDetail> Details { get; set; }
 
     }
     public class UpdateTransferWarehouseInventoryCommandHandler : IRequestHandler<UpdateTransferWarehouseInventoryCommand, Response<TransferWarehouseInventory>>
@@ -31,13 +31,13 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Updat
             {
                 var transRemitt = await _purchaseOrderTransRepo.GetByIdAsync(request.Id);
                 if (transRemitt == null)
-                    throw new ApiException("حواله انتقال یافت نشد !");
+                    throw new ApiException("رکورد یافت نشد !");
 
 
                 var transRemittance = _mapper.Map(request, transRemitt);
 
                 var updatedTransRemittance = await _purchaseOrderTransRepo.UpdateTransferWarehouseInventory(transRemittance);
-                return new Response<TransferWarehouseInventory>(updatedTransRemittance, "ویرایش حواله با موفقیت انجام شد .");
+                return new Response<TransferWarehouseInventory>(updatedTransRemittance, "ویرایش انتقال با موفقیت انجام شد .");
             }
             catch (Exception r)
             {

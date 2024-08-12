@@ -12,8 +12,8 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240811185350_20240810111021pm")]
-    partial class _20240810111021pm
+    [Migration("20240812182026_20240810120921pm")]
+    partial class _20240810120921pm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("PaymentRequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PurOrderTransRemittanceEntrancePermitId")
                         .HasColumnType("uniqueidentifier");
 
@@ -80,6 +83,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("LadingPermitId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("PaymentRequestId");
 
                     b.HasIndex("PurOrderTransRemittanceEntrancePermitId");
 
@@ -482,7 +487,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NickName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OfficialName")
@@ -1728,6 +1732,202 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountOwnerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<string>("ApplicatorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ApproverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BankAccountOrShabaNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentRequestDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentRequestStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RejectReasonDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApproverId");
+
+                    b.HasIndex("BankId");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("PaymentRequestStatusId");
+
+                    b.ToTable("PaymentRequests", "sepdb", t =>
+                        {
+                            t.HasTrigger("PaymentRequestsTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequestReason", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReasonDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentRequestReasons", "sepdb", t =>
+                        {
+                            t.HasTrigger("PaymentRequestReasonsTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequestStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StatusDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentRequestStatus", "sepdb", t =>
+                        {
+                            t.HasTrigger("PaymentRequestStatusTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.Personnel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FatherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficialName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("PersonnelCode")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("Personnels", "sepdb", t =>
+                        {
+                            t.HasTrigger("PersonnelsTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.PettyCash", b =>
                 {
                     b.Property<int>("Id")
@@ -1806,6 +2006,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("PersonnelId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -1816,6 +2019,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("PersonnelId");
 
                     b.HasIndex("PhoneNumberTypeId");
 
@@ -3804,8 +4009,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseTypeId");
-
                     b.ToTable("Warehouses", "sepdb", t =>
                         {
                             t.HasTrigger("WarehousesTrigger");
@@ -3816,18 +4019,17 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
             modelBuilder.Entity("Sepehr.Domain.Entities.WarehouseType", b =>
                 {
-                    b.Property<int>("Id")
-                        .IsUnicode(true)
+                    b.Property<int>("WarehouseTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseTypeId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
+                    b.HasKey("WarehouseTypeId");
 
                     b.ToTable("WarehouseTypes", "sepdb", t =>
                         {
@@ -3859,6 +4061,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany("Attachments")
                         .HasForeignKey("OrderId");
 
+                    b.HasOne("Sepehr.Domain.Entities.PaymentRequest", "PaymentRequest")
+                        .WithMany("Attachments")
+                        .HasForeignKey("PaymentRequestId");
+
                     b.HasOne("Sepehr.Domain.Entities.EntrancePermit", "PurOrderTransRemittanceEntrancePermit")
                         .WithMany("Attachments")
                         .HasForeignKey("PurOrderTransRemittanceEntrancePermitId");
@@ -3880,6 +4086,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("LadingPermit");
 
                     b.Navigation("Order");
+
+                    b.Navigation("PaymentRequest");
 
                     b.Navigation("PurOrderTransRemittanceEntrancePermit");
 
@@ -4446,6 +4654,46 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Bank");
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequest", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId");
+
+                    b.HasOne("Sepehr.Domain.Entities.Bank", "Bank")
+                        .WithMany()
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Sepehr.Domain.Entities.PaymentRequestStatus", "PaymentRequestStatus")
+                        .WithMany()
+                        .HasForeignKey("PaymentRequestStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("Bank");
+
+                    b.Navigation("PaymentRequestStatus");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.Personnel", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.Phonebook", b =>
                 {
                     b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
@@ -4456,6 +4704,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany("Phonebook")
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("Sepehr.Domain.Entities.Personnel", "Personnel")
+                        .WithMany("Phonebook")
+                        .HasForeignKey("PersonnelId");
+
                     b.HasOne("Sepehr.Domain.Entities.PhoneNumberType", "PhoneNumberType")
                         .WithMany()
                         .HasForeignKey("PhoneNumberTypeId")
@@ -4465,6 +4717,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Personnel");
 
                     b.Navigation("PhoneNumberType");
                 });
@@ -5161,17 +5415,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Sepehr.Domain.Entities.Warehouse", b =>
-                {
-                    b.HasOne("Sepehr.Domain.Entities.WarehouseType", "WarehouseType")
-                        .WithMany()
-                        .HasForeignKey("WarehouseTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("WarehouseType");
-                });
-
             modelBuilder.Entity("Sepehr.Domain.Entities.Brand", b =>
                 {
                     b.Navigation("ProductBrands");
@@ -5258,6 +5501,16 @@ namespace Sepehr.Infrastructure.Persistence.Data
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetail", b =>
                 {
                     b.Navigation("CargoAnnounces");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequest", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.Personnel", b =>
+                {
+                    b.Navigation("Phonebook");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.Product", b =>

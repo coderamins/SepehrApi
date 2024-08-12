@@ -10,7 +10,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
     public partial class CreateTransferWarehouseInventoryCommand : IRequest<Response<TransferWarehouseInventory>>
     {
         public int OriginWarehouseId { get; set; }
-        public int Amount { get; set; }
+        public List<TransferWarehouseInventoryDetail> Details { get; set; }
 
     }
 
@@ -33,7 +33,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
                 var newTransRemittance = await _transferRemitRepRepository
                     .CreateTransferWarehouseInventory(transferInventory);
 
-                return new Response<TransferWarehouseInventory>(newTransRemittance, "ثبت انتقال موفقیت انجام شد .");
+                return new Response<TransferWarehouseInventory>(newTransRemittance, "ثبت انتقال با موفقیت انجام شد .");
             }
             catch (Exception r)
             {

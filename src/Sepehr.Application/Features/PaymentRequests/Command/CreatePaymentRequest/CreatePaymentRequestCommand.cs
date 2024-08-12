@@ -17,7 +17,6 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentReque
         public string AccountOwnerName { get; set; } = string.Empty;
         public int BankId { get; set; }
         public string ApplicatorName { get; set; } = string.Empty;
-        public int PaymentRequestStatusId { get; set; }
         public string PaymentRequestDescription { get; set; } = string.Empty;
     }
     public class CreatePaymentRequestCommandHandler : IRequestHandler<CreatePaymentRequestCommand, Response<PaymentRequest>>

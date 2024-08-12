@@ -15,7 +15,7 @@ namespace Sepehr.Domain.Enums
         OfficialWarehouse=5,
         VasetWarehouse=6,
         NoVasetWarehouse=7,
-        VirtualWarehouse=8,
+        VirtualWarehouse=6,
 
     }
 }

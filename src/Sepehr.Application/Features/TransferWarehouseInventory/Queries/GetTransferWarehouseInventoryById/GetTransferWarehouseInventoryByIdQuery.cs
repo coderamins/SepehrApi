@@ -25,7 +25,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Queries.GetTr
         public async Task<Response<TransferWarehouseInventoryViewModel>> Handle
             (GetTransferWarehouseInventoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var transferWarehouseInventorys = await _purchaseOrderRepository.GetTransferWarehouseInventoryByIdAsync(request.Id);
+            var transferWarehouseInventorys = await _purchaseOrderRepository.GetByIdAsync(request.Id);
             var transferWarehouseInventoryViewModel = _mapper.Map<TransferWarehouseInventoryViewModel>(transferWarehouseInventorys);
 
             return new Response<TransferWarehouseInventoryViewModel>(transferWarehouseInventoryViewModel);

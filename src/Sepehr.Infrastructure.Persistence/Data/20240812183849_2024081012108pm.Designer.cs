@@ -12,8 +12,8 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240812133909_202408120505pm")]
-    partial class _202408120505pm
+    [Migration("20240812183849_2024081012108pm")]
+    partial class _2024081012108pm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -487,7 +487,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NickName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OfficialName")
@@ -4010,8 +4009,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseTypeId");
-
                     b.ToTable("Warehouses", "sepdb", t =>
                         {
                             t.HasTrigger("WarehousesTrigger");
@@ -5417,17 +5414,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Sepehr.Domain.Entities.Warehouse", b =>
-                {
-                    b.HasOne("Sepehr.Domain.Entities.WarehouseType", "WarehouseType")
-                        .WithMany()
-                        .HasForeignKey("WarehouseTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("WarehouseType");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.Brand", b =>

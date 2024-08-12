@@ -6,37 +6,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
 {
     public class CreateTransferWarehouseInventoryCommandValidator : AbstractValidator<CreateTransferWarehouseInventoryCommand>
     {
-        public CreateTransferWarehouseInventoryCommandValidator()
-        {
-            RuleFor(x => x.OriginWarehouseId)
-                .NotEqual(x => x.DestinationWarehouseId)
-                .WithMessage("انبار مبدا و مقصد نمی توانند یکسان باشند !");
-
-            RuleFor(x => x.Details.Count()).GreaterThan(0).WithMessage("انتخاب حداقل یک کالا جهت انتقال الزامی می باشد !");
-            RuleForEach(x => x.Details).SetValidator(new TransferWarehouseInventoryDetailValidator());
-        }
-
-        private class TransferWarehouseInventoryDetailValidator : AbstractValidator<TransferWarehouseInventoryDetailDto>
-        {
-            public TransferWarehouseInventoryDetailValidator()
-            {
-                RuleFor(x => x.TransferAmount).GreaterThan(0).WithMessage("مقدار انتقال باید بزرگتر از صفر باشد !");
-            }
-        }
-
-        private class FileValidator:AbstractValidator<IFormFile>
-        {
-            public FileValidator()
-            {
-                RuleFor(x => x.Length).LessThanOrEqualTo(1000000).WithMessage("حجم فایل از اندازه مجاز می باشد !");
-                RuleFor(x => x.ContentType).Must(x => x.Equals("image/jpeg") ||
-                x.Equals("image/jpg") ||
-                x.Equals("image/png") ||
-                x.Equals("image/pdf") ||
-                x.Equals("application/pdf"))
-                    .WithMessage("قرمت فایل پیوست نامعتبر می باشد !");
-            }
-        }
+      
 
     }
 }

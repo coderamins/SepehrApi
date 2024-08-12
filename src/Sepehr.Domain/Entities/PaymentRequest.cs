@@ -19,7 +19,7 @@ namespace Sepehr.Domain.Entities
         public int BankId { get; set; }
         public string ApplicatorName { get; set; } = string.Empty;
         public Guid? ApproverId { get; set; }
-        public int PaymentRequestStatusId { get; set; }
+        public int PaymentRequestStatusId { get; set; } = 1;
         public string PaymentRequestDescription { get; set; } = string.Empty;
         public string RejectReasonDesc { get; set; }=string.Empty;  
 

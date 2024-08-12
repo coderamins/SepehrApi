@@ -9,9 +9,6 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Updat
         {
         }
 
-        public class TransferWarehouseInventoryDetailValidator : AbstractValidator<TransferWarehouseInventoryDetailDto>
-        {
-        }
 
     }
 }

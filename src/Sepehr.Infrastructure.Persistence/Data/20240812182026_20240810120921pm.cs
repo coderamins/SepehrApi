@@ -6,15 +6,41 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     /// <inheritdoc />
-    public partial class _202408120444pm : Migration
+    public partial class _20240810120921pm : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Warehouses_WarehouseTypes_WarehouseTypeId",
+                schema: "sepdb",
+                table: "Warehouses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Warehouses_WarehouseTypeId",
+                schema: "sepdb",
+                table: "Warehouses");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "PersonnelId",
                 schema: "sepdb",
                 table: "Phonebook",
+                type: "uniqueidentifier",
+                nullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "NickName",
+                schema: "sepdb",
+                table: "Customers",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment",
                 type: "uniqueidentifier",
                 nullable: true);
 
@@ -141,6 +167,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "PersonnelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attachment_PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "PaymentRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PaymentRequests_ApproverId",
                 schema: "sepdb",
                 table: "PaymentRequests",
@@ -171,6 +203,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "CreatedBy");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Attachment_PaymentRequests_PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "PaymentRequestId",
+                principalSchema: "sepdb",
+                principalTable: "PaymentRequests",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Phonebook_Personnels_PersonnelId",
                 schema: "sepdb",
                 table: "Phonebook",
@@ -183,6 +224,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Attachment_PaymentRequests_PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Phonebook_Personnels_PersonnelId",
                 schema: "sepdb",
@@ -209,10 +255,47 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "Phonebook");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Attachment_PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment");
+
             migrationBuilder.DropColumn(
                 name: "PersonnelId",
                 schema: "sepdb",
                 table: "Phonebook");
+
+            migrationBuilder.DropColumn(
+                name: "PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "NickName",
+                schema: "sepdb",
+                table: "Customers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Warehouses_WarehouseTypeId",
+                schema: "sepdb",
+                table: "Warehouses",
+                column: "WarehouseTypeId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Warehouses_WarehouseTypes_WarehouseTypeId",
+                schema: "sepdb",
+                table: "Warehouses",
+                column: "WarehouseTypeId",
+                principalSchema: "sepdb",
+                principalTable: "WarehouseTypes",
+                principalColumn: "WarehouseTypeId",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

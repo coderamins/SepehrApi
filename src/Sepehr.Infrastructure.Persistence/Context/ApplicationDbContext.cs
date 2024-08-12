@@ -106,6 +106,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PaymentRequest> PaymentRequests { get; set; }        
         public DbSet<Personnel> Personnels { get; set; }
         public DbSet<Audit> AuditLogs { get; set; }
+        public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
+        public DbSet<TransferWarehouseInventoryDetail> TransferWarehouseInventoryDetails { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

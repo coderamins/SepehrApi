@@ -10,6 +10,5 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<IEnumerable<TransferWarehouseInventory>> GetAllTransferWarehouseInventoriesAsync(GetAllTransferWarehouseInventoriesParameter validFilter);
         Task<TransferWarehouseInventory> UpdateTransferWarehouseInventory(TransferWarehouseInventory transRemittance);
         Task<TransferWarehouseInventory> CreateTransferWarehouseInventory(TransferWarehouseInventory transRemittance);
-        Task<EntrancePermit> PurchaseOrderTransRemittEntrancePermitById(Guid purchaseOrderTransferWarehouseInventoryEntrancePermitId);
     }
 }

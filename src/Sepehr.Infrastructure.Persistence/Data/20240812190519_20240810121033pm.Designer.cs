@@ -12,8 +12,8 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240812131433_202408120444pm")]
-    partial class _202408120444pm
+    [Migration("20240812190519_20240810121033pm")]
+    partial class _20240810121033pm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("PaymentRequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PurOrderTransRemittanceEntrancePermitId")
                         .HasColumnType("uniqueidentifier");
 
@@ -80,6 +83,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("LadingPermitId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("PaymentRequestId");
 
                     b.HasIndex("PurOrderTransRemittanceEntrancePermitId");
 
@@ -482,7 +487,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NickName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OfficialName")
@@ -4060,6 +4064,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany("Attachments")
                         .HasForeignKey("OrderId");
 
+                    b.HasOne("Sepehr.Domain.Entities.PaymentRequest", "PaymentRequest")
+                        .WithMany("Attachments")
+                        .HasForeignKey("PaymentRequestId");
+
                     b.HasOne("Sepehr.Domain.Entities.EntrancePermit", "PurOrderTransRemittanceEntrancePermit")
                         .WithMany("Attachments")
                         .HasForeignKey("PurOrderTransRemittanceEntrancePermitId");
@@ -4081,6 +4089,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("LadingPermit");
 
                     b.Navigation("Order");
+
+                    b.Navigation("PaymentRequest");
 
                     b.Navigation("PurOrderTransRemittanceEntrancePermit");
 
@@ -5505,6 +5515,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetail", b =>
                 {
                     b.Navigation("CargoAnnounces");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequest", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.Personnel", b =>
