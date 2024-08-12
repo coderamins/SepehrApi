@@ -12,9 +12,11 @@ namespace Sepehr.Domain.Entities
     {
         public string PhoneNumber { get; set; } = string.Empty;
         public Guid? CustomerId { get; set; }
+        public Guid? PersonnelId { get; set; }
         public int PhoneNumberTypeId { get; set; }
 
         public virtual required PhoneNumberType PhoneNumberType { get; set; }
         public Customer? Customer { get; set; }
+        public Personnel? Personnel { get; set; }
     }
 }

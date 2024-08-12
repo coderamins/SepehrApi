@@ -53,10 +53,6 @@ using Sepehr.Application.Features.Services.Queries.GetAllServices;
 using Sepehr.Application.Features.Services.Command.UpdateService;
 using Sepehr.Application.Features.Orders.Command.ApproveInvoiceType;
 using Sepehr.Application.DTOs;
-using Sepehr.Application.Features.CustomerOfficialCompanys.Command.CreateCustomerOfficialCompany;
-using Sepehr.Application.Features.CustomerOfficialCompanys.Command.UpdateCustomerOfficialCompany;
-using Sepehr.Application.Features.CustomerOfficialCompanys.Queries.GetAllCustomerOfficialCompanys;
-using Sepehr.Application.DTOs.CargoExitPermit;
 using Sepehr.Application.DTOs.LadingLicense;
 using Sepehr.Application.DTOs.PurchaseOrder;
 using Sepehr.Application.Features.PurchaseOrders.Queries.GetAllPurchaseOrders;
@@ -133,6 +129,15 @@ using Sepehr.Application.Features.CustomerLabels.Queries.GetAllCustomerLabels;
 using Sepehr.Application.Features.Customers.Command.AssignCustomerLabel;
 using Sepehr.Application.DTOs.Customer;
 using Sepehr.Application.Features.UnloadingPermits.Queries.GetAllUnloadingPermits;
+using Sepehr.Application.Features.CustomerOfficialCompanys.Command.CreateCustomerOfficialCompany;
+using Sepehr.Application.Features.CustomerOfficialCompanys.Command.UpdateCustomerOfficialCompany;
+using Sepehr.Application.Features.CustomerOfficialCompanys.Queries.GetAllCustomerOfficialCompanys;
+using Sepehr.Application.Features.Personnels.Command.CreatePersonnel;
+using Sepehr.Application.Features.Personnels.Command.UpdatePersonnel;
+using Sepehr.Application.Features.Personnels.Queries.GetAllPersonnels;
+using Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentRequest;
+using Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest;
+using Sepehr.Application.Features.PaymentRequests.Queries.GetAllPaymentRequests;
 
 namespace Sepehr.Application.Mapping
 {
@@ -1158,6 +1163,35 @@ namespace Sepehr.Application.Mapping
             CreateMap<UpdateCustomerLabelCommand, CustomerLabel>();
             CreateMap<GetAllCustomerLabelsQuery, GetAllCustomerLabelsParameter>();
             #endregion
+
+            #region Personnels پرسنل
+            CreateMap<CreatePersonnelCommand, Personnel>()
+                .ForMember(m => m.Phonebook, opt => opt.MapFrom(d => d.Phonebook));
+
+            CreateMap<Personnel, PersonnelViewModel>();
+
+            CreateMap<GetAllPersonnelsQuery, GetAllPersonnelsParameter>();
+
+            CreateMap<UpdatePersonnelCommand, Personnel>()
+                .ForMember(m => m.Created, opt => opt.Ignore())
+                .ForMember(m => m.CreatedBy, opt => opt.Ignore());
+
+            #endregion
+
+            #region RentPayments
+            CreateMap<PaymentRequest, PaymentRequestViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
+                .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
+
+            CreateMap<CreatePaymentRequestCommand, RentPayment>();
+
+            CreateMap<UpdatePaymentRequestCommand, PaymentRequest>();
+
+            CreateMap<GetAllPaymentRequestsQuery, GetAllPaymentRequestsParameter>();
+
+            #endregion
+
+
         }
 
         private List<CustomerAssignedLabel> ConvertToCustomerLabels(IEnumerable<int> assignedLabels)

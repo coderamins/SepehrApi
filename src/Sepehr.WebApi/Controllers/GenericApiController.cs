@@ -11,6 +11,8 @@ namespace Sepehr.WebApi.Controller
     [ApiVersion("1.0")]
     public class GenericApiController : BaseApiController
     {
+        private readonly DbSet<PaymentRequestReason> _paymentRequestReason;
+        private readonly DbSet<PaymentRequestStatus> _paymentRequestStatus;
         private readonly DbSet<OrderSendType> _orderSendTypes;
         private readonly DbSet<PurchaseOrderSendType> _purOrderSendTypes;
         private readonly DbSet<FarePaymentType> _orderFarePayments;
@@ -53,6 +55,8 @@ namespace Sepehr.WebApi.Controller
             _orderExitTypes = dbContext.Set<OrderExitType>();
             _phoneNumberTypes = dbContext.Set<PhoneNumberType>();
             _customerLabelType = dbContext.Set<CustomerLabelType>();
+            _paymentRequestReason = dbContext.Set<PaymentRequestReason>();
+            _paymentRequestStatus = dbContext.Set<PaymentRequestStatus>();
             _banks = dbContext.Set<Bank>();
         }
 
@@ -194,6 +198,20 @@ namespace Sepehr.WebApi.Controller
         public async Task<IActionResult> GetCustomerLabelTypes()
         {
             return Ok(await _customerLabelType.ToListAsync());
+        }
+
+        [HasPermission("GetAllPaymentRequestReasons")]
+        [HttpGet("GetAllPaymentRequestReasons")]
+        public async Task<IActionResult> GetAllPaymentRequestReasons()
+        {
+            return Ok(await _paymentRequestReason.ToListAsync());
+        }
+
+        [HasPermission("GetAllPaymentRequestStatus")]
+        [HttpGet("GetAllPaymentRequestStatus")]
+        public async Task<IActionResult> GetAllPaymentRequestStatus()
+        {
+            return Ok(await _paymentRequestStatus.ToListAsync());
         }
 
 

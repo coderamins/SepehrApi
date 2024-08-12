@@ -101,7 +101,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<CustomerLabel> CustomerLabels { get; set; }
         public DbSet<CustomerAssignedLabel> CustomerAssignedLabels { get; set; }
         public DbSet<CustomerLabelType> CustomerLabelTypes { get; set; }
-
+        public DbSet<PaymentRequestReason> PaymentRequestReasons { get; set; }
+        public DbSet<PaymentRequestStatus> PaymentRequestStatus { get; set; }
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }        
+        public DbSet<Personnel> Personnels { get; set; }
         public DbSet<Audit> AuditLogs { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -245,6 +248,14 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .ValueGeneratedNever();
 
             builder.Entity<PurchaseOrderSendType>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
+            builder.Entity<PaymentRequestStatus>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
+            builder.Entity<PaymentRequestReason>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 

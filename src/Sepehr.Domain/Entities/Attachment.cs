@@ -20,6 +20,7 @@ namespace Sepehr.Domain.Entities
         public Guid? LadingExitPermitId { get; set; }
         public AttachmentType? AttachmentType { get; set; } = 0;
         public Guid? CargoAnnounceId { get; set; }
+        public Guid? PaymentRequestId { get; set; }
 
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual ReceivePay? ReceivePay { get; set; }
@@ -27,6 +28,7 @@ namespace Sepehr.Domain.Entities
         public virtual LadingPermit? LadingPermit { get; set; }
         public virtual EntrancePermit? PurOrderTransRemittanceEntrancePermit { get; set; }
         public virtual UnloadingPermit? PurOrderTransRemittanceUnloadingPermit { get; set; }
+        public virtual PaymentRequest? PaymentRequest { get; set; }
 
     }
 }
