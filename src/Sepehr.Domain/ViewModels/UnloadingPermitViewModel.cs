@@ -25,6 +25,7 @@ namespace Sepehr.Domain.ViewModels
         public string DriverMobile { get; set; } = string.Empty;
         public string DeliverDate { get; set; } = string.Empty;
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
+        public string CreateDate { get; set; } = string.Empty;
 
         public List<AttachmentViewModel>? Attachments { get; set; }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240811180823_20240810110936pm")]
+    partial class _20240810110936pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3813,18 +3816,17 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
             modelBuilder.Entity("Sepehr.Domain.Entities.WarehouseType", b =>
                 {
-                    b.Property<int>("Id")
-                        .IsUnicode(true)
+                    b.Property<int>("WarehouseTypeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseTypeId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
+                    b.HasKey("WarehouseTypeId");
 
                     b.ToTable("WarehouseTypes", "sepdb", t =>
                         {

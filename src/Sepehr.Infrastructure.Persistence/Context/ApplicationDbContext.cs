@@ -284,6 +284,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedNever();
 
+            builder.Entity<WarehouseType>()
+                .Property(p => p.Id)
+                .IsUnicode()
+                .ValueGeneratedNever();
+
             builder.Entity<ProductStandard>()
                 .Property(p => p.Desc)
                 .IsUnicode();

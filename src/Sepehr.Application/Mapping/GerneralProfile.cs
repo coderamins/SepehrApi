@@ -917,6 +917,7 @@ namespace Sepehr.Application.Mapping
                 MapFrom(d => d.UnloadingPermitDetails));
 
             CreateMap<UnloadingPermit, UnloadingPermitViewModel>()
+                    .ForMember(m => m.CreateDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                     .ForMember(m => m.CreatorName, opt =>
                         opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))));
 

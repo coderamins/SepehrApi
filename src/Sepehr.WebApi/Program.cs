@@ -42,6 +42,7 @@ builder.Services.AddCors(options =>
                           .WithOrigins(
                               "http://localhost:3000",
                               "https://localhost:3000",
+                              "http://192.168.10.125:8084",
                               "https://manage.iraniansepehr.com",
                               "http://manage.iraniansepehr.com"
                           //    "http://*.iraniansepehr.com",
@@ -118,6 +119,10 @@ using (var scope = scopeFactory.CreateScope())
 {
     var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+
+    Console.WriteLine("Migration successfuly applied!");
 #if !DEBUG
     {
         await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
@@ -145,9 +150,7 @@ using (var scope = scopeFactory.CreateScope())
         await DefaultPurchaseOrderFarePaymentTypes.SeedAsync(applicationDbContext);
         await DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
         await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
-        
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        db.Database.Migrate();
+
     }
 #endif
 

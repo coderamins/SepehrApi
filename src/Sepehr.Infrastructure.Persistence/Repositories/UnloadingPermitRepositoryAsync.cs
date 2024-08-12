@@ -22,7 +22,20 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return _unloadingPermits
                 .Include(x=>x.EntrancePermit)
                 .Include(x=>x.ApplicationUser)
-                .Include(x=>x.UnloadingPermitDetails)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(x=>x.Brand)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x => x.ProductMainUnit)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x => x.ProductSubUnit)
                 .Where(x => x.UnloadingPermitCode == validFilter.UnloadingPermitCode || validFilter.UnloadingPermitCode == null);
 
         }
@@ -33,6 +46,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.EntrancePermit)
                 .Include(x => x.ApplicationUser)
                 .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(x => x.Brand)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x => x.ProductMainUnit)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x => x.ProductSubUnit)
                 .Include(x => x.Attachments)
                 .FirstOrDefaultAsync(x => x.Id == Id);
         }
@@ -43,8 +69,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.EntrancePermit)
                 .Include(x => x.ApplicationUser)
                 .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(x => x.Brand)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x=>x.ProductMainUnit)
+                .Include(x => x.UnloadingPermitDetails)
+                        .ThenInclude(c => c.TransferRemittanceDetail)
+                        .ThenInclude(x => x.ProductBrand)
+                        .ThenInclude(c => c.Product)
+                        .ThenInclude(x => x.ProductSubUnit)
                 .Include(x => x.Attachments)
-                .FirstOrDefaultAsync(x => x.UnloadingPermitCode == unloadingPermitCode);
+                .FirstOrDefaultAsync(/*x => x.UnloadingPermitCode == unloadingPermitCode*/);
         }
     }
 }

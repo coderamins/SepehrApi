@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sepehr.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Sepehr.Domain.ViewModels
     {
         public int Id { get; set; }
         public decimal UnloadedAmount { get; set; }
+        public TransferRemittanceDetailViewModel TransferRemittanceDetail { get; set; }
 
         public List<AttachmentViewModel> Attachments { get; set; } = new List<AttachmentViewModel>();
 
