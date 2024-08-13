@@ -41,17 +41,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (_prodMabadiInventory == null)
                     throw new ApiException("موجودی انبار مبادی یافت نشد !");
 
-                var _prodPurchaseiInventory =await _dbContext.Set<ProductInventory>()
-                    .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
-                                              i.WarehouseId == transInventory.OriginWarehouseId &&
-                                              i.Warehouse.WarehouseTypeId == (int)EWarehouseType.Kharid);
-                if (_prodPurchaseiInventory == null)
-                    throw new ApiException("موجودی انبار خرید یافت نشد !");
+                //var _prodPurchaseiInventory =await _dbContext.Set<ProductInventory>()
+                //    .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
+                //                              i.WarehouseId == transInventory.OriginWarehouseId );
+                //if (_prodPurchaseiInventory == null)
+                //    throw new ApiException("موجودی انبار خرید یافت نشد !");
 
-                if (item.TransferAmount > _prodPurchaseiInventory.PurchaseInventory)
+                if (item.TransferAmount > _prodMabadiInventory.PurchaseInventory)
                     throw new ApiException("موجودی خرید کافی نمی باشد !");
 
-                _prodPurchaseiInventory.PurchaseInventory -= item.TransferAmount;
+                _prodMabadiInventory.PurchaseInventory -= item.TransferAmount;
                 _prodMabadiInventory.ApproximateInventory += item.TransferAmount;
 
                 _productInventory.Update(_prodMabadiInventory);

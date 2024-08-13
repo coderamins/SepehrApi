@@ -174,6 +174,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<LadingPermit>()
             .HasIndex(p => new { p.CargoAnnounceId, p.IsActive }).IsUnique();
 
+            builder.Entity<ProductInventory>()
+            .HasIndex(p => new { p.ProductBrandId, p.WarehouseId }).IsUnique();
+
             // builder.Entity<ChildTable>()
             //     .HasIndex(c => c.IsEnabled); // Index on IsEnabled column for better performance
 
