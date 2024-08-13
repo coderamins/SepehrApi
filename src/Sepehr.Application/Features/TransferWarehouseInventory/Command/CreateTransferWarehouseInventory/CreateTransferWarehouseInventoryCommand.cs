@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Sepehr.Application.DTOs.Product;
+using Sepehr.Application.DTOs.TransferWarehouseInventory;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
@@ -10,7 +11,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
     public partial class CreateTransferWarehouseInventoryCommand : IRequest<Response<TransferWarehouseInventory>>
     {
         public int OriginWarehouseId { get; set; }
-        public List<TransferWarehouseInventoryDetail> Details { get; set; }
+        public List<TransferWarehouseInventoryDetailDto> Details { get; set; }
 
     }
 

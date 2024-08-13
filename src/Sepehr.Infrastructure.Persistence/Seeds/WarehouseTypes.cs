@@ -10,7 +10,7 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
         SeedAsync(ApplicationDbContext applicationDbContext)
         {
             //Seed Default User
-            var brands =
+            var warehouses =
                 new List<WarehouseType> {
                     new WarehouseType{Id=1,Description="واسطه"},
                     new WarehouseType{Id=2,Description="امانی"},
@@ -20,13 +20,21 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
                     new WarehouseType{Id=6,Description="خرید"}
                 };
 
-            foreach (var item in brands)
+            foreach (var item in warehouses)
             {
-                if (!applicationDbContext.WarehouseTypes.Where(b=>b.Description.Equals(item.Description)).Any())
-                {
+                var w = await applicationDbContext.WarehouseTypes.FirstOrDefaultAsync(w => new int[] { 8, 13 }.Contains(w.Id));
+                if (w != null)
+                    applicationDbContext.WarehouseTypes.Remove(w);
+
+                var whouse =await applicationDbContext.WarehouseTypes.FirstOrDefaultAsync(b => b.Id.Equals(item.Id));
+                if (whouse==null)
                     applicationDbContext.WarehouseTypes.Add(item);
+                else
+                {
+                    whouse.Description=item.Description;
+                    applicationDbContext.WarehouseTypes.Update(whouse);
                 }
-                                
+
                 await applicationDbContext.SaveChangesAsync();
             }
         }

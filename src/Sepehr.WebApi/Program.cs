@@ -123,7 +123,7 @@ using (var scope = scopeFactory.CreateScope())
     db.Database.Migrate();
 
     Console.WriteLine("Migration successfuly applied!");
-#if !DEBUG
+#if DEBUG
     {
         await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
         await PurchaseInvoiceTypes.SeedAsync(applicationDbContext);
@@ -151,7 +151,8 @@ using (var scope = scopeFactory.CreateScope())
         await DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
         await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
         await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
-        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);        
+        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);  
+        
     }
 #endif
 

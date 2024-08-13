@@ -138,6 +138,10 @@ using Sepehr.Application.Features.Personnels.Queries.GetAllPersonnels;
 using Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentRequest;
 using Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest;
 using Sepehr.Application.Features.PaymentRequests.Queries.GetAllPaymentRequests;
+using Sepehr.Application.Features.TransferWarehouseInventories.Command.CreateTransferWarehouseInventory;
+using Sepehr.Application.Features.TransferWarehouseInventories.Queries.GetAllTransferWarehouseInventories;
+using Sepehr.Application.Features.TransferWarehouseInventories.Command.UpdateTransferWarehouseInventory;
+using Sepehr.Application.DTOs.TransferWarehouseInventory;
 
 namespace Sepehr.Application.Mapping
 {
@@ -1178,12 +1182,33 @@ namespace Sepehr.Application.Mapping
 
             #endregion
 
-            #region RentPayments
-            CreateMap<PaymentRequest, PaymentRequestViewModel>()
+            #region TransferWarehouseInventories پرسنل
+            CreateMap<CreateTransferWarehouseInventoryCommand, TransferWarehouseInventory>();
+            CreateMap<TransferWarehouseInventoryDetailDto, TransferWarehouseInventoryDetail>();
+
+            CreateMap<TransferWarehouseInventory, TransferWarehouseInventoryViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
-            CreateMap<CreatePaymentRequestCommand, RentPayment>();
+
+            CreateMap<GetAllTransferWarehouseInventoriesQuery, GetAllTransferWarehouseInventoriesParameter>();
+
+            CreateMap<UpdateTransferWarehouseInventoryCommand, TransferWarehouseInventory>()
+                .ForMember(m => m.Created, opt => opt.Ignore())
+                .ForMember(m => m.CreatedBy, opt => opt.Ignore());
+
+            #endregion
+
+            #region PaymentRequests
+            CreateMap<PaymentRequest, PaymentRequestViewModel>()
+                .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
+                .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
+                .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
+                .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
+                .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
+
+            CreateMap<CreatePaymentRequestCommand, PaymentRequest>();
 
             CreateMap<UpdatePaymentRequestCommand, PaymentRequest>();
 

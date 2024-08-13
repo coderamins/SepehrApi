@@ -24,12 +24,27 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<PaymentRequest>> GetAllPaymentRequestsAsync(GetAllPaymentRequestsParameter validFilter)
         {
             return
-                await _paymentRequests.ToListAsync();
+                await _paymentRequests
+                .Include(x=>x.PaymentRequestReason)
+                .Include(x => x.PaymentRequestStatus)
+                .Include(x => x.Customer)
+                .Include(x=>x.Approver)
+                .Include(x=>x.ApplicationUser)
+                .Include(x=>x.Bank)
+                .Where(x=>x.PaymentRequestCode==validFilter.PaymentRequestCoode || validFilter.PaymentRequestCoode==null)
+                .ToListAsync();
         }
 
         public async Task<PaymentRequest?> GetPaymentRequestInfo(Guid PaymentRequestId)
         {
             return await _paymentRequests
+                .Include(x => x.PaymentRequestReason)
+                .Include(x => x.PaymentRequestStatus)
+                .Include(x => x.Approver)
+                .Include(x => x.Customer)
+                .Include(x => x.ApplicationUser)
+                .Include(x => x.Bank)
+                .Include(x => x.Attachments)
                 .FirstOrDefaultAsync(p => p.Id == PaymentRequestId);
         }
     }

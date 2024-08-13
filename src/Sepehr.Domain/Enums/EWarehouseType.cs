@@ -8,14 +8,12 @@ namespace Sepehr.Domain.Enums
 {
     public enum EWarehouseType
     {
-        UsualWarehouse=1,
-        VaseteWarehouse=2,
-        AmaniWarehouse=3,
-        MabadiWarehouse=4,
-        OfficialWarehouse=5,
-        VasetWarehouse=6,
-        NoVasetWarehouse=7,
-        VirtualWarehouse=6,
+        Vaseteh=1,
+        Amani=2,
+        Mabadi=3,
+        Rasmi=4,
+        Addi=5,
+        Kharid=6,
 
     }
 }

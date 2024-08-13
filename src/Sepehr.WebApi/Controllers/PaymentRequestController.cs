@@ -25,18 +25,7 @@ namespace Sepehr.WebApi.Controller
                 {
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
-                }));
-        }
-
-        [HasPermission("GetAllPaymentRequests")]
-        [HttpGet("GetAllPaymentRequests")]
-        public async Task<IActionResult> GetAllPaymentRequests([FromQuery] GetAllPaymentRequestsParameter filter)
-        {
-            return Ok(await Mediator
-                .Send(new GetAllPaymentRequestsQuery()
-                {
-                    PageSize = filter.PageSize,
-                    PageNumber = filter.PageNumber,
+                    PaymentRequestCoode = filter.PaymentRequestCoode,
                 }));
         }
 

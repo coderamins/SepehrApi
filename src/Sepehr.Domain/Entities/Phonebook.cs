@@ -16,7 +16,7 @@ namespace Sepehr.Domain.Entities
         public int PhoneNumberTypeId { get; set; }
 
         public virtual required PhoneNumberType PhoneNumberType { get; set; }
-        public Customer? Customer { get; set; }
-        public Personnel? Personnel { get; set; }
+        //public Customer? Customer { get; set; }
+        //public Personnel? Personnel { get; set; }
     }
 }

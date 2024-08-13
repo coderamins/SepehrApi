@@ -21,12 +21,11 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentReque
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentReason { get; set; } = string.Empty;
+        public int PaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }
         public string AccountOwnerName { get; set; } = string.Empty;
         public int BankId { get; set; }
         public string ApplicatorName { get; set; } = string.Empty;
-        public int PaymentRequestStatusId { get; set; }
         public string PaymentRequestDescription { get; set; } = string.Empty;
 
         public class UpdatePaymentRequestCommandHandler : IRequestHandler<UpdatePaymentRequestCommand, Response<string>>

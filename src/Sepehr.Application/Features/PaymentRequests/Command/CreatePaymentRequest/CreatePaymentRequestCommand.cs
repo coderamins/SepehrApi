@@ -12,7 +12,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentReque
     {
         public Guid CustomerId { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentReason { get; set; } = string.Empty;
+        public int PaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }
         public string AccountOwnerName { get; set; } = string.Empty;
         public int BankId { get; set; }

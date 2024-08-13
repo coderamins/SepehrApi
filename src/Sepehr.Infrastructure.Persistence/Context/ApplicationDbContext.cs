@@ -205,6 +205,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
+            builder.Entity<PaymentRequest>()
+                .Property(o => o.PaymentRequestCode)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
             builder.Entity<LadingExitPermit>().Property(prop => prop.LadingExitPermitCode)
                 .UseIdentityColumn(100, 1);
 
@@ -271,6 +276,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
+            builder.Entity<Personnel>()
+                .Property(p => p.PersonnelCode)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
             builder.Entity<EntrancePermit>()
                 .Property(p => p.PermitCode)
                 .IsUnicode()
@@ -286,6 +296,21 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<EntrancePermit>().Property(prop => prop.PermitCode)
             .UseIdentityColumn(1001, 1);
+
+            builder.Entity<Order>().Property(prop => prop.OrderCode)
+            .UseIdentityColumn(10000, 2);
+
+            builder.Entity<PurchaseOrder>().Property(prop => prop.OrderCode)
+            .UseIdentityColumn(30001, 2);
+
+            builder.Entity<PaymentRequest>().Property(prop => prop.PaymentRequestCode)
+            .UseIdentityColumn(100, 1);
+
+            builder.Entity<Customer>().Property(prop => prop.CustomerCode)
+            .UseIdentityColumn(100, 1);
+
+            builder.Entity<Personnel>().Property(prop => prop.PersonnelCode)
+            .UseIdentityColumn(1000, 1);
 
             builder.Entity<TransferRemittanceType>()
                 .Property(p => p.Id)
@@ -315,11 +340,13 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode();
 
             builder.Entity<CargoAnnounce>().Property(u => u.CargoAnnounceNo).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder.Entity<PaymentRequest>().Property(u => u.PaymentRequestCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<Order>().Property(u => u.OrderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<PurchaseOrder>().Property(u => u.OrderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<ReceivePay>().Property(u => u.ReceivePayCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<Product>().Property(u => u.ProductCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<Customer>().Property(u => u.CustomerCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder.Entity<Personnel>().Property(u => u.PersonnelCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<ShareHolder>().Property(u => u.ShareHolderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<LadingExitPermit>().Property(u => u.LadingExitPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<UnloadingPermit>().Property(u => u.UnloadingPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);

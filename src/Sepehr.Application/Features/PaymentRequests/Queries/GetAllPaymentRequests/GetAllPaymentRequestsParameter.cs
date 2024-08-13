@@ -9,6 +9,6 @@ namespace Sepehr.Application.Features.PaymentRequests.Queries.GetAllPaymentReque
 {
     public class GetAllPaymentRequestsParameter : RequestParameter
     {
-
+        public int? PaymentRequestCoode { get; set; }
     }
 }

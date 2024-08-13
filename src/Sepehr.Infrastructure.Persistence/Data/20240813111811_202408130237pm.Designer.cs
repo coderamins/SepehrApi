@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813111811_202408130237pm")]
+    partial class _202408130237pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,13 +437,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("CustomerCharacteristics")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("CustomerCode")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(true)
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerCode"), 100L);
 
                     b.Property<int>("CustomerType")
                         .HasColumnType("int");
@@ -1917,13 +1913,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<string>("OfficialName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("PersonnelCode")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(true)
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PersonnelCode"), 1000L);
 
                     b.HasKey("Id");
 

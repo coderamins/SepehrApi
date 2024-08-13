@@ -10,5 +10,7 @@ namespace Sepehr.Domain.ViewModels
     {
         public int OriginWarehouseId { get; set; }
         public int Amount { get; set; }
-    }
+        public string CreatorName { get; set; }
+        public string CreatedDate { get; set; }
+    }              
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Sepehr.Application.DTOs.Product;
+using Sepehr.Application.DTOs.TransferWarehouseInventory;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
@@ -12,7 +13,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Updat
     {
         public int Id { get; set; }
         public int OriginWarehouseId { get; set; }
-        public List<TransferWarehouseInventoryDetail> Details { get; set; }
+        public List<TransferWarehouseInventoryDetailDto> Details { get; set; }
 
     }
     public class UpdateTransferWarehouseInventoryCommandHandler : IRequestHandler<UpdateTransferWarehouseInventoryCommand, Response<TransferWarehouseInventory>>

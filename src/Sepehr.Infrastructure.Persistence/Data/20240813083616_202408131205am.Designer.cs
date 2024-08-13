@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813083616_202408131205am")]
+    partial class _202408131205am
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -440,7 +443,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsUnicode(true)
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerCode"), 100L);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CustomerCode"));
 
                     b.Property<int>("CustomerType")
                         .HasColumnType("int");
@@ -1775,11 +1778,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaymentRequestCode")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(true)
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentRequestCode"), 100L);
 
                     b.Property<string>("PaymentRequestDescription")
                         .IsRequired()
@@ -1919,11 +1918,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("PersonnelCode")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(true)
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PersonnelCode"), 1000L);
 
                     b.HasKey("Id");
 

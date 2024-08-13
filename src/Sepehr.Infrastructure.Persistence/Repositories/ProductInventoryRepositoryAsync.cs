@@ -372,7 +372,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         /// </summary>
         public async Task CreateInventoryToNewProduct(Guid productId)
         {
-            var all_offWHouses = await _warehouses.Where(w=>w.WarehouseTypeId==(int)EWarehouseType.OfficialWarehouse).ToListAsync();
+            var all_offWHouses = await _warehouses.Where(w=>w.WarehouseTypeId==(int)EWarehouseType.Rasmi).ToListAsync();
             var prod = await _products.FindAsync(productId);
             foreach (var item in all_offWHouses)
             {
@@ -391,7 +391,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 List<ProductInventory> productInventories = new List<ProductInventory>();
 
-                var all_warehouses = await _warehouses.Where(w => w.WarehouseTypeId != (int)EWarehouseType.OfficialWarehouse).ToListAsync();
+                var all_warehouses = await _warehouses.Where(w => w.WarehouseTypeId != (int)EWarehouseType.Rasmi).ToListAsync();
                 var prod = await _productBrands.FindAsync(brandId);
                 foreach (var item in all_warehouses)
                 {

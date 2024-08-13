@@ -9,10 +9,13 @@ namespace Sepehr.Domain.ViewModels
 {
     public class PaymentRequestViewModel
     {
+        public Guid Id { get; set; }
+        public int PaymentRequestCode { get; set; }
         public Guid CustomerId { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-        public string PaymentReason { get; set; } = string.Empty;
+        public int PaymentRequestReasonId { get; set; } 
+        public string PaymentRequestReasonDesc { get; set; } = string.Empty;
         public string BankAccountOrShabaNo { get; set; } = string.Empty;
         public string AccountOwnerName { get; set; } = string.Empty;
         public int BankId { get; set; }

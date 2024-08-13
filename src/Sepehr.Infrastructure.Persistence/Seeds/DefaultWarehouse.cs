@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Seeds
@@ -12,22 +13,28 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             //Seed Default User
             List<Warehouse> defaultWarehouse =
                 new List<Warehouse> {
-                new Warehouse { Name = "انبار سپهر",WarehouseTypeId=2 },//1
-                new Warehouse { Name = "انبار مهفام",WarehouseTypeId=5 },//2
-                new Warehouse { Name = "انبار واسط",WarehouseTypeId=2 },
-                new Warehouse { Name = "انبار امانی",WarehouseTypeId=3 },
-                new Warehouse { Name = "انبار بازرگانی",WarehouseTypeId=1 },
-                new Warehouse { Name = "انبار مبادی",WarehouseTypeId=4 },
-                new Warehouse { Name = "انبار خرید(مجازی)",WarehouseTypeId=5 }
+                new Warehouse { Name = "انبار سپهر",WarehouseTypeId=(int)EWarehouseType.Vaseteh },
+                new Warehouse { Name = "انبار مهفام",WarehouseTypeId=(int)EWarehouseType.Rasmi },
+                new Warehouse { Name = "انبار واسط",WarehouseTypeId=(int)EWarehouseType.Vaseteh },
+                new Warehouse { Name = "انبار امانی",WarehouseTypeId=(int)EWarehouseType.Amani },
+                new Warehouse { Name = "انبار بازرگانی",WarehouseTypeId=(int)EWarehouseType.Addi },
+                new Warehouse { Name = "انبار مبادی",WarehouseTypeId=(int)EWarehouseType.Mabadi },
+                new Warehouse { Name = "انبار خرید(مجازی)",WarehouseTypeId=(int)EWarehouseType.Kharid }
                 };
 
             foreach (var item in defaultWarehouse)
             {
-                if (applicationDbContext.Warehouses.All(u => u.Name != item.Name))
-                {
+                var wh = await applicationDbContext.Warehouses.FirstOrDefaultAsync(u => u.Name == item.Name);
+                if (wh == null)
                     await applicationDbContext.Warehouses.AddAsync(item);
-                    await applicationDbContext.SaveChangesAsync();
+                else
+                {
+                    wh.WarehouseTypeId = item.WarehouseTypeId;
+                    applicationDbContext.Warehouses.Update(wh);
                 }
+
+                await applicationDbContext.SaveChangesAsync();
+
             }
 
         }

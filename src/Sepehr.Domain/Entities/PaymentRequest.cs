@@ -11,9 +11,10 @@ namespace Sepehr.Domain.Entities
 {
     public class PaymentRequest:AuditableBaseEntity<Guid>
     {
+        public int PaymentRequestCode { get; set; }
         public Guid CustomerId { get; set; }
         public decimal Amount { get; set; }
-        public string PaymentReason { get; set; }=string.Empty;
+        public int PaymentRequestReasonId { get; set; }
         public required string BankAccountOrShabaNo { get; set; }
         public string AccountOwnerName { get; set; }= string.Empty;
         public int BankId { get; set; }
@@ -23,6 +24,8 @@ namespace Sepehr.Domain.Entities
         public string PaymentRequestDescription { get; set; } = string.Empty;
         public string RejectReasonDesc { get; set; }=string.Empty;  
 
+        public required virtual Customer Customer { get; set; }
+        public required virtual PaymentRequestReason PaymentRequestReason { get; set; }
         public required virtual PaymentRequestStatus PaymentRequestStatus { get; set; }
         public required virtual Bank Bank { get; set; } 
         public virtual ApplicationUser? Approver { get; set; }

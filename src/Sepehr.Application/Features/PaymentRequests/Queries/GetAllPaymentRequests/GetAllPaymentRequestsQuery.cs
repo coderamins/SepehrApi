@@ -10,6 +10,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Queries.GetAllPaymentReque
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int? PaymentRequestCoode { get; set; }
 
     }
     public class GetAllPaymentRequestsToPaymentQueryHandler :
