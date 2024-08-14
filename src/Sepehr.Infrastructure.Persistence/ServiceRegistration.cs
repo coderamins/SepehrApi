@@ -69,6 +69,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddTransient<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
             services.AddTransient<IPersonnelRepositoryAsync, PersonnelRepositoryAsync>();
             services.AddTransient<IPaymentRequestRepositoryAsync, PaymentRequestRepositoryAsync>();
+            services.AddTransient<IPersonnelPaymentRequestRepositoryAsync, PersonnelPaymentRequestRepositoryAsync>();
             services.AddTransient<ITransferWarehouseInventoryRepositoryAsync, TransferWarehouseInventoryRepositoryAsync>();
             services.AddTransient<IExportUtility, ExcelUtility>();
 

@@ -40,7 +40,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.DeletePaymentReque
             {
                 var paymentRequest = await _paymentRequestRepository.GetByIdAsync(command.Id);
                 if (paymentRequest == null)
-                    new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound);
+                    throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
 
                 await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = paymentRequest.Id.ToString(), TableName = "paymentRequest" });
 

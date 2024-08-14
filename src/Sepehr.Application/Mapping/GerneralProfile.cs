@@ -142,6 +142,15 @@ using Sepehr.Application.Features.TransferWarehouseInventories.Command.CreateTra
 using Sepehr.Application.Features.TransferWarehouseInventories.Queries.GetAllTransferWarehouseInventories;
 using Sepehr.Application.Features.TransferWarehouseInventories.Command.UpdateTransferWarehouseInventory;
 using Sepehr.Application.DTOs.TransferWarehouseInventory;
+using Sepehr.Application.Features.PaymentRequests.Command.ApprovePaymentRequest;
+using Sepehr.Application.Features.PaymentRequests.Command.RejectPaymentRequest;
+using Sepehr.Application.Features.PaymentRequests.Command.ProceedPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Command.ApprovePersonnelPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Command.RejectPersonnelPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Command.ProceedPersonnelPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Command.CreatePersonnelPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePersonnelPaymentRequest;
+using Sepehr.Application.Features.PersonnelPaymentRequests.Queries.GetAllPersonnelPaymentRequests;
 
 namespace Sepehr.Application.Mapping
 {
@@ -1182,7 +1191,7 @@ namespace Sepehr.Application.Mapping
 
             #endregion
 
-            #region TransferWarehouseInventories پرسنل
+            #region TransferWarehouseInventories انتقال موجودی انبار
             CreateMap<CreateTransferWarehouseInventoryCommand, TransferWarehouseInventory>();
             CreateMap<TransferWarehouseInventoryDetailDto, TransferWarehouseInventoryDetail>();
 
@@ -1190,6 +1199,9 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
+            CreateMap<TransferWarehouseInventoryDetail, TransferInventoryDetailViewModel>()
+                .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.ProductBrand.Product.ProductName))
+                .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.ProductBrand.Brand.Name));
 
             CreateMap<GetAllTransferWarehouseInventoriesQuery, GetAllTransferWarehouseInventoriesParameter>();
 
@@ -1208,6 +1220,9 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
+            CreateMap<ApprovePaymentRequestCommand, PaymentRequest>();
+            CreateMap<RejectPaymentRequestCommand, PaymentRequest>();
+            CreateMap<ProceedToPaymentRequestCommand, PaymentRequest>();
             CreateMap<CreatePaymentRequestCommand, PaymentRequest>();
 
             CreateMap<UpdatePaymentRequestCommand, PaymentRequest>();
@@ -1215,6 +1230,27 @@ namespace Sepehr.Application.Mapping
             CreateMap<GetAllPaymentRequestsQuery, GetAllPaymentRequestsParameter>();
 
             #endregion
+
+            #region PersonnelPaymentRequests درخواست پرداخت پرسنل
+            CreateMap<PersonnelPaymentRequest, PersonnelPaymentRequestViewModel>()
+                .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
+                .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
+                .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
+                .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
+                .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
+
+            CreateMap<ApprovePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+            CreateMap<RejectPersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+            CreateMap<ProceedToPersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+            CreateMap<CreatePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+
+            CreateMap<UpdatePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+
+            CreateMap<GetAllPersonnelPaymentRequestsQuery, GetAllPersonnelPaymentRequestsParameter>();
+
+            #endregion
+
 
 
         }

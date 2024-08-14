@@ -9,6 +9,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Queries.GetAl
     public class GetAllTransferWarehouseInventoriesParameter : RequestParameter
     {
         public int? OriginWarehouseId { get; set; }
+        public int? Id { get; set; }
 
     }
 }

@@ -104,6 +104,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PaymentRequestReason> PaymentRequestReasons { get; set; }
         public DbSet<PaymentRequestStatus> PaymentRequestStatus { get; set; }
         public DbSet<PaymentRequest> PaymentRequests { get; set; }        
+        public DbSet<PersonnelPaymentRequest> PersonnelPaymentRequests { get; set; }        
         public DbSet<Personnel> Personnels { get; set; }
         public DbSet<Audit> AuditLogs { get; set; }
         public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
@@ -308,6 +309,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<PaymentRequest>().Property(prop => prop.PaymentRequestCode)
             .UseIdentityColumn(100, 1);
+
+            builder.Entity<PersonnelPaymentRequest>().Property(prop => prop.PaymentRequestCode)
+            .UseIdentityColumn(1000, 1);
 
             builder.Entity<Customer>().Property(prop => prop.CustomerCode)
             .UseIdentityColumn(100, 1);

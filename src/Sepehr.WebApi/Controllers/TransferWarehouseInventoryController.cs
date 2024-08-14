@@ -20,6 +20,8 @@ namespace Sepehr.WebApi.Controller
                 {
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
+                    Id=filter.Id,
+                    OriginWarehouseId=filter.OriginWarehouseId,
                 }));
         }
 
@@ -48,13 +50,13 @@ namespace Sepehr.WebApi.Controller
         }
 
 
-        //[HasPermission("DeleteTransferWarehouseInventory")]
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(Guid id)
-        //{
-        //    return Ok(await Mediator
-        //        .Send(new DeleteTransferWarehouseInventoryByIdCommand { Id = id }));
-        //}
+        [HasPermission("DeleteTransferInventory")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok(await Mediator
+                .Send(new DeleteTransferInventoryCommand { Id = id }));
+        }
 
     }
 }

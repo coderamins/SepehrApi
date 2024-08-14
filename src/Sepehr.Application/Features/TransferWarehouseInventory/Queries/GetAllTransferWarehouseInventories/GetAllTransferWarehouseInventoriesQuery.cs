@@ -16,16 +16,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Queries.GetAl
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int? Id { get; set; }
-        public string? RegisterDate { get; set; }
         public int? OriginWarehouseId { get; set; }
-        public int? DestinationWarehouseId { get; set; }
-        public bool? IsEntranced { get; set; }
-        public int? TransferEntransePermitNo { get; set; }
-        public int? TransferRemittStatusId { get; set; }
-        /// <summary>
-        /// فروشنده
-        /// </summary>
-        public Guid? MarketerId { get; set; }
     }
     public class GetAllTransferWarehouseInventoriesQueryHandler :
          IRequestHandler<GetAllTransferWarehouseInventoriesQuery, PagedResponse<IEnumerable<TransferWarehouseInventoryViewModel>>>

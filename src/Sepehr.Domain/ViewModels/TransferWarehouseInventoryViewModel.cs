@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sepehr.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,7 @@ namespace Sepehr.Domain.ViewModels
         public int Amount { get; set; }
         public string CreatorName { get; set; }
         public string CreatedDate { get; set; }
+
+        public List<TransferInventoryDetailViewModel> Details { get; set; }    
     }              
 }

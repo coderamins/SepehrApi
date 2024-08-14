@@ -41,12 +41,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (_prodMabadiInventory == null)
                     throw new ApiException("موجودی انبار مبادی یافت نشد !");
 
-                //var _prodPurchaseiInventory =await _dbContext.Set<ProductInventory>()
-                //    .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
-                //                              i.WarehouseId == transInventory.OriginWarehouseId );
-                //if (_prodPurchaseiInventory == null)
-                //    throw new ApiException("موجودی انبار خرید یافت نشد !");
-
                 if (item.TransferAmount > _prodMabadiInventory.PurchaseInventory)
                     throw new ApiException("موجودی خرید کافی نمی باشد !");
 
@@ -70,12 +64,36 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductMainUnit)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product)
+                .Where(x=>
+                        (x.Id==validFilter.Id || validFilter.Id==null) &&
+                        (x.OriginWarehouseId==validFilter.OriginWarehouseId || validFilter.OriginWarehouseId == null))
                 .ToListAsync();
         }
 
-        public async Task<TransferWarehouseInventory> UpdateTransferWarehouseInventory(TransferWarehouseInventory transRemittance)
+        public async Task<TransferWarehouseInventory> UpdateTransferWarehouseInventory(TransferWarehouseInventory transInventory)
         {
-            throw new Exception();
+            foreach (var item in transInventory.Details)
+            {
+                var _prodMabadiInventory =await _dbContext.Set<ProductInventory>()
+                    .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
+                                              i.WarehouseId == transInventory.OriginWarehouseId &&
+                                              i.Warehouse.WarehouseTypeId == (int)EWarehouseType.Mabadi);
+                if (_prodMabadiInventory == null)
+                    throw new ApiException("موجودی انبار مبادی یافت نشد !");
+
+                if (item.TransferAmount > _prodMabadiInventory.PurchaseInventory)
+                    throw new ApiException("موجودی خرید کافی نمی باشد !");
+
+                _prodMabadiInventory.PurchaseInventory -= item.TransferAmount;
+                _prodMabadiInventory.ApproximateInventory += item.TransferAmount;
+
+                _productInventory.Update(_prodMabadiInventory);
+            }
+
+            var transInv = await _transferInventories.AddAsync(transInventory);
+
+            await _dbContext.SaveChangesAsync();
+            return transInventory;
         }
 
         public async Task<TransferWarehouseInventory?> GetTransferWarehouseInventoryByIdAsync(int id)
@@ -88,6 +106,33 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
+        public async Task DeleteTransferInventory(int id)
+        {
+            var transInventory=await _transferInventories.FirstOrDefaultAsync(x=>x.Id==id);
+            if (transInventory == null)
+                throw new ApiException("رکورد انتقال یافت نشد !");
 
+            foreach (var item in transInventory.Details)
+            {
+                var _prodMabadiInventory = await _dbContext.Set<ProductInventory>()
+                    .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
+                                              i.WarehouseId == transInventory.OriginWarehouseId &&
+                                              i.Warehouse.WarehouseTypeId == (int)EWarehouseType.Mabadi);
+
+                if (_prodMabadiInventory == null)
+                    throw new ApiException("موجودی انبار مبادی یافت نشد !");
+
+                //----به همان اندازه که از موجودی خرید کسر شده بود اضافه می شود
+                _prodMabadiInventory.PurchaseInventory += item.TransferAmount;
+
+                //----به همان اندازه که به موجودی تقریبی اضافه شده بود کسر می شود
+                _prodMabadiInventory.ApproximateInventory -= item.TransferAmount;
+
+                _productInventory.Update(_prodMabadiInventory);
+            }
+            
+            _transferInventories.Remove(transInventory);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
