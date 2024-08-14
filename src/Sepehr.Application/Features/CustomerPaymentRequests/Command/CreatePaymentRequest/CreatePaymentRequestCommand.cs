@@ -4,6 +4,7 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Serilog;
 
 namespace Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentRequest
@@ -11,6 +12,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentReque
     public partial class CreatePaymentRequestCommand : IRequest<Response<PaymentRequest>>
     {
         public Guid CustomerId { get; set; }
+        public EPaymentRequestType PaymentRequestTypeId { get; set; }
         public decimal Amount { get; set; }
         public int PaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }

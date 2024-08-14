@@ -13,6 +13,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> ApproveInvoiceType(Guid orderId);
         Task<bool> ApproveOrderInvoiceType(Order order);
         Task<bool> ConfirmOrder(Guid orderId);
+        Task ConvertPreSaleOrderToUrgant(Guid id);
         Task<Order> CreateOrder(Order order);
         Task<IEnumerable<Order>> GetAllNotSendedOrders(GetNotAnnouncedOrdersParameter param);
         Task<IQueryable<Order>> GetAllOrdersAsync(GetAllOrdersParameter parameter);

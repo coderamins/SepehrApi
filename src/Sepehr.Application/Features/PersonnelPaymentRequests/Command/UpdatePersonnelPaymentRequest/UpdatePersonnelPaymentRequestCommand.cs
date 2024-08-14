@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Azure.Core;
 using MediatR;
 using Sepehr.Application.Exceptions;
@@ -13,6 +7,7 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePersonnelPaymentRequest
 {
@@ -20,6 +15,7 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePer
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
+        public EPaymentRequestType PaymentRequestTypeId { get; set; }
         public decimal Amount { get; set; }
         public int PersonnelPaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }

@@ -563,5 +563,61 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _orderDetail.AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == orderDetailId);
         }
+
+        public async Task ConvertPreSaleOrderToUrgant(Guid id)
+        {
+            var order = await _orders.FirstOrDefaultAsync(o => o.Id == id);
+            if (order == null)
+                throw new ApiException("سفارش یافت نشد !");
+
+            foreach (var prodBrand in order.Details)
+            {
+                var prodInventory = await _productInventory
+                    .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
+                                i.WarehouseId == prodBrand.WarehouseId);
+
+                if (prodInventory == null)
+                {
+                    foreach (var wh in _warehouses.Where(w => w.WarehouseTypeId != 5).ToList())
+                    {
+                        await _productInventory.AddAsync(new ProductInventory
+                        {
+                            //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
+                            ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount : 0) - prodBrand.ProximateAmount,
+                            ProductBrandId = prodBrand.ProductBrandId,
+                            OrderPoint = 0,
+                            MinInventory = 0,
+                            MaxInventory = 0,
+                            IsActive = true,
+                            FloorInventory = 0,
+                            WarehouseId = wh.Id,
+                            Created = DateTime.Now,
+                            CreatedBy = Guid.Parse(_authenticatedUser.UserId),
+                        });
+                    }
+                }
+                else
+                {
+                    //----اگر کالای از انبار واسطه باشه به موجودی 
+                    if (prodBrand.WarehouseId == 3)
+                    {
+                        prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
+                    }
+                    _productInventory.Update(prodInventory);
+
+                    prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
+                    if (order.InvoiceTypeId == 1 || order.InvoiceTypeId == 2)
+                    {
+                        var prodOfficialInventory = await _productInventory
+                            .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
+                                        i.WarehouseId == prodBrand.WarehouseId);
+
+                    }
+                    _productInventory.Update(prodInventory);
+                }
+
+            }
+
+        }
     }
 }

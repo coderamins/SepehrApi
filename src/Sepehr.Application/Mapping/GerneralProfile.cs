@@ -1213,6 +1213,9 @@ namespace Sepehr.Application.Mapping
 
             #region PaymentRequests
             CreateMap<PaymentRequest, PaymentRequestViewModel>()
+                .ForMember(m => m.PaymentRequestTypeDesc, opt => 
+                            opt.MapFrom(d => d.PaymentRequestTypeId==EPaymentRequestType.formal ? "رسمی": 
+                                             d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی":""))
                 .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
                 .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
                 .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
@@ -1232,7 +1235,10 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region PersonnelPaymentRequests درخواست پرداخت پرسنل
-            CreateMap<PersonnelPaymentRequest, PersonnelPaymentRequestViewModel>()
+            CreateMap<PaymentRequest, PaymentRequestViewModel>()
+                .ForMember(m => m.PaymentRequestTypeDesc, opt =>
+                            opt.MapFrom(d => d.PaymentRequestTypeId == EPaymentRequestType.formal ? "رسمی" :
+                                             d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی" : ""))
                 .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
                 .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
                 .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))

@@ -13,6 +13,7 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest
 {
@@ -20,6 +21,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentReque
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
+        public EPaymentRequestType PaymentRequestTypeId { get; set; }
         public decimal Amount { get; set; }
         public int PaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }
