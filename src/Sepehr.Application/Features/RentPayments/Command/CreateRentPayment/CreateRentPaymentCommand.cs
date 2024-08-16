@@ -54,6 +54,12 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 foreach (var item in request.LadingExitPermitIds)
                 {
                     var ladingExitPermit = await _ladingExitPermit.GetByIdAsync(item);
+                    if (ladingExitPermit == null)
+                        throw new ApiException("کرایه یافت نشد !");
+
+                    if (!ladingExitPermit.FareAmountApproved)
+                        throw new ApiException("کرایه تایید نشده است !");
+
                     if (ladingExitPermit.FareAmountPayStatus)
                         throw new ApiException("این کرایه قبلا پرداخت شده است !");
 
@@ -75,6 +81,12 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 foreach (var item in request.PuOrderTransRemittUnloadingPermitIds)
                 {
                     var unloadingPermit = await _puOrderUnloadPermitRepository.GetByIdAsync(item);
+                    if (unloadingPermit == null)
+                        throw new ApiException("کرایه یافت نشد !");
+
+                    if (!unloadingPermit.FareAmountApproved)
+                        throw new ApiException("کرایه تایید نشده است !");
+
                     if (unloadingPermit.FareAmountPayStatus)
                         throw new ApiException("این کرایه قبلا پرداخت شده است !");
 

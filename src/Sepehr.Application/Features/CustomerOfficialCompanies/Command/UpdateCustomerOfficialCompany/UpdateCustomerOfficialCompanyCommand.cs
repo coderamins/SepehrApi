@@ -44,7 +44,6 @@ namespace Sepehr.Application.Features.CustomerOfficialCompanys.Command.UpdateCus
             public async Task<Response<string>> Handle(UpdateCustomerOfficialCompanyCommand command, CancellationToken cancellationToken)
             {
                 var customerOfficialCompany = await _customerOfficialCompanyRepository.GetByIdAsync(command.Id);
-                customerOfficialCompany = _mapper.Map(command, customerOfficialCompany);
 
                 if (customerOfficialCompany == null)
                 {
@@ -52,7 +51,9 @@ namespace Sepehr.Application.Features.CustomerOfficialCompanys.Command.UpdateCus
                 }
                 else
                 {
-                    await _customerOfficialCompanyRepository.UpdateAsync(customerOfficialCompany);
+                    customerOfficialCompany = _mapper.Map(command, customerOfficialCompany);
+
+                    await _customerOfficialCompanyRepository.UpdateOfficialCompanyAsync(customerOfficialCompany);
                     return new Response<string>(customerOfficialCompany.Id.ToString(), "");
                 }
             }

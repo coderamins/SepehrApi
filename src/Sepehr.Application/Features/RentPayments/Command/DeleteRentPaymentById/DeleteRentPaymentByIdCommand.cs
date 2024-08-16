@@ -14,7 +14,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.DeleteRentPaymentById
 {
     public class DeleteRentPaymentByIdCommand : IRequest<Response<bool>>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public class
         DeleteRentPaymentByIdCommandHandler
@@ -42,7 +42,12 @@ namespace Sepehr.Application.Features.RentPayments.Command.DeleteRentPaymentById
                 if (rentPayment == null)
                     new ErrorMessageFactory().MakeError("کرایه", ErrorType.NotFound);
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = rentPayment.Id.ToString(), TableName = "rentPayment" });
+                await _tableRecordRemoval
+                    .AddAsync(new TableRecordRemovalInfo
+                    {
+                        RemovedRecordId = rentPayment.Id.ToString(),
+                        TableName = "rentPayment"
+                    });
 
                 await _rentPaymentRepository.DeleteAsync(rentPayment);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("کرایه", ErrorType.DeletedSuccess));

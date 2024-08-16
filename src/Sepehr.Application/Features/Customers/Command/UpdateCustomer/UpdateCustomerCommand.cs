@@ -56,15 +56,13 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
                 }
                 else
                 {
-                    var _cust_old_value= _mapper.Map<Customer>(customer);
-
                     if (customer.Phonebook != null)
                         customer.Phonebook.Clear();
 
                     customer.Orders.Clear();
-                    var updated_customer = _mapper.Map<UpdateCustomerCommand, Customer>(command, customer);
+                    var updated_customer = _mapper.Map(command, customer);
 
-                    await _customerRepository.UpdateCustomer(updated_customer,await _customerRepository.GetCustomerInfo(command.Id));
+                    await _customerRepository.UpdateCustomer(updated_customer);
                     return new Response<string>(customer.Id.ToString(), "");
                 }
             }

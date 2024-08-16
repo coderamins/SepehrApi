@@ -53,7 +53,7 @@ namespace Sepehr.WebApi.Controller
         // GET api/<controller>/5
         [HasPermission("GetRentPaymentById")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetRentPaymentByIdQuery { Id = id }));
         }
@@ -69,7 +69,7 @@ namespace Sepehr.WebApi.Controller
         // PUT api/<controller>/5
         [HasPermission("UpdateRentPayment")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, UpdateRentPaymentCommand command)
+        public async Task<IActionResult> Put(int id, UpdateRentPaymentCommand command)
         {
             if (id != command.Id)
             {
@@ -81,7 +81,7 @@ namespace Sepehr.WebApi.Controller
         // DELETE api/<controller>/5
         [HasPermission("DeleteRentPayment")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator
                 .Send(new DeleteRentPaymentByIdCommand { Id = id }));

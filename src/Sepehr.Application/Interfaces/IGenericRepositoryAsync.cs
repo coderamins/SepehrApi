@@ -25,6 +25,7 @@ namespace Sepehr.Application.Interfaces
         Task<T> AddAsync(T entity);
         Task<List<T>> AddAsync(List<T> entity);
         Task UpdateAsync(T entity);
+        Task UpdateAsync(T entity, T oldEntity);
         Task<List<T>> UpdateAsync(List<T> entity);
         Task DeleteAsync(T entity);
     }

@@ -10,14 +10,14 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.CreatePer
 {
     public partial class CreatePersonnelPaymentRequestCommand : IRequest<Response<PersonnelPaymentRequest>>
     {
-        public Guid CustomerId { get; set; }
+        public Guid PersonnelId { get; set; }
         public decimal Amount { get; set; }
-        public int PersonnelPaymentRequestReasonId { get; set; } 
+        public int PaymentRequestReasonId { get; set; } 
         public required string BankAccountOrShabaNo { get; set; }
         public string AccountOwnerName { get; set; } = string.Empty;
         public int BankId { get; set; }
         public string ApplicatorName { get; set; } = string.Empty;
-        public string PersonnelPaymentRequestDescription { get; set; } = string.Empty;
+        public string PaymentRequestDescription { get; set; } = string.Empty;
     }
     public class CreatePersonnelPaymentRequestCommandHandler : IRequestHandler<CreatePersonnelPaymentRequestCommand, Response<PersonnelPaymentRequest>>
     {

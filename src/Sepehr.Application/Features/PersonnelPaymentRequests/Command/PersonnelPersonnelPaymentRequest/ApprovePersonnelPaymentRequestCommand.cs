@@ -31,18 +31,26 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ApprovePe
             }
             public async Task<Response<string>> Handle(ApprovePersonnelPaymentRequestCommand command, CancellationToken cancellationToken)
             {
-                var personnelPaymentRequest = await _personnelPaymentRequestRepository.GetByIdAsync(command.Id);
-                personnelPaymentRequest = _mapper.Map<ApprovePersonnelPaymentRequestCommand, PersonnelPaymentRequest>(command, personnelPaymentRequest);
-
-                if (personnelPaymentRequest == null)
-                    throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
-                if (!new int[] { 1,2,4}.Contains(personnelPaymentRequest.PaymentRequestStatusId))
-                    throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
-                else
+                try
                 {
-                    personnelPaymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
-                    await _personnelPaymentRequestRepository.UpdateAsync(personnelPaymentRequest);
-                    return new Response<string>(personnelPaymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
+                    var personnelPaymentRequest = await _personnelPaymentRequestRepository.GetByIdAsync(command.Id);
+                    personnelPaymentRequest = _mapper.Map<ApprovePersonnelPaymentRequestCommand, PersonnelPaymentRequest>(command, personnelPaymentRequest);
+
+                    if (personnelPaymentRequest == null)
+                        throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
+                    if (!new int[] { 1, 2, 4 }.Contains(personnelPaymentRequest.PaymentRequestStatusId))
+                        throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
+                    else
+                    {
+                        personnelPaymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
+                        await _personnelPaymentRequestRepository.UpdateAsync(personnelPaymentRequest);
+                        return new Response<string>(personnelPaymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
+                    }
+                }
+                catch (Exception e)
+                {
+
+                    throw;
                 }
             }
         }

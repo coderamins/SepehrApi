@@ -37,7 +37,7 @@ namespace Sepehr.Application.Features.Costs.Command.UpdateCost
                     throw new ApiException(new ErrorMessageFactory().MakeError("هزینه", ErrorType.NotFound));
                 else
                 {
-                    await _costRepository.UpdateAsync(cost);
+                    await _costRepository.UpdateCostAsync(cost);
                     return new Response<string>(cost.Id.ToString(), new ErrorMessageFactory().MakeError("هزینه", ErrorType.UpdatedSuccess));
                 }
             }

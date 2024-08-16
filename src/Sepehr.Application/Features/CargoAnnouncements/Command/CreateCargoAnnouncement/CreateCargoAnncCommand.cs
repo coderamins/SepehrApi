@@ -80,6 +80,16 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                             var filteredDetails = cargoAnnc.CargoAnnounceDetails.Where(d => d.OrderDetailId == orderDetail.Id);
                             ICollection<CargoAnnounceDetail> newDetails = filteredDetails.ToList();
                             cargoAnnc.CargoAnnounceDetails = newDetails;
+                            if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
+                            {
+
+                                cargoAnnc.LadingPermits.Add(new LadingPermit
+                                {
+                                    HasExitPermit = false,
+                                    IsActive = true,
+                                    Description = "کالا از نوع واسطه بوده و بصورت خودکار مجوز بارگیری صادر شد"
+                                });
+                            }
 
                             cargoAnnounces.Add(cargoAnnc);
                         }                       
@@ -92,9 +102,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                 if (request.IsComplete)
                     order.OrderStatusId = (int)OrderStatusEnum.Sended;
 
-                await _orderRep.UpdateAsync(order);
-
-                
+                await _orderRep.UpdateAsync(order);                
 
                 await _cargoAnncRepository.AddAsync(cargoAnnounces);
                 return new Response<List<CargoAnnounce>>(cargoAnnounces, $"اعلام بار با موفقیت ثبت شد .");

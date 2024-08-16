@@ -3,7 +3,9 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Interfaces;
 using Sepehr.Domain.Common;
+using Sepehr.Domain.Entities;
 using Sepehr.Infrastructure.Persistence.Context;
+using Stimulsoft.Blockly.Model;
 using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
@@ -148,6 +150,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             //table.Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(T entity,T oldEntity)
+        {
+            _dbContext.Entry(oldEntity).CurrentValues.SetValues(entity);
+
             await _dbContext.SaveChangesAsync();
         }
 

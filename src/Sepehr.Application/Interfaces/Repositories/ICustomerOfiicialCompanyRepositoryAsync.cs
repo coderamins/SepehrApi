@@ -7,5 +7,6 @@ namespace Sepehr.Application.Interfaces.Repositories
     {
         Task<List<CustomerOfficialCompany>> GetAllCustomerOfficialCompanies(GetAllCustomerOfficialCompanysParameter filter);
         Task<CustomerOfficialCompany> GetCustomerOfficialCompanyById(int companyId);
+        Task<CustomerOfficialCompany> UpdateOfficialCompanyAsync(CustomerOfficialCompany customerOfficialCompany);
     }
 }

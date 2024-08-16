@@ -46,10 +46,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             GetAllRentsToPaymentParameter validParams)
         {
             var ladingExitPermits =await _ladingExitPermits
+                .Include(x=>x.LadingPermit).ThenInclude(x=>x.CargoAnnounce)
                 .Include(c => c.ApplicationUser)
                 .Include(x => x.LadingExitPermitDetails)
                 .Where(x=>
-                (x.IsActive && x.FareAmountApproved) &&
+                (x.IsActive && !x.FareAmountApproved) &&
                 (x.LadingPermit.CargoAnnounce!=null && x.LadingPermit.CargoAnnounce.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
                 (x.LadingPermit.CargoAnnounce != null && x.LadingPermit.CargoAnnounce.DriverMobile.Contains(validParams.DriverMobile) || string.IsNullOrEmpty(validParams.DriverMobile)) &&
                 (x.LadingExitPermitCode==validParams.ReferenceCode || validParams.ReferenceCode==null) &&
@@ -65,7 +66,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(m => m.UnloadingPermitDetails)
                 .Include(m => m.EntrancePermit)
                 .Where(x=>
-                (x.IsActive && x.FareAmountApproved) &&
+                (x.IsActive && !x.FareAmountApproved) &&
                 (x.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
                 (x.DriverMobile.Contains(validParams.DriverMobile) || string.IsNullOrEmpty(validParams.DriverMobile)) &&
                 (x.UnloadingPermitCode == validParams.ReferenceCode || validParams.ReferenceCode == null) &&

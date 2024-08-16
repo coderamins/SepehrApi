@@ -13,7 +13,7 @@ namespace Sepehr.Application.Features.RentPayments.Queries.GetRentPaymentById
 {
     public class GetRentPaymentByIdQuery : IRequest<Response<RentPayment>>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public class GetRentPaymentByIdQueryHandler : IRequestHandler<GetRentPaymentByIdQuery, Response<RentPayment>>
         {

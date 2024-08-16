@@ -1016,6 +1016,9 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.UnloadingPermitCode))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.OtherCosts))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => "سفارش خرید"))
+                .ForMember(m=>m.DriverName, opt=>opt.MapFrom(d=>d.DriverName))
+                .ForMember(m=>m.DriverMobile,opt=>opt.MapFrom(d=>d.DriverMobile))
+                .ForMember(m=>m.DriverAccountNo,opt=> opt.MapFrom(d=>d.DriverAccountNo))
                 .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.CargoTotalWeight, opt =>
                 opt.MapFrom(d => d.UnloadingPermitDetails.Sum(s => s.UnloadedAmount)))
@@ -1028,6 +1031,9 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.LadingExitPermitCode))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.OtherAmount))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => "سفارش فروش"))
+                .ForMember(m => m.DriverName, opt => opt.MapFrom(d => (d.LadingPermit==null || d.LadingPermit.CargoAnnounce==null) ? "": d.LadingPermit.CargoAnnounce.DriverName))
+                .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => (d.LadingPermit == null || d.LadingPermit.CargoAnnounce == null) ? "" : d.LadingPermit.CargoAnnounce.DriverMobile))
+                .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.BankAccountNo))
                 .ForMember(m => m.LadingExitPermitId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.TotalLadingAmount, opt =>
                 opt.MapFrom(d => d.LadingExitPermitDetails.Sum(s => s.RealAmount)))
@@ -1046,13 +1052,15 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.BankAccountNo :
                                                                d.UnloadingPermit.DriverAccountNo))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.OtherAmount :
-                                                               d.UnloadingPermit.OtherCosts))
-                .ForMember(m => m.TotalFareAmount, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.FareAmount :
+                //                                               d.UnloadingPermit.OtherCosts))
+                //.ForMember(m => m.TotalFareAmount, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.FareAmount :
                                                                d.UnloadingPermit.FareAmount))
                 .ForMember(m => m.OrderType, opt => opt.MapFrom(d => d.LadingExitPermit != null ? "سفارش فروش" : "سفارش خرید"));
 
             CreateMap<CreateRentPaymentCommand, RentPayment>();
-            CreateMap<RentPaymentDto, RentPayment>();
+            CreateMap<RentPaymentDto, RentPayment>()
+                .ForMember(m=>m.UnloadingPermitId,opt=>opt.MapFrom(d=>d.TransferRemittanceUnloadingPermitId))
+                .ForMember(m=>m.LadingExitPermitId,opt=>opt.MapFrom(d=>d.LadingExitPermitId));
 
             CreateMap<UpdateRentPaymentCommand, RentPayment>();
 
@@ -1235,14 +1243,14 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region PersonnelPaymentRequests درخواست پرداخت پرسنل
-            CreateMap<PaymentRequest, PaymentRequestViewModel>()
+            CreateMap<PersonnelPaymentRequest, PersonnelPaymentRequestViewModel>()
                 .ForMember(m => m.PaymentRequestTypeDesc, opt =>
                             opt.MapFrom(d => d.PaymentRequestTypeId == EPaymentRequestType.formal ? "رسمی" :
                                              d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی" : ""))
                 .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
                 .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
                 .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
-                .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
+                .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Personnel.FirstName, " ", d.Personnel.LastName)))
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 

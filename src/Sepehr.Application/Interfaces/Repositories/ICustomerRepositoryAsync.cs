@@ -10,6 +10,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<List<Customer>> GetAllCustomers(GetAllCustomersParameter filter);
         Task<Customer> GetCustomerInfo(string nationalId);
         Task<Customer?> GetCustomerInfo(Guid Id);
-        Task<Customer> UpdateCustomer(Customer customer,Customer old_customer);
+        Task<Customer> UpdateCustomer(Customer customer);
     }
 }

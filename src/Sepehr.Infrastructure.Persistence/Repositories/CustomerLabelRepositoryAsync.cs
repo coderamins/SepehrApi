@@ -1,4 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Sepehr.Application.Exceptions;
 using Sepehr.Application.Features.CustomerLabels.Command.CreateCustomerLabel;
 using Sepehr.Application.Features.Orders.Queries.GetAllOrders;
 using Sepehr.Application.Interfaces.Repositories;
@@ -10,10 +12,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     public class CustomerLabelRepositoryAsync : GenericRepositoryAsync<CustomerLabel>, ICustomerLabelRepositoryAsync
     {
         private readonly DbSet<CustomerLabel> _customerLabels;
+        private readonly ApplicationDbContext _dbContext;
 
         public CustomerLabelRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _customerLabels = dbContext.Set<CustomerLabel>();
+            _dbContext = dbContext;
         }
 
         public async Task<List<CustomerLabel>> GetAllCustomerLabelsAsync(GetAllCustomerLabelsParameter filter)
@@ -60,6 +64,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Brand)
                 .Include(x => x.ProductBrand).ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(c => c.Id == Id);
+        }
+
+        public async Task<CustomerLabel> UpdateCustomerLabelAsync(CustomerLabel customerLabel)
+        {
+            var cl=await _customerLabels.FirstAsync(c=>c.Id==customerLabel.Id);
+            if (cl == null)
+                throw new ApiException("برچسب مشتری یافت نشد !");
+
+            _dbContext.Entry(cl).State = EntityState.Modified;
+            _dbContext.Entry(cl).CurrentValues.SetValues(customerLabel);
+            await _dbContext.SaveChangesAsync();
+
+            return customerLabel;
         }
     }
 }

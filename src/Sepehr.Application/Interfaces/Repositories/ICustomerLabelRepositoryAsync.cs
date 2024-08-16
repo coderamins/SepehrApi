@@ -9,5 +9,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<List<CustomerLabel>> GetAllCustomerLabelsAsync(GetAllCustomerLabelsParameter filter);
         Task<CustomerLabel?> GetCustomerLabelInfo(CreateCustomerLabelCommand filter);
         Task<CustomerLabel?> GetCustomerLabelInfo(int Id);
+        Task<CustomerLabel> UpdateCustomerLabelAsync(CustomerLabel customerLabel);
     }
 }

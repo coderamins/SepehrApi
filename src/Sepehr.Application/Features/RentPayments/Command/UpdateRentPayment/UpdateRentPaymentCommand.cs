@@ -18,7 +18,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.UpdateRentPayment
     public class UpdateRentPaymentCommand : IRequest<Response<string>>
     {
         public int ReceivePaymentOriginId { get; set; }
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// شماره مجوز تخلیه
         /// </summary>

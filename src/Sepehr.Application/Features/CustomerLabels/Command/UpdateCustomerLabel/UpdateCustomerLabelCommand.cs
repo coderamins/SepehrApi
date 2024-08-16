@@ -54,14 +54,16 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.UpdateCustomerLabel
             public async Task<Response<string>> Handle(UpdateCustomerLabelCommand command, CancellationToken cancellationToken)
             {
                 var customerLabel = await _customerLabelRepository.GetByIdAsync(command.Id);
-                customerLabel = _mapper.Map<UpdateCustomerLabelCommand, CustomerLabel>(command, customerLabel);
 
                 if (customerLabel == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.NotFound));
                 else
                 {
-                    await _customerLabelRepository.UpdateAsync(customerLabel);
-                    return new Response<string>(customerLabel.Id.ToString(), new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.UpdatedSuccess));
+                    customerLabel = _mapper.Map(command, customerLabel);
+
+                    await _customerLabelRepository.UpdateCustomerLabelAsync(customerLabel);
+                    return new Response<string>(customerLabel.Id.ToString(),
+                           new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.UpdatedSuccess));
                 }
             }
         }

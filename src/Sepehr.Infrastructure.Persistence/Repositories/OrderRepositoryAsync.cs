@@ -431,7 +431,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             .FirstOrDefaultAsync(i => i.ProductId == item.ProductId);
 
                         if (prodOfficialInventory != null)
+                        {
+                            prodOfficialInventory.ApproximateInventory -= (double)item.ProximateAmount;
                             _officialWarehosesInv.Update(prodOfficialInventory);
+                        }
                     }
 
                 }

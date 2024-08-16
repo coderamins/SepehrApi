@@ -27,7 +27,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 await _personnelPaymentRequests
                 .Include(x=>x.PaymentRequestReason)
                 .Include(x => x.PaymentRequestStatus)
-                .Include(x => x.Customer)
+                .Include(x => x.Personnel)
                 .Include(x=>x.Approver)
                 .Include(x=>x.ApplicationUser)
                 .Include(x=>x.Bank)
@@ -41,7 +41,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.PaymentRequestReason)
                 .Include(x => x.PaymentRequestStatus)
                 .Include(x => x.Approver)
-                .Include(x => x.Customer)
+                .Include(x => x.Personnel)
                 .Include(x => x.ApplicationUser)
                 .Include(x => x.Bank)
                 .Include(x => x.Attachments)

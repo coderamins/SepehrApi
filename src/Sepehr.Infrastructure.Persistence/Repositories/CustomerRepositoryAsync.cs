@@ -123,14 +123,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(p => p.Id == Id);
         }
 
-        public async Task<Customer> UpdateCustomer(Customer customer, Customer old_customer)
+        public async Task<Customer> UpdateCustomer(Customer customer)
         {
+            var cust=await _customers.FirstAsync(c=>c.Id==customer.Id);
+
             var cust_phones = _dbContext.Phonebook
                 .Where(p => p.CustomerId == customer.Id);
             if (cust_phones != null)
                 _dbContext.Phonebook.RemoveRange(cust_phones);
 
-            _customers.Entry(old_customer).CurrentValues.SetValues(customer);
+            _customers.Entry(cust).State= EntityState.Modified;
+            _customers.Entry(cust).CurrentValues.SetValues(customer);
 
             _customers.Update(customer);
             await _dbContext.SaveChangesAsync();
