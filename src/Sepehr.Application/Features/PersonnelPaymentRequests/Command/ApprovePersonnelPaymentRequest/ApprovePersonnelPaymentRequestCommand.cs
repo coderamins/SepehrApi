@@ -19,6 +19,7 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ApprovePe
     public class ApprovePersonnelPaymentRequestCommand : IRequest<Response<string>>
     {
         public Guid Id { get; set; }
+        public decimal Amount { get; set; }
 
         public class ApprovePersonnelPaymentRequestCommandHandler : IRequestHandler<ApprovePersonnelPaymentRequestCommand, Response<string>>
         {
@@ -42,8 +43,7 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ApprovePe
                         throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
                     else
                     {
-                        personnelPaymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
-                        await _personnelPaymentRequestRepository.UpdateAsync(personnelPaymentRequest);
+                        await _personnelPaymentRequestRepository.ApproveAsync(personnelPaymentRequest);
                         return new Response<string>(personnelPaymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
                     }
                 }

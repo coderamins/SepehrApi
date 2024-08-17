@@ -6,7 +6,9 @@ namespace Sepehr.Application.Interfaces.Repositories
 {
     public interface IPersonnelPaymentRequestRepositoryAsync : IGenericRepositoryAsync<PersonnelPaymentRequest>
     {
+        Task ApproveAsync(PersonnelPaymentRequest personnelPaymentRequest);
         Task<IEnumerable<PersonnelPaymentRequest>> GetAllPersonnelPaymentRequestsAsync(GetAllPersonnelPaymentRequestsParameter validFilter);
         Task<PersonnelPaymentRequest?> GetPersonnelPaymentRequestInfo(Guid PersonnelPaymentRequestId);
+        Task ProceedPaymentAsync(PersonnelPaymentRequest personnelPaymentRequest);
     }
 }

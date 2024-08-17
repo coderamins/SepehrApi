@@ -11,22 +11,22 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
         {
             //Seed Default User
             var receivePaymentOrigins =
-                new List<ReceivePaymentType> {
-                    new ReceivePaymentType{Id=1,Desc="مشتری"},
-                    new ReceivePaymentType{Id=2,Desc="بانک"},
-                    new ReceivePaymentType{Id=3,Desc="صندوق"},
-                    new ReceivePaymentType{Id=4,Desc="درآمد"},
-                    new ReceivePaymentType{Id=5,Desc="تنخواه گردان"},
-                    new ReceivePaymentType{Id=6,Desc="هزینه"},
-                    new ReceivePaymentType{Id=7,Desc="برداشت نقدی سهامداران"},
-                    new ReceivePaymentType{Id=8,Desc="پرداخت خمس سهامداران"},
+                new List<PaymentOriginType> {
+                    new PaymentOriginType{Id=1,Desc="مشتری"},
+                    new PaymentOriginType{Id=2,Desc="بانک"},
+                    new PaymentOriginType{Id=3,Desc="صندوق"},
+                    new PaymentOriginType{Id=4,Desc="درآمد"},
+                    new PaymentOriginType{Id=5,Desc="تنخواه گردان"},
+                    new PaymentOriginType{Id=6,Desc="هزینه"},
+                    new PaymentOriginType{Id=7,Desc="برداشت نقدی سهامداران"},
+                    new PaymentOriginType{Id=8,Desc="پرداخت خمس سهامداران"},
                 };
 
             foreach (var item in receivePaymentOrigins)
             {
-                if (!applicationDbContext.ReceivePaymentTypes.Where(b => b.Id.Equals(item.Id)).Any())
+                if (!applicationDbContext.PaymentOriginTypes.Where(b => b.Id.Equals(item.Id)).Any())
                 {
-                    applicationDbContext.ReceivePaymentTypes.Add(item);
+                    applicationDbContext.PaymentOriginTypes.Add(item);
                 }
 
                 await applicationDbContext.SaveChangesAsync();

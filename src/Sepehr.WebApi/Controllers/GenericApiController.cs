@@ -22,7 +22,7 @@ namespace Sepehr.WebApi.Controller
         private readonly DbSet<CustomerValidity> _customerValidities;
         private readonly DbSet<WarehouseType> _warehouseTypes;
         private readonly DbSet<Warehouse> _warehouse;
-        private readonly DbSet<ReceivePaymentType> _receivePaymentTypes;
+        private readonly DbSet<PaymentOriginType> _receivePaymentTypes;
         private readonly DbSet<ProductUnit> _productUnits;
         private readonly DbSet<Service> _services;
         private readonly DbSet<ProductType> _productTypes;
@@ -46,7 +46,7 @@ namespace Sepehr.WebApi.Controller
             _customerValidities= dbContext.Set<CustomerValidity>();
             _warehouseTypes = dbContext.Set<WarehouseType>();
             _warehouse = dbContext.Set<Warehouse>();
-            _receivePaymentTypes = dbContext.Set<ReceivePaymentType>();
+            _receivePaymentTypes = dbContext.Set<PaymentOriginType>();
             _productUnits = dbContext.Set<ProductUnit>();
             _services = dbContext.Set<Service>();
             _productTypes = dbContext.Set<ProductType>();

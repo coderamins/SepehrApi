@@ -66,23 +66,23 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<ILadingExitPermitRepositoryAsync, LadingExitPermitRepositoryAsync>();
             services.AddScoped<IUnloadingPermitRepositoryAsync, UnloadingPermitRepositoryAsync>();
             services.AddScoped<ILadingPermitRepositoryAsync, LadingPermitRepositoryAsync>();
-            services.AddTransient<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
-            services.AddTransient<IPersonnelRepositoryAsync, PersonnelRepositoryAsync>();
-            services.AddTransient<IPaymentRequestRepositoryAsync, PaymentRequestRepositoryAsync>();
-            services.AddTransient<IPersonnelPaymentRequestRepositoryAsync, PersonnelPaymentRequestRepositoryAsync>();
-            services.AddTransient<ITransferWarehouseInventoryRepositoryAsync, TransferWarehouseInventoryRepositoryAsync>();
+            services.AddScoped<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
+            services.AddScoped<IPersonnelRepositoryAsync, PersonnelRepositoryAsync>();
+            services.AddScoped<IPaymentRequestRepositoryAsync, PaymentRequestRepositoryAsync>();
+            services.AddScoped<IPersonnelPaymentRequestRepositoryAsync, PersonnelPaymentRequestRepositoryAsync>();
+            services.AddScoped<ITransferWarehouseInventoryRepositoryAsync, TransferWarehouseInventoryRepositoryAsync>();
             services.AddTransient<IExportUtility, ExcelUtility>();
 
-            services.AddTransient<IRoleMenuService, RoleMenuService>();
-            services.AddTransient<IRoleMenuRepository, RoleMenuRepository>();
-            services.AddTransient<IApplicationRoleRepositoryAsync, ApplicationRoleRepositoryAsync>();
-            services.AddTransient<IPermissionRepositoryAsync, PermissionRepositoryAsync>();
-            services.AddTransient<IRoleMenuRepositoryAsync, RoleMenuRepositoryAsync>();
-            services.AddTransient<IRolePermissionRepositoryAsync, RolePermissionRepositoryAsync>();
-            services.AddTransient<IApplicationUserRepositoryAsync, ApplicationUserRepositoryAsync>();
-            services.AddTransient<IUserRoleRepositoryAsync, UserRoleRepositoryAsync>();
-            services.AddTransient<IDriverFareAmountApproveRepositoryAsync, DriverFareAmountApproveRepositoryAsync>();
-            services.AddTransient<ICustomerLabelRepositoryAsync, CustomerLabelRepositoryAsync>();
+            services.AddScoped<IRoleMenuService, RoleMenuService>();
+            services.AddScoped<IRoleMenuRepository, RoleMenuRepository>();
+            services.AddScoped<IApplicationRoleRepositoryAsync, ApplicationRoleRepositoryAsync>();
+            services.AddScoped<IPermissionRepositoryAsync, PermissionRepositoryAsync>();
+            services.AddScoped<IRoleMenuRepositoryAsync, RoleMenuRepositoryAsync>();
+            services.AddScoped<IRolePermissionRepositoryAsync, RolePermissionRepositoryAsync>();
+            services.AddScoped<IApplicationUserRepositoryAsync, ApplicationUserRepositoryAsync>();
+            services.AddScoped<IUserRoleRepositoryAsync, UserRoleRepositoryAsync>();
+            services.AddScoped<IDriverFareAmountApproveRepositoryAsync, DriverFareAmountApproveRepositoryAsync>();
+            services.AddScoped<ICustomerLabelRepositoryAsync, CustomerLabelRepositoryAsync>();
             #endregion
 
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

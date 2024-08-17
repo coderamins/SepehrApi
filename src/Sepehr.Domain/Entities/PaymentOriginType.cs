@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
 {
-    public class ReceivePaymentType : BaseEntity<int>
+    public class PaymentOriginType : BaseEntity<int>
     {
         public string Desc { get; set; } = string.Empty;
     }

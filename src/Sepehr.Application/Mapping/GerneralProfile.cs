@@ -641,10 +641,10 @@ namespace Sepehr.Application.Mapping
                 d.CustomerLabel.ProductBrand != null ? string.Concat(d.CustomerLabel.ProductBrand.Product.ProductName, ' ', d.CustomerLabel.ProductBrand.Brand.Name) :
                 d.CustomerLabel.LabelName
                 ));
-                //.ForMember(m => m.BrandName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
-                //.ForMember(m => m.ProductName, d => d.MapFrom(d => d.CustomerLabel.Product.ProductName))
-                //.ForMember(m => m.ProductTypeName, d => d.MapFrom(d => d.CustomerLabel.ProductType.Desc))
-                //.ForMember(m => m.CustomerLabelName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
+            //.ForMember(m => m.BrandName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
+            //.ForMember(m => m.ProductName, d => d.MapFrom(d => d.CustomerLabel.Product.ProductName))
+            //.ForMember(m => m.ProductTypeName, d => d.MapFrom(d => d.CustomerLabel.ProductType.Desc))
+            //.ForMember(m => m.CustomerLabelName, d => d.MapFrom(d => d.CustomerLabel.Brand.Name))
 
 
             #endregion
@@ -930,7 +930,7 @@ namespace Sepehr.Application.Mapping
             #region مجوز تخلیه
 
             CreateMap<CreateUnloadingPermitCommand, UnloadingPermit>()
-                .ForMember(m => m.EntrancePermitId, opt => opt.MapFrom(d=>d.TransferRemittanceEntrancePermitId))
+                .ForMember(m => m.EntrancePermitId, opt => opt.MapFrom(d => d.TransferRemittanceEntrancePermitId))
                 .ForMember(m => m.UnloadingPermitDetails, opt => opt.
                 MapFrom(d => d.UnloadingPermitDetails));
 
@@ -943,8 +943,8 @@ namespace Sepehr.Application.Mapping
             CreateMap<UnloadingPermitDetail, UnloadingPermitDetailViewModel>();
 
             CreateMap<UnloadingPermitDetailDto, UnloadingPermitDetail>();
-            CreateMap<GetAllUnloadingPermitsParameter,GetAllUnloadingPermitsQuery>();
-            CreateMap<GetAllUnloadingPermitsQuery,GetAllUnloadingPermitsParameter>();
+            CreateMap<GetAllUnloadingPermitsParameter, GetAllUnloadingPermitsQuery>();
+            CreateMap<GetAllUnloadingPermitsQuery, GetAllUnloadingPermitsParameter>();
 
             #endregion
 
@@ -1016,9 +1016,9 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.UnloadingPermitCode))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.OtherCosts))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => "سفارش خرید"))
-                .ForMember(m=>m.DriverName, opt=>opt.MapFrom(d=>d.DriverName))
-                .ForMember(m=>m.DriverMobile,opt=>opt.MapFrom(d=>d.DriverMobile))
-                .ForMember(m=>m.DriverAccountNo,opt=> opt.MapFrom(d=>d.DriverAccountNo))
+                .ForMember(m => m.DriverName, opt => opt.MapFrom(d => d.DriverName))
+                .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => d.DriverMobile))
+                .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.DriverAccountNo))
                 .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.CargoTotalWeight, opt =>
                 opt.MapFrom(d => d.UnloadingPermitDetails.Sum(s => s.UnloadedAmount)))
@@ -1031,7 +1031,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.LadingExitPermitCode))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.OtherAmount))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => "سفارش فروش"))
-                .ForMember(m => m.DriverName, opt => opt.MapFrom(d => (d.LadingPermit==null || d.LadingPermit.CargoAnnounce==null) ? "": d.LadingPermit.CargoAnnounce.DriverName))
+                .ForMember(m => m.DriverName, opt => opt.MapFrom(d => (d.LadingPermit == null || d.LadingPermit.CargoAnnounce == null) ? "" : d.LadingPermit.CargoAnnounce.DriverName))
                 .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => (d.LadingPermit == null || d.LadingPermit.CargoAnnounce == null) ? "" : d.LadingPermit.CargoAnnounce.DriverMobile))
                 .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.BankAccountNo))
                 .ForMember(m => m.LadingExitPermitId, opt => opt.MapFrom(d => d.Id))
@@ -1059,8 +1059,8 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<CreateRentPaymentCommand, RentPayment>();
             CreateMap<RentPaymentDto, RentPayment>()
-                .ForMember(m=>m.UnloadingPermitId,opt=>opt.MapFrom(d=>d.TransferRemittanceUnloadingPermitId))
-                .ForMember(m=>m.LadingExitPermitId,opt=>opt.MapFrom(d=>d.LadingExitPermitId));
+                .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.TransferRemittanceUnloadingPermitId))
+                .ForMember(m => m.LadingExitPermitId, opt => opt.MapFrom(d => d.LadingExitPermitId));
 
             CreateMap<UpdateRentPaymentCommand, RentPayment>();
 
@@ -1168,17 +1168,17 @@ namespace Sepehr.Application.Mapping
             #region برچسب های مشتری
             CreateMap<CustomerLabel, CustomerLabelViewModel>()
                 .ForMember(m => m.LabelName, opt => opt.MapFrom(d =>
-                d.Product!=null ? d.Product.ProductName : 
-                d.Brand != null ? d.Brand.Name : 
-                d.ProductType != null ? d.ProductType.Desc : 
-                d.ProductBrand != null ? string.Concat(d.ProductBrand.Product.ProductName, ' ', d.ProductBrand.Brand.Name) : 
+                d.Product != null ? d.Product.ProductName :
+                d.Brand != null ? d.Brand.Name :
+                d.ProductType != null ? d.ProductType.Desc :
+                d.ProductBrand != null ? string.Concat(d.ProductBrand.Product.ProductName, ' ', d.ProductBrand.Brand.Name) :
                 d.LabelName
                 ))
-                .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product==null ? "": d.Product.ProductName))
-                .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.Brand==null ? "": d.Brand.Name))
-                .ForMember(m => m.ProductTypeName, opt => opt.MapFrom(d => d.ProductType==null ? "": d.ProductType.Desc))
+                .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.Product == null ? "" : d.Product.ProductName))
+                .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.Brand == null ? "" : d.Brand.Name))
+                .ForMember(m => m.ProductTypeName, opt => opt.MapFrom(d => d.ProductType == null ? "" : d.ProductType.Desc))
                 .ForMember(m => m.CustomerLabelTypeDesc, opt => opt.MapFrom(d => d.CustomerLabelType.LabelTypeDesc))
-                .ForMember(m => m.ProductBrandName, opt => opt.MapFrom(d =>  (d.ProductBrand==null ? "": string.Concat(d.ProductBrand.Product.ProductName,' ', d.ProductBrand.Brand.Name))));
+                .ForMember(m => m.ProductBrandName, opt => opt.MapFrom(d => (d.ProductBrand == null ? "" : string.Concat(d.ProductBrand.Product.ProductName, ' ', d.ProductBrand.Brand.Name))));
 
             CreateMap<CreateCustomerLabelCommand, CustomerLabel>();
             CreateMap<UpdateCustomerLabelCommand, CustomerLabel>();
@@ -1221,19 +1221,48 @@ namespace Sepehr.Application.Mapping
 
             #region PaymentRequests
             CreateMap<PaymentRequest, PaymentRequestViewModel>()
-                .ForMember(m => m.PaymentRequestTypeDesc, opt => 
-                            opt.MapFrom(d => d.PaymentRequestTypeId==EPaymentRequestType.formal ? "رسمی": 
-                                             d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی":""))
-                .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
-                .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
+                .ForMember(m => m.PaymentOriginTypeDesc, opt => opt.MapFrom(d => d.PaymentOriginType == null ? "" : d.PaymentOriginType.Desc))
+                .ForMember(m => m.PaymentOriginId, opt => opt.MapFrom(d =>
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer==null ? "":d.PaymentFromCustomer.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank==null ? "": d.PaymentFromOrganizationBank.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.CashDesk ? d.PaymentFromCashDesk == null ? "" : d.PaymentFromCashDesk.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Income ? d.PaymentFromIncome == null ? "" : d.PaymentFromIncome.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.PettyCash ? d.PaymentFromPettyCash == null ? "" : d.PaymentFromPettyCash.Id.ToString() :
+                                d.PaymentOriginTypeId == (int?)EPaymentOriginType.Cost ? d.PaymentFromCost == null ? "" : d.PaymentFromCost.Id.ToString() :
+                                new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder == null ? "" : d.PaymentFromShareHolder.Id.ToString():
+                                ""))
+
+                .ForMember(m => m.PaymentOriginDesc, opt => opt.MapFrom(d =>
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer == null ? "" : string.Concat(d.PaymentFromCustomer.FirstName, d.PaymentFromCustomer.LastName) :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank == null ? "" : d.PaymentFromOrganizationBank.Bank.BankName :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.CashDesk ? d.PaymentFromCashDesk == null ? "" : d.PaymentFromCashDesk.CashDeskDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Income ? d.PaymentFromIncome == null ? "" : d.PaymentFromIncome.IncomeDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.PettyCash ? d.PaymentFromPettyCash == null ? "" : d.PaymentFromPettyCash.PettyCashDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Cost ? d.PaymentFromCost == null ? "" : d.PaymentFromCost.CostDescription :
+                                                         new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder == null ? "" : string.Concat(d.PaymentFromShareHolder.FirstName, d.PaymentFromShareHolder.LastName) : ""))
+                .ForMember(m => m.PaymentRequestTypeDesc, opt =>
+                            opt.MapFrom(d => d.PaymentRequestTypeId == EPaymentRequestType.formal ? "رسمی" :
+                                             d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی" : ""))
                 .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
             CreateMap<ApprovePaymentRequestCommand, PaymentRequest>();
+
             CreateMap<RejectPaymentRequestCommand, PaymentRequest>();
-            CreateMap<ProceedToPaymentRequestCommand, PaymentRequest>();
+            CreateMap<ProceedToPaymentRequestCommand, PaymentRequest>()
+                .ForMember(m => m.PaymentFromCustomerId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Customer ? (Guid?)Guid.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromOrganizationBankId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Bank ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromCashDeskId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.CashDesk ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromIncomeId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Income ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromPettyCashId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.PettyCash ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromCostId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Cost ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromShareHolderId, opt =>
+                                opt.MapFrom(d => new int[] {
+                                    (int)EPaymentOriginType.ShareHolderCashPay,
+                                    (int)EPaymentOriginType.ShareHolderKhumsPay }.Contains(d.PaymentOriginTypeId) ? (Guid?)Guid.Parse(d.PaymentOriginId) : null));
+
             CreateMap<CreatePaymentRequestCommand, PaymentRequest>();
 
             CreateMap<UpdatePaymentRequestCommand, PaymentRequest>();
@@ -1244,11 +1273,27 @@ namespace Sepehr.Application.Mapping
 
             #region PersonnelPaymentRequests درخواست پرداخت پرسنل
             CreateMap<PersonnelPaymentRequest, PersonnelPaymentRequestViewModel>()
+                .ForMember(m => m.PaymentOriginTypeDesc, opt => opt.MapFrom(d => d.PaymentOriginType == null ? "" : d.PaymentOriginType.Desc))
+                .ForMember(m => m.PaymentOriginId, opt => opt.MapFrom(d =>
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer==null ? "":d.PaymentFromCustomer.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank == null ? "" : d.PaymentFromOrganizationBank.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.CashDesk ? d.PaymentFromCashDesk == null ? "" : d.PaymentFromCashDesk.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Income ? d.PaymentFromIncome == null ? "" : d.PaymentFromIncome.Id.ToString() :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.PettyCash ? d.PaymentFromPettyCash == null ? "" : d.PaymentFromPettyCash.Id.ToString() :
+                                d.PaymentOriginTypeId == (int?)EPaymentOriginType.Cost ? d.PaymentFromCost == null ? "" : d.PaymentFromCost.Id.ToString() :
+                                new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder == null ? "" : d.PaymentFromShareHolder.Id.ToString() :
+                                ""))
+                .ForMember(m => m.PaymentOriginDesc, opt => opt.MapFrom(d => 
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer==null ? "": string.Concat(d.PaymentFromCustomer.FirstName, d.PaymentFromCustomer.LastName) :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank==null ? "":d.PaymentFromOrganizationBank.Bank.BankName :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.CashDesk ? d.PaymentFromCashDesk==null ? "":d.PaymentFromCashDesk.CashDeskDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Income ? d.PaymentFromIncome==null ? "":d.PaymentFromIncome.IncomeDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.PettyCash ? d.PaymentFromPettyCash==null ? "":d.PaymentFromPettyCash.PettyCashDescription :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Cost ? d.PaymentFromCost==null ? "":d.PaymentFromCost.CostDescription :
+                                                         new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder==null ? "": string.Concat(d.PaymentFromShareHolder.FirstName, d.PaymentFromShareHolder.LastName) : ""))
                 .ForMember(m => m.PaymentRequestTypeDesc, opt =>
                             opt.MapFrom(d => d.PaymentRequestTypeId == EPaymentRequestType.formal ? "رسمی" :
                                              d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی" : ""))
-                .ForMember(m => m.PaymentRequestReasonDesc, opt => opt.MapFrom(d => d.PaymentRequestReason.ReasonDesc))
-                .ForMember(m => m.BankName, opt => opt.MapFrom(d => string.Concat(d.Bank.BankName)))
                 .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Personnel.FirstName, " ", d.Personnel.LastName)))
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
@@ -1256,7 +1301,18 @@ namespace Sepehr.Application.Mapping
 
             CreateMap<ApprovePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
             CreateMap<RejectPersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
-            CreateMap<ProceedToPersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
+            CreateMap<ProceedToPersonnelPaymentRequestCommand, PersonnelPaymentRequest>()
+                .ForMember(m => m.PaymentFromCustomerId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Customer ? (Guid?)Guid.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromOrganizationBankId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Bank ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromCashDeskId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.CashDesk ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromIncomeId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Income ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromPettyCashId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.PettyCash ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromCostId, opt => opt.MapFrom(d => d.PaymentOriginTypeId == (int?)EPaymentOriginType.Cost ? (int?)int.Parse(d.PaymentOriginId) : null))
+                .ForMember(m => m.PaymentFromShareHolderId, opt =>
+                                opt.MapFrom(d => new int[] {
+                                    (int)EPaymentOriginType.ShareHolderCashPay,
+                                    (int)EPaymentOriginType.ShareHolderKhumsPay }.Contains(d.PaymentOriginTypeId) ? (Guid?)Guid.Parse(d.PaymentOriginId) : null));
+
             CreateMap<CreatePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();
 
             CreateMap<UpdatePersonnelPaymentRequestCommand, PersonnelPaymentRequest>();

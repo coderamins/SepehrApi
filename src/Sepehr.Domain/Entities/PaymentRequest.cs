@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
@@ -15,6 +16,7 @@ namespace Sepehr.Domain.Entities
     {
         public Guid CustomerId { get; set; }
 
+        [JsonIgnore]
         public required virtual Customer Customer { get; set; }
 
     }

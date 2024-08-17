@@ -24,7 +24,7 @@ namespace Sepehr.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
-        public required virtual ReceivePaymentType ReceivePaymentOrigin { get; set; }
+        public required virtual PaymentOriginType ReceivePaymentOrigin { get; set; }
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual UnloadingPermit? UnloadingPermit { get; set; }
     }

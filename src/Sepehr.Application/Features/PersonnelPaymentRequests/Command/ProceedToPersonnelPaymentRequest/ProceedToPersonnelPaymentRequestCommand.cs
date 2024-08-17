@@ -20,7 +20,11 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ProceedPe
     public class ProceedToPersonnelPaymentRequestCommand : IRequest<Response<string>>
     {
         public Guid Id { get; set; }
+        public required int PaymentOriginTypeId { get; set; }
+        public required string PaymentOriginId { get; set; }
+
         public List<AttachmentDto>? Attachments { get; set; }
+
         public class ProceedToPersonnelPaymentRequestCommandHandler : IRequestHandler<ProceedToPersonnelPaymentRequestCommand, Response<string>>
         {
             private readonly IMapper _mapper;
@@ -44,8 +48,7 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ProceedPe
                     throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
                 else
                 {
-                    personnelPaymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Payed;
-                    await _personnelPaymentRequestRepository.UpdateAsync(personnelPaymentRequest);
+                    await _personnelPaymentRequestRepository.ProceedPaymentAsync(personnelPaymentRequest);
                     return new Response<string>(personnelPaymentRequest.Id.ToString(),"درخواست پرداخت با موفقیت انجام شد .(پرداخت شد)");
                 }
             }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using AutoMapper;
-using Azure.Core;
+﻿using AutoMapper;
 using MediatR;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces.Repositories;
@@ -19,6 +12,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ApprovePaymentRequ
     public class ApprovePaymentRequestCommand : IRequest<Response<string>>
     {
         public Guid Id { get; set; }
+        public decimal Amount { get; set; }
 
         public class ApprovePaymentRequestCommandHandler : IRequestHandler<ApprovePaymentRequestCommand, Response<string>>
         {
@@ -32,7 +26,10 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ApprovePaymentRequ
             public async Task<Response<string>> Handle(ApprovePaymentRequestCommand command, CancellationToken cancellationToken)
             {
                 var paymentRequest = await _paymentRequestRepository.GetByIdAsync(command.Id);
-                paymentRequest = _mapper.Map<ApprovePaymentRequestCommand, PaymentRequest>(command, paymentRequest);
+                if(paymentRequest == null)
+                    throw new ApiException("درخواست پرداخت یافت نشد !");
+
+                paymentRequest = _mapper.Map(command, paymentRequest);
 
                 if (paymentRequest == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
@@ -40,8 +37,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ApprovePaymentRequ
                     throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
                 else
                 {
-                    paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
-                    await _paymentRequestRepository.UpdateAsync(paymentRequest);
+                    await _paymentRequestRepository.ApproveAsync(paymentRequest);
                     return new Response<string>(paymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
                 }
             }

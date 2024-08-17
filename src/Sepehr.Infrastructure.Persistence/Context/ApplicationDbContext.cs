@@ -48,7 +48,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PurchaseInvoiceType> PurchaseInvoiceTypes { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<ReceivePay> ReceivePays { get; set; }
-        public DbSet<ReceivePaymentType> ReceivePaymentTypes { get; set; }
+        public DbSet<PaymentOriginType> PaymentOriginTypes { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductUnit> ProductUnits { get; set; }
         public DbSet<ProductStandard> ProductStandards { get; set; }
@@ -230,7 +230,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 
-            builder.Entity<ReceivePaymentType>()
+            builder.Entity<PaymentOriginType>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 

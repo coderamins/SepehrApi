@@ -17,20 +17,9 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest
 {
-    public class UpdatePaymentRequestCommand : IRequest<Response<string>>
+    public class UpdatePaymentRequestCommand : PaymentRequest,IRequest<Response<PaymentRequest>>
     {
-        public Guid Id { get; set; }
-        public Guid CustomerId { get; set; }
-        public EPaymentRequestType PaymentRequestTypeId { get; set; }
-        public decimal Amount { get; set; }
-        public int PaymentRequestReasonId { get; set; } 
-        public required string BankAccountOrShabaNo { get; set; }
-        public string AccountOwnerName { get; set; } = string.Empty;
-        public int BankId { get; set; }
-        public string ApplicatorName { get; set; } = string.Empty;
-        public string PaymentRequestDescription { get; set; } = string.Empty;
-
-        public class UpdatePaymentRequestCommandHandler : IRequestHandler<UpdatePaymentRequestCommand, Response<string>>
+        public class UpdatePaymentRequestCommandHandler : IRequestHandler<UpdatePaymentRequestCommand, Response<PaymentRequest>>
         {
             private readonly IMapper _mapper;
             private readonly IPaymentRequestRepositoryAsync _paymentRequestRepository;
@@ -42,9 +31,9 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentReque
             {
                 _paymentRequestRepository = paymentRequestRepository;
                 _mapper = mapper;
-                _userService = userService; 
+                _userService = userService;
             }
-            public async Task<Response<string>> Handle(UpdatePaymentRequestCommand command, CancellationToken cancellationToken)
+            public async Task<Response<PaymentRequest>> Handle(UpdatePaymentRequestCommand command, CancellationToken cancellationToken)
             {
                 var paymentRequests = _paymentRequestRepository.GetAllAsQueryable();
 
@@ -55,9 +44,11 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentReque
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
                 else
                 {
-                    paymentRequest.ApproverId =Guid.Parse(_userService.UserId);
+                    paymentRequest.ApproverId = Guid.Parse(_userService.UserId);
                     await _paymentRequestRepository.UpdateAsync(paymentRequest);
-                    return new Response<string>(paymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
+                    return new Response<PaymentRequest>(paymentRequest,
+                        new ErrorMessageFactory()
+                        .MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
                 }
             }
         }

@@ -20,7 +20,11 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ProceedPaymentRequ
     public class ProceedToPaymentRequestCommand : IRequest<Response<string>>
     {
         public Guid Id { get; set; }
+        public required int PaymentOriginTypeId { get; set; }
+        public required string PaymentOriginId { get; set; }
+
         public List<AttachmentDto>? Attachments { get; set; }
+
         public class ProceedToPaymentRequestCommandHandler : IRequestHandler<ProceedToPaymentRequestCommand, Response<string>>
         {
             private readonly IMapper _mapper;
@@ -36,7 +40,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ProceedPaymentRequ
                 if (paymentRequest == null)
                     throw new ApiException("درخواست پرداخت یافت نشد !");
 
-                paymentRequest = _mapper.Map<ProceedToPaymentRequestCommand, PaymentRequest>(command, paymentRequest);
+                paymentRequest = _mapper.Map(command, paymentRequest);
 
                 if (paymentRequest == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
@@ -44,8 +48,7 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ProceedPaymentRequ
                     throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
                 else
                 {
-                    paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Payed;
-                    await _paymentRequestRepository.UpdateAsync(paymentRequest);
+                    await _paymentRequestRepository.ProceedPaymentAsync(paymentRequest);
                     return new Response<string>(paymentRequest.Id.ToString(),"درخواست پرداخت با موفقیت انجام شد .(پرداخت شد)");
                 }
             }

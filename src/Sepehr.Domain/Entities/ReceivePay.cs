@@ -66,12 +66,12 @@ namespace Sepehr.Domain.Entities
         /// <summary>
         ///  دریافت از
         /// </summary>
-        public virtual required ReceivePaymentType ReceivePaymentTypeFrom { get; set; }
+        public virtual required PaymentOriginType ReceivePaymentTypeFrom { get; set; }
 
         /// <summary>
         /// پرداخت به
         /// </summary>
-        public virtual required ReceivePaymentType ReceivePaymentTypeTo { get; set; }
+        public virtual required PaymentOriginType ReceivePaymentTypeTo { get; set; }
         #endregion
 
         #region  دریافت از
