@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Core;
 using MediatR;
+using Sepehr.Application.DTOs;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
@@ -17,8 +18,11 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest
 {
-    public class UpdatePaymentRequestCommand : PaymentRequest,IRequest<Response<PaymentRequest>>
+    public class UpdatePaymentRequestCommand : PaymentRequestDto, IRequest<Response<PaymentRequest>>
     {
+        public Guid Id { get; set; }
+        public Guid customerId { get; set; }
+
         public class UpdatePaymentRequestCommandHandler : IRequestHandler<UpdatePaymentRequestCommand, Response<PaymentRequest>>
         {
             private readonly IMapper _mapper;

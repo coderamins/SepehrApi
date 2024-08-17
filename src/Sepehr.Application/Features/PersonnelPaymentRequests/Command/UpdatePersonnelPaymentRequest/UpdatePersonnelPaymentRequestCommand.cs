@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using MediatR;
+using Sepehr.Application.DTOs;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
@@ -11,18 +12,10 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePersonnelPaymentRequest
 {
-    public class UpdatePersonnelPaymentRequestCommand : IRequest<Response<string>>
+    public class UpdatePersonnelPaymentRequestCommand :PaymentRequestDto, IRequest<Response<string>>
     {
         public Guid Id { get; set; }
         public Guid PersonnelId { get; set; }
-        public EPaymentRequestType PaymentRequestTypeId { get; set; }
-        public decimal Amount { get; set; }
-        public int PaymentRequestReasonId { get; set; } 
-        public required string BankAccountOrShabaNo { get; set; }
-        public string AccountOwnerName { get; set; } = string.Empty;
-        public int BankId { get; set; }
-        public string ApplicatorName { get; set; } = string.Empty;
-        public string PaymentRequestDescription { get; set; } = string.Empty;
 
         public class UpdatePersonnelPaymentRequestCommandHandler : IRequestHandler<UpdatePersonnelPaymentRequestCommand, Response<string>>
         {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Sepehr.Application.DTOs;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
@@ -10,10 +11,9 @@ using System.Text.Json.Serialization;
 
 namespace Sepehr.Application.Features.PaymentRequests.Command.CreatePaymentRequest
 {
-    public partial class CreatePaymentRequestCommand :PaymentRequest, IRequest<Response<PaymentRequest>>
+    public partial class CreatePaymentRequestCommand : PaymentRequestDto, IRequest<Response<PaymentRequest>>
     {
-        [JsonIgnore]
-        public override Guid Id { get; set; }
+        public Guid customerId { get; set; }
     }
     public class CreatePaymentRequestCommandHandler : IRequestHandler<CreatePaymentRequestCommand, Response<PaymentRequest>>
     {

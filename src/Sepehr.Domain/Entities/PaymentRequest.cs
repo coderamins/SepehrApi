@@ -16,8 +16,7 @@ namespace Sepehr.Domain.Entities
     {
         public Guid CustomerId { get; set; }
 
-        [JsonIgnore]
-        public required virtual Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
 
     }
 }

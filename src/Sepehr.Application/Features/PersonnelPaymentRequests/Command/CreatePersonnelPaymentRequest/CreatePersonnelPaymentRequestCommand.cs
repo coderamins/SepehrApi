@@ -1,23 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
+using Sepehr.Application.DTOs;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Serilog;
 
 namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.CreatePersonnelPaymentRequest
 {
-    public partial class CreatePersonnelPaymentRequestCommand : IRequest<Response<PersonnelPaymentRequest>>
+    public partial class CreatePersonnelPaymentRequestCommand :PaymentRequestDto, IRequest<Response<PersonnelPaymentRequest>>
     {
         public Guid PersonnelId { get; set; }
-        public decimal Amount { get; set; }
-        public int PaymentRequestReasonId { get; set; } 
-        public required string BankAccountOrShabaNo { get; set; }
-        public string AccountOwnerName { get; set; } = string.Empty;
-        public int BankId { get; set; }
-        public string ApplicatorName { get; set; } = string.Empty;
-        public string PaymentRequestDescription { get; set; } = string.Empty;
     }
     public class CreatePersonnelPaymentRequestCommandHandler : IRequestHandler<CreatePersonnelPaymentRequestCommand, Response<PersonnelPaymentRequest>>
     {
