@@ -219,7 +219,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
-                //.Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails).ThenInclude(o=>o.LadingExitPermitDetail).ThenInclude(o=>o.LadingExitPermit)
+                //.Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
+                //.ThenInclude(o=>o.LadingExitPermitDetail).ThenInclude(o=>o.LadingExitPermit)
                 //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
                 .FirstOrDefaultAsync();
         }
@@ -564,6 +565,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<OrderDetail?> GetOrderDetailInfo(int orderDetailId)
         {
             return await _orderDetail.AsNoTracking()
+                .Include(x=>x.CargoAnnounces)
                 .FirstOrDefaultAsync(o => o.Id == orderDetailId);
         }
 

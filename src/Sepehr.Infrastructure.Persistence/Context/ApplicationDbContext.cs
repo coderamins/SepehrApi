@@ -371,6 +371,16 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .HasIndex(p => new { p.CustomerId,p.PhoneNumber, p.PhoneNumberTypeId })
                 .IsUnique();
 
+            builder.Entity<OrderDetail>()
+            .HasOne(od => od.Order)
+            .WithMany(o => o.Details)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CargoAnnounceDetail>()
+            .HasOne(od => od.CargoAnnounce)
+            .WithMany(o => o.CargoAnnounceDetails)
+            .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(builder);
 
         }

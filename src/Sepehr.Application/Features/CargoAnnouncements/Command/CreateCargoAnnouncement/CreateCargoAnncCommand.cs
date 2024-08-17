@@ -58,12 +58,11 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
             {
                 var order = await _orderRep.GetOrderById(request.OrderId);
 
-                //---محاسیه مقادیر بارگیری شده
-                var ladingPermitSummery = order.CargoAnnounces == null ? 0 : 
-                    order.CargoAnnounces.Sum(a => a.CargoAnnounceDetails.Sum(l => l.LadingAmount));
+                //---محاسبه مقادیر بارگیری شده
+                //var ladingPermitSummery = order.Details == null ? 0 : 
+                //    order.CargoAnnounces.Sum(a => a.CargoAnnounceDetails.Sum(l => l.LadingAmount));
 
-                if (order.OrderStatusId== (int)OrderStatusEnum.Sended || 
-                    (order.CargoAnnounces!=null && order.Details.Sum(od => od.ProximateAmount) == ladingPermitSummery))
+                if (order.OrderStatusId== (int)OrderStatusEnum.Sended)
                     throw new ApiException("ارسال سفارش تکمیل شده است !");
 
                 List<CargoAnnounce> cargoAnnounces = new List<CargoAnnounce>();
@@ -73,6 +72,13 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                     foreach (var item in request.CargoAnnounceDetails)
                     {
                         var orderDetail =await _orderRep.GetOrderDetailInfo(item.OrderDetailId);
+                        if (orderDetail == null)
+                            throw new ApiException("سفارش یافت نشد !");
+
+                        if (orderDetail.CargoAnnounces!=null && 
+                            orderDetail.CargoAnnounces.Sum(c => c.LadingAmount) + item.LadingAmount > orderDetail.ProximateAmount)
+                            throw new ApiException("مقدار بارگیری نمیتواند بیشتر از مقدار سفارش باشد !");
+
                         if(orderDetail!=null && orderDetail.WarehouseId==whouse)
                         {
                             var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
@@ -80,16 +86,16 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                             var filteredDetails = cargoAnnc.CargoAnnounceDetails.Where(d => d.OrderDetailId == orderDetail.Id);
                             ICollection<CargoAnnounceDetail> newDetails = filteredDetails.ToList();
                             cargoAnnc.CargoAnnounceDetails = newDetails;
-                            if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
-                            {
+                            //if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
+                            //{
 
-                                cargoAnnc.LadingPermits.Add(new LadingPermit
-                                {
-                                    HasExitPermit = false,
-                                    IsActive = true,
-                                    Description = "کالا از نوع واسطه بوده و بصورت خودکار مجوز بارگیری صادر شد"
-                                });
-                            }
+                            //    cargoAnnc.LadingPermits.Add(new LadingPermit
+                            //    {
+                            //        HasExitPermit = false,
+                            //        IsActive = true,
+                            //        Description = "کالا از نوع واسطه بوده و بصورت خودکار مجوز بارگیری صادر شد"
+                            //    });
+                            //}
 
                             cargoAnnounces.Add(cargoAnnc);
                         }                       

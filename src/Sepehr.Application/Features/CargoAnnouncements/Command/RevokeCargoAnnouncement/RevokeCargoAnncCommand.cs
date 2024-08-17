@@ -26,7 +26,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.UpdateCargoAnno
             {
                 try
                 {
-                    var cargoAnnc = await _cargoAnncRepository.GetCargoAnnounceInfo(command.Id);
+                    var cargoAnnc = await _cargoAnncRepository.GetByIdAsync(command.Id);
 
                     if (cargoAnnc == null)
                     {
@@ -36,10 +36,12 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.UpdateCargoAnno
                         throw new ApiException("مجوز بارگیری برای بارنامه صادر شده و امکان ابطال وجود ندارد !");
                     else
                     {
-                        cargoAnnc = _mapper.Map(command, cargoAnnc);
-                        cargoAnnc.IsActive = false;
+                        //cargoAnnc = _mapper.Map(command, cargoAnnc);
+                        //cargoAnnc.IsActive = false;
 
-                        await _cargoAnncRepository.UpdateAsync(cargoAnnc);
+                        await _cargoAnncRepository.DeleteAsync(cargoAnnc);
+
+                        //await _cargoAnncRepository.UpdateAsync(cargoAnnc);
                         return new Response<CargoAnnounce>(cargoAnnc, "");
                     }
                 }
