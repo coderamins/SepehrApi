@@ -8,7 +8,6 @@ namespace Sepehr.Domain.Entities.BaseViewModels
         public int PaymentRequestCode { get; set; }
         public EPaymentRequestType PaymentRequestTypeId { get; set; }
         public string PaymentRequestTypeDesc { get; set; } = string.Empty;
-        public string CustomerName { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public int? PaymentOriginTypeId { get; set; }
         public string PaymentOriginTypeDesc { get; set; } = string.Empty;

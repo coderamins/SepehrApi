@@ -108,6 +108,18 @@ namespace Sepehr.WebApi.Controller
             return Ok(await Mediator.Send(command));
         }
 
+        [HasPermission("ConvertPreSaleOrder")]
+        [SwaggerOperation("تبدیل سفارش پیش فروش")]
+        [HttpPut("ConvertPreSaleOrder/{id}")]
+        public async Task<IActionResult> ConvertPreSaleOrder(Guid id, ConvertPresaleToOrderCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+            return Ok(await Mediator.Send(command));
+        }
+
         [HasPermission("CompleteOrderAnnouncement")]
         [SwaggerOperation("تکمیل اعلام بار")]
         [HttpPut("CompleteAnnouncement/{id}")]

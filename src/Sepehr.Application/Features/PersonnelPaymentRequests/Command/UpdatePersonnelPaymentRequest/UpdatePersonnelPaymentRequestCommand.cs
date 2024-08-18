@@ -43,7 +43,7 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePer
                 else
                 {
                     personnelPaymentRequest.ApproverId =Guid.Parse(_userService.UserId);
-                    await _personnelPaymentRequestRepository.UpdateAsync(personnelPaymentRequest);
+                    await _personnelPaymentRequestRepository.UpdatePaymentRequestAsync(personnelPaymentRequest);
                     return new Response<string>(personnelPaymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
                 }
             }

@@ -8,6 +8,7 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.CreateTransfer
     {
         public CreateTransferRemittanceCommandValidator()
         {
+            RuleFor(c => c.PurchaseOrderId).NotNull().NotEmpty().WithMessage("شماره سفارش الزامی می باشد !");
             RuleFor(x => x.OriginWarehouseId)
                 .NotEqual(x => x.DestinationWarehouseId)
                 .WithMessage("انبار مبدا و مقصد نمی توانند یکسان باشند !");

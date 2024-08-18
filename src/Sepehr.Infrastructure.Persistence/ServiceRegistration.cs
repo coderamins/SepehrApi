@@ -66,7 +66,8 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<ILadingExitPermitRepositoryAsync, LadingExitPermitRepositoryAsync>();
             services.AddScoped<IUnloadingPermitRepositoryAsync, UnloadingPermitRepositoryAsync>();
             services.AddScoped<ILadingPermitRepositoryAsync, LadingPermitRepositoryAsync>();
-            services.AddScoped<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
+            services.AddTransient<IEntrancePermitRepositoryAsync, EntrancePermitRepositoryAsync>();
+
             services.AddScoped<IPersonnelRepositoryAsync, PersonnelRepositoryAsync>();
             services.AddScoped<IPaymentRequestRepositoryAsync, PaymentRequestRepositoryAsync>();
             services.AddScoped<IPersonnelPaymentRequestRepositoryAsync, PersonnelPaymentRequestRepositoryAsync>();

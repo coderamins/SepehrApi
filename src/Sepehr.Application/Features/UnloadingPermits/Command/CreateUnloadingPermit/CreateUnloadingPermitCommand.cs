@@ -51,19 +51,18 @@ namespace Sepehr.Application.DTOs.TransferRemittanceUnloadingPermit
                 CancellationToken cancellationToken)
             {
                 var purchTransferEntraPermit = await _purchaseOrderTransferRemittanceRepo
-                    .PurchaseOrderTransRemittEntrancePermitById(command.TransferRemittanceEntrancePermitId);
+                    .TransRemittEntrancePermitById(command.TransferRemittanceEntrancePermitId);
 
                 if (purchTransferEntraPermit == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("مجوز ورود", ErrorType.NotFound));
                 else
                 {
-                    var purchaseOrderTransferRemittanceUnloadingPermit =
+                    var unloadingPermit =
                         _mapper.Map<UnloadingPermit>(command);
 
-                    UnloadingPermit purchaseOrderTransferRemittanceUnloading = await _purchaseOrderTransferRemittanceRepo
-                        .CreatePOrderUnloadingPermit(purchaseOrderTransferRemittanceUnloadingPermit);
+                    await _purchaseOrderTransferRemittanceRepo.CreatePOrderUnloadingPermit(unloadingPermit);
 
-                    return new Response<UnloadingPermit>(purchaseOrderTransferRemittanceUnloading,
+                    return new Response<UnloadingPermit>(unloadingPermit,
                         new ErrorMessageFactory().MakeError("مجوز تخلیه", ErrorType.UpdatedSuccess));
                 }
             }

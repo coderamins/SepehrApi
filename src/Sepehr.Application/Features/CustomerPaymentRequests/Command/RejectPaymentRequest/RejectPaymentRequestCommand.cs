@@ -43,7 +43,8 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.RejectPaymentReque
                 {
                     paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Rejected;
                     paymentRequest.RejectReasonDesc = command.RejectReasonDesc;
-                    await _paymentRequestRepository.UpdateAsync(paymentRequest);
+
+                    await _paymentRequestRepository.RejectAsync(paymentRequest);
                     return new Response<string>(paymentRequest.Id.ToString(), new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));
                 }
             }

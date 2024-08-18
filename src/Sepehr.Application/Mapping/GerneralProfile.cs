@@ -1284,18 +1284,18 @@ namespace Sepehr.Application.Mapping
                                 new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder == null ? "" : d.PaymentFromShareHolder.Id.ToString() :
                                 ""))
                 .ForMember(m => m.PaymentOriginDesc, opt => opt.MapFrom(d => 
-                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer==null ? "": string.Concat(d.PaymentFromCustomer.FirstName, d.PaymentFromCustomer.LastName) :
+                                d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer==null ? "": string.Concat(d.PaymentFromCustomer.FirstName, " ",d.PaymentFromCustomer.LastName) :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank==null ? "":d.PaymentFromOrganizationBank.Bank.BankName :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.CashDesk ? d.PaymentFromCashDesk==null ? "":d.PaymentFromCashDesk.CashDeskDescription :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Income ? d.PaymentFromIncome==null ? "":d.PaymentFromIncome.IncomeDescription :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.PettyCash ? d.PaymentFromPettyCash==null ? "":d.PaymentFromPettyCash.PettyCashDescription :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Cost ? d.PaymentFromCost==null ? "":d.PaymentFromCost.CostDescription :
-                                                         new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder==null ? "": string.Concat(d.PaymentFromShareHolder.FirstName, d.PaymentFromShareHolder.LastName) : ""))
+                                                         new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder==null ? "": string.Concat(d.PaymentFromShareHolder.FirstName, " ", d.PaymentFromShareHolder.LastName) : ""))
                 .ForMember(m => m.PaymentRequestTypeDesc, opt =>
                             opt.MapFrom(d => d.PaymentRequestTypeId == EPaymentRequestType.formal ? "رسمی" :
                                              d.PaymentRequestTypeId == EPaymentRequestType.informal ? "غیر رسمی" : ""))
-                .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => string.Concat(d.PaymentRequestStatus.StatusDesc)))
-                .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Personnel.FirstName, " ", d.Personnel.LastName)))
+                .ForMember(m => m.PaymentRequestStatusDesc, opt => opt.MapFrom(d => d.PaymentRequestStatus.StatusDesc))
+                .ForMember(m => m.PersonnelName, opt => opt.MapFrom(d => string.Concat(d.Personnel.FirstName, " ", d.Personnel.LastName)))
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 

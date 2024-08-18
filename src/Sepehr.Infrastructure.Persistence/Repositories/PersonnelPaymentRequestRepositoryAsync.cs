@@ -8,7 +8,8 @@ using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
-    public class PersonnelPaymentRequestRepositoryAsync : GenericRepositoryAsync<PersonnelPaymentRequest>, IPersonnelPaymentRequestRepositoryAsync
+    public class PersonnelPaymentRequestRepositoryAsync : GenericRepositoryAsync<PersonnelPaymentRequest>, 
+        IPersonnelPaymentRequestRepositoryAsync
     {
         private readonly DbSet<PersonnelPaymentRequest> _personnelPaymentRequests;
         private readonly DbSet<LadingExitPermit> _ladingExitPermits;
@@ -64,12 +65,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.PaymentFromShareHolder)
                 .Include(x => x.Attachments)
                 .FirstOrDefaultAsync(p => p.Id == PersonnelPaymentRequestId);
-        }
+        }               
 
         public async Task ApproveAsync(PersonnelPaymentRequest paymentRequest)
         {
             var pReq = await _personnelPaymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
-            pReq.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
+
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
 
             _personnelPaymentRequests.Entry(pReq).State = EntityState.Modified;
             _personnelPaymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
@@ -80,7 +82,30 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task ProceedPaymentAsync(PersonnelPaymentRequest paymentRequest)
         {
             var pReq = await _personnelPaymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
-            pReq.PaymentRequestStatusId = (int)EPaymentRequestStatus.Payed;
+
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Payed;
+
+            _personnelPaymentRequests.Entry(pReq).State = EntityState.Modified;
+            _personnelPaymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RejectAsync(PersonnelPaymentRequest paymentRequest)
+        {
+            var pReq = await _personnelPaymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
+
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Rejected;
+
+            _personnelPaymentRequests.Entry(pReq).State = EntityState.Modified;
+            _personnelPaymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdatePaymentRequestAsync(PersonnelPaymentRequest paymentRequest)
+        {
+            var pReq = await _personnelPaymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
 
             _personnelPaymentRequests.Entry(pReq).State = EntityState.Modified;
             _personnelPaymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);

@@ -51,9 +51,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                     w.WarehouseId == transRemittance.DestinationWarehouseId
                                     && w.ProductBrandId == item.ProductBrandId);
 
-                //----موجودی خرید انبار مبدا کم می شود
+                //----موجودی تقریبی انبار مبدا کم می شود
+                var prodInvEntry1 = _productInventory.Entry(_originWarehouse);
+                prodInvEntry1.State = EntityState.Modified;
+
                 _originWarehouse.PurchaseInventory -= item.TransferAmount;
-                _productInventory.Update(_originWarehouse);
+                prodInvEntry1.CurrentValues.SetValues(_originWarehouse);
 
                 //----موجودی در راه انبار مقصد زیاد می شود
                 if (_destWarehouse == null)
@@ -69,8 +72,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }
                 else
                 {
+                    var prodInvEntry = _productInventory.Entry(_destWarehouse);
+                    prodInvEntry.State = EntityState.Modified;
+
                     _destWarehouse.OnTransitInventory += item.TransferAmount;
-                    _productInventory.Update(_destWarehouse);
+                    prodInvEntry.CurrentValues.SetValues(_destWarehouse);
                 }
             }
 
@@ -264,7 +270,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<EntrancePermit> PurchaseOrderTransRemittEntrancePermitById
+        public async Task<EntrancePermit> TransRemittEntrancePermitById
             (Guid purchaseOrderTransferRemittanceEntrancePermitId)
         {
             var transferPermit = await _transferRemittances
@@ -334,6 +340,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         else
                         {
                             inv.FloorInventory += (double)udetail.UnloadedAmount;
+                            inv.ApproximateInventory += (decimal)udetail.UnloadedAmount;
                             _productInventory.Update(inv);
                         }
                     }

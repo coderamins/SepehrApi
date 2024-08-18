@@ -34,7 +34,11 @@ namespace Sepehr.Application.Features.Orders.Command.UpdateOrder
             }
             public async Task<Response<bool>> Handle(ConvertPresaleToOrderCommand command, CancellationToken cancellationToken)
             {
-                await _orderRepository.ConvertPreSaleOrderToUrgant(command.Id);
+                var order = await _orderRepository.GetOrderById(command.Id);
+                if (order == null)
+                    throw new ApiException("سفارش یافت نشد !");
+
+                await _orderRepository.ConvertPreSaleOrderToUrgant(order);
 
                 return new Response<bool>(true, "سفارش پیش فروش با موفقیت تایید و تبدیل شد . ");
             }

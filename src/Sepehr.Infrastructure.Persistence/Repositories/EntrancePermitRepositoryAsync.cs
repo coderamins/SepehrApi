@@ -19,15 +19,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly DbSet<TransferRemittance> _transferRemittances;
+        private readonly DbSet<ProductInventory> _prodInventory;
         private readonly IMapper _mapper;
         public EntrancePermitRepositoryAsync(
             ApplicationDbContext dbContext,
+            DbSet<ProductInventory> prodInventory,
             IMapper mapper
             ) : base(dbContext)
         {
             _dbContext = dbContext;
             _transferRemittances = dbContext.Set<TransferRemittance>();
             _mapper = mapper;
+            _prodInventory= dbContext.Set<ProductInventory>();
         }
 
         public async Task<EntrancePermit> CreateEntrancePermit(EntrancePermit entrancePermit)
@@ -44,14 +47,31 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             if (transRemit == null)
                 throw new ApiException("حواله یافت نشد !");
 
+            //------موجودی در راه انبار مقصد کم می شود-----
+            foreach(var item in transRemit.Details)
+            {
+                var _inv=await _prodInventory
+                    .FirstOrDefaultAsync(x=>x.ProductBrandId==item.ProductBrandId && x.WarehouseId== transRemit.DestinationWarehouseId);
+                if (_inv == null)
+                    throw new ApiException("موجودی محصول یافت نشد !");
+
+                var entr = _prodInventory.Entry(_inv);
+                _inv.OnTransitInventory-=item.TransferAmount;
+
+                entr.State = EntityState.Modified;
+                entr.CurrentValues.SetValues(_inv);
+            }
+
+            var trnsRemitEntry = _transferRemittances.Entry(transRemit);
             transRemit.TransferRemittanceStatusId = 2;
-            _transferRemittances.Update(transRemit);
+
+            trnsRemitEntry.State = EntityState.Modified;
+            trnsRemitEntry.CurrentValues.SetValues(transRemit);            
 
             var newEntrancePermit = _mapper.Map<EntrancePermit>(entrancePermit);
             await _dbContext.AddAsync(newEntrancePermit);
 
             await _dbContext.SaveChangesAsync();
-
             return newEntrancePermit;
         }
 

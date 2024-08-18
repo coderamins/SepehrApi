@@ -88,7 +88,6 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                             cargoAnnc.CargoAnnounceDetails = newDetails;
                             //if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
                             //{
-
                             //    cargoAnnc.LadingPermits.Add(new LadingPermit
                             //    {
                             //        HasExitPermit = false,

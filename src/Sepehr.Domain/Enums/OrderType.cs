@@ -9,7 +9,9 @@ namespace Sepehr.Domain.Enums
     public enum OrderType
     {
         Urgant=1,
-        PreSale=2       
+        PreSale=2,
+        PreSaleConverted
+            
     }
 
     public enum OrderClassType

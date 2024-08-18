@@ -565,13 +565,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<OrderDetail?> GetOrderDetailInfo(int orderDetailId)
         {
             return await _orderDetail.AsNoTracking()
+                .Include(x=>x.Warehouse)
                 .Include(x=>x.CargoAnnounces)
                 .FirstOrDefaultAsync(o => o.Id == orderDetailId);
         }
 
-        public async Task ConvertPreSaleOrderToUrgant(Guid id)
+        public async Task ConvertPreSaleOrderToUrgant(Order order)
         {
-            var order = await _orders.FirstOrDefaultAsync(o => o.Id == id);
+            var prev_order = await _orders.FirstAsync(o => o.Id == order.Id);
             if (order == null)
                 throw new ApiException("سفارش یافت نشد !");
 
@@ -623,6 +624,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             }
 
+            var order_entry=_orders.Entry(prev_order);
+            order_entry.State = EntityState.Modified;
+
+            order.OrderTypeId = OrderType.PreSaleConverted;
+            order_entry.CurrentValues.SetValues(order);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

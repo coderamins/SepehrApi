@@ -39,17 +39,18 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentReque
             }
             public async Task<Response<PaymentRequest>> Handle(UpdatePaymentRequestCommand command, CancellationToken cancellationToken)
             {
-                var paymentRequests = _paymentRequestRepository.GetAllAsQueryable();
-
                 var paymentRequest = await _paymentRequestRepository.GetByIdAsync(command.Id);
                 paymentRequest = _mapper.Map<UpdatePaymentRequestCommand, PaymentRequest>(command, paymentRequest);
 
                 if (paymentRequest == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
+                if (paymentRequest.PaymentRequestStatusId != (int)EPaymentRequestStatus.InProgress)
+                    throw new ApiException("درخواست تایید شده و امکان ویرایش وجود ندارد !");
                 else
                 {
                     paymentRequest.ApproverId = Guid.Parse(_userService.UserId);
-                    await _paymentRequestRepository.UpdateAsync(paymentRequest);
+                    await _paymentRequestRepository.UpdatePaymentRequestAsync(paymentRequest);
+
                     return new Response<PaymentRequest>(paymentRequest,
                         new ErrorMessageFactory()
                         .MakeError("درخواست پرداخت", ErrorType.UpdatedSuccess));

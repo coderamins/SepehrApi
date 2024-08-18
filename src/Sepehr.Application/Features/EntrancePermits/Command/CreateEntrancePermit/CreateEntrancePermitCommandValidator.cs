@@ -7,6 +7,7 @@ namespace Sepehr.Application.Features.EntrancePermits.Command.CreateEntrancePerm
     {
         public CreateEntrancePermitCommandValidator()
         {
+
         }
 
     }

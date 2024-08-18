@@ -22,6 +22,7 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.CreateTransfer
         public decimal? OtherCosts { get; set; }
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
         public string? Description { get; set; }
+        public Guid PurchaseOrderId { get; set; }
 
         public required IEnumerable<TransferRemittanceDetailDto> Details { get; set; }
 

@@ -10,5 +10,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<IEnumerable<PaymentRequest>> GetAllPaymentRequestsAsync(GetAllPaymentRequestsParameter validFilter);
         Task<PaymentRequest?> GetPaymentRequestInfo(Guid PaymentRequestId);
         Task ProceedPaymentAsync(PaymentRequest paymentRequest);
+        Task RejectAsync(PaymentRequest paymentRequest);
+        Task UpdatePaymentRequestAsync(PaymentRequest paymentRequest);
     }
 }

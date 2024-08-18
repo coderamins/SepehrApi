@@ -70,7 +70,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task ApproveAsync(PaymentRequest paymentRequest)
         {
             var pReq = await _paymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
-            pReq.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
+           
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Approved;
 
             _paymentRequests.Entry(pReq).State = EntityState.Modified;
             _paymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
@@ -81,7 +82,30 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task ProceedPaymentAsync(PaymentRequest paymentRequest)
         {
             var pReq = await _paymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
-            pReq.PaymentRequestStatusId=(int)EPaymentRequestStatus.Payed;
+
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Payed;
+
+            _paymentRequests.Entry(pReq).State = EntityState.Modified;
+            _paymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RejectAsync(PaymentRequest paymentRequest)
+        {
+            var pReq = await _paymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
+
+            paymentRequest.PaymentRequestStatusId = (int)EPaymentRequestStatus.Rejected;
+
+            _paymentRequests.Entry(pReq).State = EntityState.Modified;
+            _paymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdatePaymentRequestAsync(PaymentRequest paymentRequest)
+        {
+            var pReq = await _paymentRequests.FirstAsync(x => x.Id == paymentRequest.Id);
 
             _paymentRequests.Entry(pReq).State = EntityState.Modified;
             _paymentRequests.Entry(pReq).CurrentValues.SetValues(paymentRequest);
