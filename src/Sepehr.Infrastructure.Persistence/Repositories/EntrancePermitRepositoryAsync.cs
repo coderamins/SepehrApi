@@ -23,7 +23,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly IMapper _mapper;
         public EntrancePermitRepositoryAsync(
             ApplicationDbContext dbContext,
-            DbSet<ProductInventory> prodInventory,
             IMapper mapper
             ) : base(dbContext)
         {

@@ -43,6 +43,10 @@ builder.Services.AddCors(options =>
                               "http://localhost:3000",
                               "https://localhost:3000",
                               "http://192.168.10.125:8084",
+                              "http://localhost:8084",
+                              "http://manage.storm.net",
+                              "http://storm.net",
+                              "http://www.storm.net",
                               "https://manage.iraniansepehr.com",
                               "http://manage.iraniansepehr.com"
                           //    "http://*.iraniansepehr.com",
