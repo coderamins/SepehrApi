@@ -13,13 +13,12 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             //Seed Default User
             List<Warehouse> defaultWarehouse =
                 new List<Warehouse> {
-                new Warehouse { Name = "انبار سپهر",WarehouseTypeId=(int)EWarehouseType.Vaseteh },
+                new Warehouse { Name = "انبار سپهر",WarehouseTypeId=(int)EWarehouseType.Factory },
                 new Warehouse { Name = "انبار مهفام",WarehouseTypeId=(int)EWarehouseType.Rasmi },
                 new Warehouse { Name = "انبار واسط",WarehouseTypeId=(int)EWarehouseType.Vaseteh },
                 new Warehouse { Name = "انبار امانی",WarehouseTypeId=(int)EWarehouseType.Amani },
                 new Warehouse { Name = "انبار بازرگانی",WarehouseTypeId=(int)EWarehouseType.Addi },
                 new Warehouse { Name = "انبار مبادی",WarehouseTypeId=(int)EWarehouseType.Mabadi },
-                //new Warehouse { Name = "انبار خرید(مجازی)",WarehouseTypeId=(int)EWarehouseType.Kharid }
                 };
 
             foreach (var item in defaultWarehouse)

@@ -28,7 +28,8 @@ namespace Sepehr.WebApi.Controller
                     PageNumber = filter.PageNumber,
                     InvoiceTypeId=filter.InvoiceTypeId,
                     OrderStatusId=filter.OrderStatusId,
-                    OrderCode=filter.OrderCode
+                    OrderCode=filter.OrderCode,
+                    OrderType=filter.OrderType
                 }));
         }
 

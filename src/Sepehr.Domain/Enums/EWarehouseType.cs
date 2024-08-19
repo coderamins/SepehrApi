@@ -14,6 +14,6 @@ namespace Sepehr.Domain.Enums
         Rasmi=4,
         Addi=5,
         Kharid=6,
-
+        Factory = 7,
     }
 }
