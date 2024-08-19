@@ -67,48 +67,23 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var prodBrand in order.Details)
                 {
                     var prodInventory = await _productInventory
-                        //.Include(i => i.Warehouse).AsNoTracking()
                         .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
                                     i.WarehouseId == prodBrand.WarehouseId);
 
                     if (prodInventory == null)
-                    {
-                        foreach (var wh in _warehouses.Where(w => w.WarehouseTypeId != 5).ToList())
-                        {
-                            await _productInventory.AddAsync(new ProductInventory
-                            {
-                                //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
-                                ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount : 0) - prodBrand.ProximateAmount,
-                                ProductBrandId = prodBrand.ProductBrandId,
-                                OrderPoint = 0,
-                                MinInventory = 0,
-                                MaxInventory = 0,
-                                IsActive = true,
-                                FloorInventory = 0,
-                                WarehouseId = wh.Id,
-                                Created = DateTime.Now,
-                                CreatedBy = Guid.Parse(_authenticatedUser.UserId),
-                            });
-                        }
-                    }
+                        throw new ApiException("انبار یافت نشد !");
                     else
                     {
-                        //----اگر کالای از انبار واسطه باشه به موجودی 
-                        if (prodBrand.WarehouseId == 3)
-                        {
+                        var prodEnvEntry = _productInventory.Entry(prodInventory);
+                        prodEnvEntry.State = EntityState.Modified;
+                        
+                        //-----اگر نوع انبار واسط باشد چون یک سفارش خرید براش ثبت شده باید ابتدا به موجودی تقریبی انبار اضافه شود-------
+                        if (_warehouses.Any(x=>x.Id== prodBrand.WarehouseId && x.WarehouseTypeId==(int)EWarehouseType.Vaseteh))
                             prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
-                        }
-                        _productInventory.Update(prodInventory);
 
                         prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
-                        if (order.InvoiceTypeId == 1 || order.InvoiceTypeId == 2)
-                        {
-                            var prodOfficialInventory = await _productInventory
-                                .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
-                                            i.WarehouseId == prodBrand.WarehouseId);
 
-                        }
-                        _productInventory.Update(prodInventory);
+                        prodEnvEntry.CurrentValues.SetValues(prodInventory);
                     }
 
                 }
@@ -132,6 +107,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<bool> ApproveInvoiceType(Guid orderId)
         {
             var order = await _orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+            var ordEntry = _orders.Entry(order);
             if (order == null)
             {
                 throw new ApiException("سفارش یافت نشد !");
@@ -141,14 +117,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             //order.IsApprovedInvoiceType = true;
             order.OrderStatusId = (int)OrderStatusEnum.AccApproved;
-            await _dbContext.SaveChangesAsync();
+            ordEntry.State = EntityState.Modified;
+            ordEntry.CurrentValues.SetValues(order);
 
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> ConfirmOrder(Guid orderId)
         {
             var order = await _orders.AsNoTracking().Include(o => o.Customer).FirstOrDefaultAsync(o => o.Id == orderId);
+            var ordEntry = _orders.Entry(order);
             if (order == null)
             {
                 throw new ApiException("سفارش یافت نشد !");
@@ -157,7 +136,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 throw new ApiException("این سفارش قبلا تایید شده است !");
 
             order.OrderStatusId = (int)OrderStatusEnum.Confirmed;
-            await _dbContext.SaveChangesAsync();
+            ordEntry.State = EntityState.Modified;
+            ordEntry.CurrentValues.SetValues(order);
 
             //await _smsService.SendAsync(new SmsRequest
             //{
@@ -248,6 +228,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             return query
                 .Where(o =>
+                (o.OrderTypeId == param.OrderType || param.OrderType == null) &&
                 (o.OrderCode == param.OrderCode || param.OrderCode == null) &&
                 (o.OrderStatusId == param.OrderStatusId || param.OrderStatusId == null) &&
                 (param.InvoiceTypeId.Count() == 0 || param.InvoiceTypeId.Contains(o.InvoiceTypeId)))
@@ -270,6 +251,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.LadingPermits.Where(x => x.IsActive))
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
+            var ordEntry = _orders.Entry(order);
 
             if (order == null)
                 throw new ApiException("سفارش یافت نشد !");
@@ -281,6 +263,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 order.OrderStatusId = (int)OrderStatusEnum.ReturnedBack;
             else
                 order.OrderStatusId = (int)OrderStatusEnum.Sended;
+
+            ordEntry.State = EntityState.Modified;
+            ordEntry.CurrentValues.SetValues(order);
 
             await _dbContext.SaveChangesAsync();
 
@@ -389,7 +374,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                         _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == item.PurchaseOrderId));
 
-                        //var poinv = await _dbContext.ProductInventories
+                        //var poi
+                        //
+                        //nv = await _dbContext.ProductInventories
                         //    .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
 
                         //if (poinv != null)
@@ -423,7 +410,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         inv.ApproximateInventory -= item.ProximateAmount;
 
                     //----اگر سفارش از نوع سفارش فوری یا تایید شده حسابداری باشد از موجودی اضافه خواهد شد
-                    if (order.OrderTypeId == OrderType.Urgant || order.OrderStatusId==(int)OrderStatusEnum.AccApproved)
+                    if (order.OrderTypeId == OrderType.Urgant || order.OrderStatusId == (int)OrderStatusEnum.AccApproved)
                         inv.ApproximateInventory += item.ProximateAmount;
 
                     if (order.InvoiceTypeId == 1)
@@ -565,8 +552,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<OrderDetail?> GetOrderDetailInfo(int orderDetailId)
         {
             return await _orderDetail.AsNoTracking()
-                .Include(x=>x.Warehouse)
-                .Include(x=>x.CargoAnnounces)
+                .Include(x => x.Warehouse)
+                .Include(x => x.CargoAnnounces)
                 .FirstOrDefaultAsync(o => o.Id == orderDetailId);
         }
 
@@ -583,48 +570,26 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                 i.WarehouseId == prodBrand.WarehouseId);
 
                 if (prodInventory == null)
-                {
-                    foreach (var wh in _warehouses.Where(w => w.WarehouseTypeId != 5).ToList())
-                    {
-                        await _productInventory.AddAsync(new ProductInventory
-                        {
-                            //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
-                            ApproximateInventory = (prodBrand.Warehouse.WarehouseTypeId == 2 ? prodBrand.ProximateAmount : 0) - prodBrand.ProximateAmount,
-                            ProductBrandId = prodBrand.ProductBrandId,
-                            OrderPoint = 0,
-                            MinInventory = 0,
-                            MaxInventory = 0,
-                            IsActive = true,
-                            FloorInventory = 0,
-                            WarehouseId = wh.Id,
-                            Created = DateTime.Now,
-                            CreatedBy = Guid.Parse(_authenticatedUser.UserId),
-                        });
-                    }
-                }
+                    throw new ApiException("انبار یافت نشد !");
                 else
                 {
-                    //----اگر کالای از انبار واسطه باشه به موجودی 
-                    if (prodBrand.WarehouseId == 3)
+                    var prodEnvEntry = _productInventory.Entry(prodInventory);
+                    prodEnvEntry.State = EntityState.Modified;
+
+                    //-----اگر نوع انبار واسط باشد چون یک سفارش خرید براش ثبت شده باید ابتدا به موجودی تقریبی انبار اضافه شود-------
+                    if (prodBrand.Warehouse.WarehouseTypeId == (int)EWarehouseType.Vaseteh)
                     {
                         prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
                     }
-                    _productInventory.Update(prodInventory);
+
 
                     prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
-                    if (order.InvoiceTypeId == 1 || order.InvoiceTypeId == 2)
-                    {
-                        var prodOfficialInventory = await _productInventory
-                            .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
-                                        i.WarehouseId == prodBrand.WarehouseId);
-
-                    }
-                    _productInventory.Update(prodInventory);
+                    prodEnvEntry.CurrentValues.SetValues(prodInventory);
                 }
 
             }
 
-            var order_entry=_orders.Entry(prev_order);
+            var order_entry = _orders.Entry(prev_order);
             order_entry.State = EntityState.Modified;
 
             order.OrderTypeId = OrderType.PreSaleConverted;
