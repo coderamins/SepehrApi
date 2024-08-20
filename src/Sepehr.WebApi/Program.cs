@@ -35,44 +35,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("http://manage.storm.net",
-                            "http://api.storm.net",
-                            "http://storm.net",
-                            "https://manage.storm.net")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+    options.AddPolicy(name: "CorsPolicy",
+                      policy =>
+                      {
+                          policy
+                          //.AllowAnyOrigin()
+                          .WithOrigins(
+                              "http://localhost:3000",
+                              "https://localhost:3000",
+                              "http://192.168.10.125:8084",
+                              "http://localhost:8084",
+                              "http://manage.storm.net",
+                              "http://storm.net",
+                              "http://www.storm.net",
+                              "https://manage.iraniansepehr.com",
+                              "http://manage.iraniansepehr.com",
+                              "http://storm.net",
+                              "http://192.168.10.125:8084",
+                              "http://192.168.10.125"
+                          //    "http://*.iraniansepehr.com",
+                          //    "*.iraniansepehr.com"
+                          )
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
 });
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: "CorsPolicy",
-//                      policy =>
-//                      {
-//                          policy
-//                          //.AllowAnyOrigin()
-//                          .WithOrigins(
-//                              "http://localhost:3000",
-//                              "https://localhost:3000",
-//                              "http://192.168.10.125:8084",
-//                              "http://localhost:8084",
-//                              "http://manage.storm.net",
-//                              "http://storm.net",
-//                              "http://www.storm.net",
-//                              "https://manage.iraniansepehr.com",
-//                              "http://manage.iraniansepehr.com",
-//                              "api.storm.net",
-//                              "http://storm.net",
-//                              "http://storm.net/"
-//                          //    "http://*.iraniansepehr.com",
-//                          //    "*.iraniansepehr.com"
-//                          )
-//                                .AllowAnyHeader()
-//                                .AllowAnyMethod();
-//                      });
-//});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -124,7 +111,7 @@ else
 app.MapHealthChecks("health");
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors("CorsPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
