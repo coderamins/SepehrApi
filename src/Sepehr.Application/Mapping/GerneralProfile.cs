@@ -367,7 +367,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ProductName, d => d.MapFrom(d => d.Product.ProductName))
                 .ForMember(m => m.PurchaserCustomerName, d => d.MapFrom(d => string.Concat(d.PurchaserCustomer == null ? "" : d.PurchaserCustomer.FirstName, " ", d.PurchaserCustomer.LastName)))
                 .ForMember(m => m.PurchaseInvoiceTypeId, d => d.MapFrom(d => d.PurchaseInvoiceType == null ? 0 : d.PurchaseInvoiceType.Id))
-                .ForMember(m => m.PurchaseInvoiceTypeDesc, d => d.MapFrom(d => d.PurchaseInvoiceType == null ? "" : d.PurchaseInvoiceType.Desc))
+                .ForMember(m => m.PurchaseInvoiceTypeDesc, d => d.MapFrom(d => d.PurchaseInvoiceType == null ? "" : d.PurchaseInvoiceType.TypeDesc))
                 .ForMember(m => m.TotalLoadedAmount, d => d.MapFrom(d => d.CargoAnnounces == null ? 0 : d.CargoAnnounces.Sum(c => c.LadingAmount)))
                 .ForMember(m => m.RemainingLadingAmount, d => d.MapFrom(d => d.CargoAnnounces == null ? d.ProximateAmount :
                                                          d.ProximateAmount - d.CargoAnnounces.Sum(c => c.LadingAmount)))

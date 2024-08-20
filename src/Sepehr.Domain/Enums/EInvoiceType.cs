@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Enums
 {
-    public enum EPurchaseInvoiceType
+    public enum EInvoiceType
     {
-        Official=1,
-        UnOfficial = 2
+        Formal=1,
+        InFormal = 2
     }
 }

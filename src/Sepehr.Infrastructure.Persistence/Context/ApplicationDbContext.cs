@@ -45,7 +45,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<ProductInventory> ProductInventories { get; set; }
         public DbSet<CargoAnnounce> CargoAnnounces { get; set; }
         public DbSet<ProductSupplier> ProductSuppliers { get; set; }
-        public DbSet<PurchaseInvoiceType> PurchaseInvoiceTypes { get; set; }
+        public DbSet<InvoiceType> PurchaseInvoiceTypes { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<ReceivePay> ReceivePays { get; set; }
         public DbSet<PaymentOriginType> PaymentOriginTypes { get; set; }

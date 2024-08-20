@@ -70,7 +70,7 @@ namespace Sepehr.Domain.Entities
         public required virtual ProductBrand ProductBrand { get; set; }
         public required virtual Product Product { get; set; }
         public required virtual Warehouse Warehouse { get; set; }
-        public virtual PurchaseInvoiceType? PurchaseInvoiceType { get; set; }
+        public virtual InvoiceType? PurchaseInvoiceType { get; set; }
         public virtual Customer? PurchaserCustomer { get; set; }
         public virtual ProductBrand? AlternativeProductBrand { get; set; }
         public virtual ICollection<CargoAnnounceDetail>? CargoAnnounces { get; set; }
