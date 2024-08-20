@@ -127,6 +127,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
+                            {(filter.OrderCode == null ? "" :
+                            $@"join sepdb.OrderDetails as t12 on t12.ProductBrandId=t2.Id
+                              join sepdb.Orders as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode}")}
 							where t1.IsActive=1 and t5.WarehouseTypeId=5 and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
@@ -181,11 +184,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
+                            {(filter.OrderCode==null ? "":
+                            $@"join sepdb.OrderDetails as t12 on t12.ProductBrandId=t2.Id
+                              join sepdb.Orders as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode ?? -1}")}
 							where t1.IsActive=1 and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
                                   (t5.WarehouseTypeId={filter.WarehouseTypeId ?? -1} or {filter.WarehouseTypeId ?? -1}=-1) and
-                                  (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1)
+                                  (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1)                                   
                                   {(filter.HasPurchaseInventory==true ? " and t3.PurchaseInventory>0":"")}";
                 
             using (var connection = _dapContext.CreateConnection())

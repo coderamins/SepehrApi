@@ -20,6 +20,7 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
         public ProductSortBase productSortBaset { get; set; }
         public bool? ByBrand { get; set; }
         public int? WarehouseId { get; set; }
+        public long? OrderCode { get; set; }
     }
     public class GetAllProductsByTypeQueryHandler :
          IRequestHandler<GetAllProductsByTypeQuery, Response<IEnumerable<ProductTypeViewModel>>>

@@ -15,6 +15,7 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
         public int? WarehouseTypeId { get; set; }
         public int? ProductTypeId { get; set; }
         public string ProductName { get; set; } = string.Empty;
+        public long? OrderCode { get; set; }
         /// <summary>
         /// محصولاتی که در انبار، موجودی خرید دارند
         /// </summary>

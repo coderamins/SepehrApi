@@ -30,7 +30,8 @@ namespace Sepehr.WebApi.Controller
                     WarehouseTypeId=filter.WarehouseTypeId,
                     ProductTypeId=filter.ProductTypeId,
                     ProductName =filter.ProductName,
-                    HasPurchaseInventory=filter.HasPurchaseInventory
+                    HasPurchaseInventory=filter.HasPurchaseInventory,
+                    OrderCode=filter.OrderCode,
                 }));
         }
 
@@ -42,7 +43,9 @@ namespace Sepehr.WebApi.Controller
                 .Send(new GetAllProductsByTypeQuery()
                 {
                     productSortBaset = filter.productSortBase,
-                    WarehouseId = filter.WarehouseId
+                    WarehouseId = filter.WarehouseId,
+                    OrderCode=filter.OrderCode,
+                    ByBrand=filter.ByBrand,
                 }));
         }
 
