@@ -30,28 +30,37 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Warehouse> CreateWarehouse(Warehouse warehouse)
         {
-            var newWhouse=await _warehouses.AddAsync(warehouse);
-
-            var allProds =await _productRepo.ToListAsync();
-            var allProdBrans = await _productBrandRepo.ToListAsync();
-
-            foreach (var item in allProdBrans)
+            try
             {
-                var newInv = _mapper.Map<ProductInventory>(item);
-                newInv.WarehouseId = newWhouse.Entity.Id;
-                await _productInventoryRepo.AddAsync(newInv);
-            }
+                var newWhouse = await _warehouses.AddAsync(warehouse);
+                await _dbContext.SaveChangesAsync();
 
-            foreach (var item in allProds)
+                var allProds = await _productRepo.ToListAsync();
+                var allProdBrans = await _productBrandRepo.ToListAsync();
+
+                foreach (var item in allProdBrans)
+                {
+                    var newInv = _mapper.Map<ProductInventory>(item);
+                    newInv.WarehouseId = newWhouse.Entity.Id;
+                    await _productInventoryRepo.AddAsync(newInv);
+                }
+
+                foreach (var item in allProds)
+                {
+                    var newInv = _mapper.Map<OfficialWarehoseInventory>(item);
+                    newInv.WarehouseId = newWhouse.Entity.Id;
+                    await _offProductInventoryRepo.AddAsync(newInv);
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                return newWhouse.Entity;
+            }
+            catch (Exception e)
             {
-                var newInv = _mapper.Map<OfficialWarehoseInventory>(item);
-                newInv.WarehouseId = newWhouse.Entity.Id;
-                await _offProductInventoryRepo.AddAsync(newInv);
+
+                throw;
             }
-
-            await _dbContext.SaveChangesAsync();
-
-            return newWhouse.Entity;
         }
 
         public async Task<List<Warehouse>> GetAllWarehousesAsync(int? WarehouseTypeId, Guid? CustomerId)

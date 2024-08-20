@@ -17,7 +17,6 @@ namespace Sepehr.Application.Features.Warehouses.Command.CreateWarehouse
     {
         public required string Name { get; set; }
         public required int WarehouseTypeId { get; set; }
-        public Guid? CustomerId { get; set; }
 }
     public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, Response<Warehouse>>
     {

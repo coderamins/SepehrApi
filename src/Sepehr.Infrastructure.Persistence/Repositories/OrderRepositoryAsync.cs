@@ -374,18 +374,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                         _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == item.PurchaseOrderId));
 
-                        //var poi
-                        //
-                        //nv = await _dbContext.ProductInventories
-                        //    .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.Warehouse.WarehouseTypeId == 2);
 
-                        //if (poinv != null)
-                        //    poinv.ApproximateInventory -= item.ProximateAmount;
+                        if (order.OrderTypeId == OrderType.Urgant || order.OrderTypeId == OrderType.PreSaleConverted) 
+                        {
+                            var prodInv = await _dbContext.ProductInventories
+                                .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.WarehouseId==item.WarehouseId);
+                            if (prodInv != null) {
+                                var prodInvEntry = _productInventory.Entry(prodInv);
+
+                                prodInv.ApproximateInventory -= item.ProximateAmount;
+
+                                prodInvEntry.State=EntityState.Modified;
+                                prodInvEntry.CurrentValues.SetValues(prodInv);
+                            }
+                        }
                     }
 
 
                     var inv = await _productInventory.FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId &&
-                            x.WarehouseId == item.WarehouseId /*&& x.Warehouse.WarehouseTypeId!=2*/);
+                            x.WarehouseId == item.WarehouseId);
 
                     if (inv == null)
                     {
@@ -404,6 +411,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             CreatedBy = Guid.Parse(_authenticatedUser.UserId),
                         }).Result.Entity;
                     }
+
 
                     //----اگر محصول از انبار واسه باشد پس ابتدا موجودی باید کسر گردد
                     if (inv != null && _warehouses.First(w => w.Id == item.WarehouseId).WarehouseTypeId == 2)

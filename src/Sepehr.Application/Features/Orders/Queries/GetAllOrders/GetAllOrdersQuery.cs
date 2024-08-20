@@ -8,6 +8,7 @@ using Sepehr.Application.Features.Orders.Queries.GetAllOrders;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 
 namespace Sepehr.Application.Features.Orders.Queries.GetAllOrders

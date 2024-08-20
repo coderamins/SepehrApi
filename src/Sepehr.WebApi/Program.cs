@@ -29,33 +29,50 @@ using Sepehr.Domain.Entities;
 using Sepehr.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Infrastructure.Persistence.Seeds;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "CorsPolicy",
-                      policy =>
-                      {
-                          policy
-                          //.AllowAnyOrigin()
-                          .WithOrigins(
-                              "http://localhost:3000",
-                              "https://localhost:3000",
-                              "http://192.168.10.125:8084",
-                              "http://localhost:8084",
-                              "http://manage.storm.net",
-                              "http://storm.net",
-                              "http://www.storm.net",
-                              "https://manage.iraniansepehr.com",
-                              "http://manage.iraniansepehr.com"
-                          //    "http://*.iraniansepehr.com",
-                          //    "*.iraniansepehr.com"
-                          )
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                      });
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("https://manage.storm.net",
+                            "http://api.storm.net",
+                            "http://storm.net",
+                            "http://manage.storm.net")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
 });
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: "CorsPolicy",
+//                      policy =>
+//                      {
+//                          policy
+//                          //.AllowAnyOrigin()
+//                          .WithOrigins(
+//                              "http://localhost:3000",
+//                              "https://localhost:3000",
+//                              "http://192.168.10.125:8084",
+//                              "http://localhost:8084",
+//                              "http://manage.storm.net",
+//                              "http://storm.net",
+//                              "http://www.storm.net",
+//                              "https://manage.iraniansepehr.com",
+//                              "http://manage.iraniansepehr.com",
+//                              "api.storm.net",
+//                              "http://storm.net",
+//                              "http://storm.net/"
+//                          //    "http://*.iraniansepehr.com",
+//                          //    "*.iraniansepehr.com"
+//                          )
+//                                .AllowAnyHeader()
+//                                .AllowAnyMethod();
+//                      });
+//});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -155,8 +172,8 @@ using (var scope = scopeFactory.CreateScope())
         await DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
         await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
         await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
-        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);  
-        
+        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);
+
     }
 #endif
 
