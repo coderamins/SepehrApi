@@ -37,10 +37,10 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("https://manage.storm.net",
+        builder.WithOrigins("http://manage.storm.net",
                             "http://api.storm.net",
                             "http://storm.net",
-                            "http://manage.storm.net")
+                            "https://manage.storm.net")
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -121,17 +121,16 @@ else
     app.UseHsts();
 }
 
-
 app.MapHealthChecks("health");
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwaggerExtension();
 app.UseErrorHandlingMiddleware();
 app.UseHealthChecks("/health");
-app.UseCors("CorsPolicy");
 
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
