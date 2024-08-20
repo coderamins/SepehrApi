@@ -17,7 +17,6 @@ namespace Sepehr.WebApi.Controller
         private readonly DbSet<PurchaseOrderSendType> _purOrderSendTypes;
         private readonly DbSet<FarePaymentType> _orderFarePayments;
         private readonly DbSet<PurchaseOrderFarePaymentType> _purOrderFarePayments;
-        private readonly DbSet<PurchaseInvoiceType> _purchaseInvoices;
         private readonly DbSet<InvoiceType> _invoiceTypes;
         private readonly DbSet<CustomerValidity> _customerValidities;
         private readonly DbSet<WarehouseType> _warehouseTypes;
@@ -41,7 +40,6 @@ namespace Sepehr.WebApi.Controller
             _purOrderSendTypes = dbContext.Set<PurchaseOrderSendType>();
             _orderFarePayments = dbContext.Set<FarePaymentType>();
             _purOrderFarePayments = dbContext.Set<PurchaseOrderFarePaymentType>();
-            _purchaseInvoices  = dbContext.Set<PurchaseInvoiceType>();
             _invoiceTypes      = dbContext.Set<InvoiceType>();
             _customerValidities= dbContext.Set<CustomerValidity>();
             _warehouseTypes = dbContext.Set<WarehouseType>();
@@ -86,13 +84,6 @@ namespace Sepehr.WebApi.Controller
         public async Task<IActionResult> GetPurchaseFarePaymentTypes()
         {
             return Ok(await _purOrderFarePayments.ToListAsync());
-        }
-
-        [HasPermission("GetPurchaseInvoices")]
-        [HttpGet("GetPurchaseInvoices")]
-        public async Task<IActionResult> GetPurchaseInvoices()
-        {
-            return Ok(await _purchaseInvoices.ToListAsync());
         }
 
         [HasPermission("GetInvoiceTypes")]

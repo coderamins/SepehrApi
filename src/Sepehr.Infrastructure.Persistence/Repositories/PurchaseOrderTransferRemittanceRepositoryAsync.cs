@@ -55,7 +55,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 var prodInvEntry1 = _productInventory.Entry(_originWarehouse);
                 prodInvEntry1.State = EntityState.Modified;
 
-                _originWarehouse.PurchaseInventory -= item.TransferAmount;
+                _originWarehouse.ApproximateInventory -= item.TransferAmount;
                 prodInvEntry1.CurrentValues.SetValues(_originWarehouse);
 
                 //----موجودی در راه انبار مقصد زیاد می شود

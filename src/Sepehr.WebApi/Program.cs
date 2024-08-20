@@ -29,8 +29,6 @@ using Sepehr.Domain.Entities;
 using Sepehr.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Infrastructure.Persistence.Seeds;
-using static System.Net.WebRequestMethods;
-using Sepehr.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,10 +48,7 @@ builder.Services.AddCors(options =>
                               "http://storm.net",
                               "http://www.storm.net",
                               "https://manage.iraniansepehr.com",
-                              "http://manage.iraniansepehr.com",
-                              "http://storm.net",
-                              "http://192.168.10.125:8084",
-                              "http://192.168.10.125"
+                              "http://manage.iraniansepehr.com"
                           //    "http://*.iraniansepehr.com",
                           //    "*.iraniansepehr.com"
                           )
@@ -97,8 +92,6 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-app.UseOptions();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -111,16 +104,17 @@ else
     app.UseHsts();
 }
 
+
 app.MapHealthChecks("health");
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
-app.UseCors("CorsPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwaggerExtension();
 app.UseErrorHandlingMiddleware();
 app.UseHealthChecks("/health");
+app.UseCors("CorsPolicy");
 
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
@@ -136,7 +130,6 @@ using (var scope = scopeFactory.CreateScope())
 #if DEBUG
     {
         await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
-        await PurchaseInvoiceTypes.SeedAsync(applicationDbContext);
         await DefaultFarePaymentTypes.SeedAsync(applicationDbContext);
         await WarehouseTypes.SeedAsync(applicationDbContext);
         await OrderSendTypes.SeedAsync(applicationDbContext);
