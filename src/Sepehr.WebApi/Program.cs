@@ -30,6 +30,7 @@ using Sepehr.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Infrastructure.Persistence.Seeds;
 using static System.Net.WebRequestMethods;
+using Sepehr.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +96,8 @@ builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => n
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+app.UseOptions();
 
 if (app.Environment.IsDevelopment())
 {
