@@ -28,9 +28,9 @@ namespace Sepehr.Domain.Entities
         public List<string> ChangedColumns { get; } = new List<string>();
 
         public virtual ApplicationUser? ApplicationUser { get; set; }
-        public Audit ToAudit()
+        public AuditLog ToAudit()
         {
-            var audit = new Audit();
+            var audit = new AuditLog();
             audit.CreatedBy = Guid.Parse(UserId ?? "465C2D61-95DB-4822-9E95-8571247296A6");
             audit.Type = AuditType.ToString();
             audit.TableName = TableName;

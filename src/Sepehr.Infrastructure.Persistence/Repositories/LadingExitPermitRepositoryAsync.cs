@@ -42,35 +42,34 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             foreach (var item in ladingExitPermit.LadingExitPermitDetails)
             {
                 var cargoAnncDetail = _ladingPermit.CargoAnnounce.CargoAnnounceDetails.First(d => d.Id == item.CargoAnnounceDetailId);
-                var inv = _inventory.FirstOrDefault(o => o.ProductBrandId == cargoAnncDetail.OrderDetail.ProductBrandId);
-                var of_inv = _officialInventory.FirstOrDefault(o => o.ProductId == cargoAnncDetail.OrderDetail.ProductId);
+                var inv = _inventory
+                          .FirstOrDefault(o => o.ProductBrandId == cargoAnncDetail.OrderDetail.ProductBrandId && 
+                                               o.WarehouseId == _dbContext.Set<OrderDetail>().First(d => d.Id == cargoAnncDetail.OrderDetailId).WarehouseId);
+                
+                var of_inv = _officialInventory
+                            .FirstOrDefault(o => o.ProductId == cargoAnncDetail.OrderDetail.ProductId &&
+                                                 o.WarehouseId== _dbContext.Set<OrderDetail>().First(d => d.Id == cargoAnncDetail.OrderDetailId).WarehouseId);
                 if (inv == null)
-                    inv = _inventory.AddAsync(new ProductInventory
-                    {
-                        //----اگر محصول از نوع واسطه باشد از مقدار خرید مقدار سفارش کم می شود
-                        ApproximateInventory = 0,
-                        ProductBrandId = cargoAnncDetail.OrderDetail.ProductBrandId,
-                        OrderPoint = 0,
-                        MinInventory = 0,
-                        MaxInventory = 0,
-                        IsActive = true,
-                        FloorInventory = 0,
-                        WarehouseId = cargoAnncDetail.OrderDetail.WarehouseId,
-                        Created = DateTime.Now,
-                        CreatedBy = Guid.Parse(_authenticatedUser.UserId),
-                    }).Result.Entity;
+                    throw new ApiException("انبار محصول یافت نشد !");
 
                 if (of_inv != null)
                 {
+                    var FormalInvEntry = _officialInventory.Entry(of_inv);
+                    FormalInvEntry.State = EntityState.Modified;
+
                     of_inv.FloorInventory -= (double)item.RealAmount;
-                    _officialInventory.Update(of_inv);
+
+                    FormalInvEntry.CurrentValues.SetValues(of_inv);
                 }
 
-                inv.FloorInventory -= (double)item.RealAmount;
-                inv.ApproximateInventory += cargoAnncDetail.LadingAmount - item.RealAmount;
+                var InvEntry = _inventory.Entry(inv);
+                InvEntry.State = EntityState.Modified;                
 
-                _inventory.Update(inv);
-                //inv. item.RealAmount;
+                inv.FloorInventory -= (double)item.RealAmount;
+                //----- مابه التفاوت موجودی واقعی و موجودی تقریبی بروزرسانی می شود ------
+                inv.ApproximateInventory += cargoAnncDetail.LadingAmount - item.RealAmount;
+                                
+                InvEntry.CurrentValues.SetValues(inv);
             }
 
             var exitPermit = await _productLadingExitPermits.AddAsync(ladingExitPermit);

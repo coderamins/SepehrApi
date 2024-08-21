@@ -1,4 +1,5 @@
-﻿using Sepehr.Domain.Common;
+﻿using Audit.EntityFramework;
+using Sepehr.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,12 @@ namespace Sepehr.Domain.Entities
         public bool? HasExitPermit { get; set; }
         public bool FareAmountApproved { get; set; }
 
+        [AuditIgnore]
         public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
+        [AuditIgnore]
         public required virtual ICollection<LadingExitPermitDetail> LadingExitPermitDetails { get; set; }
         public required virtual LadingPermit LadingPermit { get; set; }
+        [AuditIgnore]
         public virtual ICollection<Attachment>? Attachments { get; set; }
     }
 }

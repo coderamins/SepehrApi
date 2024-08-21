@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
 {
-    public class Audit:AuditableBaseEntity<int>
+    public class AuditLog:AuditableBaseEntity<int>
     {
         public string Type { get; set; } = string.Empty;
         public string TableName { get; set; }=string.Empty;

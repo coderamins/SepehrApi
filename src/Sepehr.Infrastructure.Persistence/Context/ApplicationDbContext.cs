@@ -106,7 +106,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<PaymentRequest> PaymentRequests { get; set; }        
         public DbSet<PersonnelPaymentRequest> PersonnelPaymentRequests { get; set; }        
         public DbSet<Personnel> Personnels { get; set; }
-        public DbSet<Audit> AuditLogs { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
         public DbSet<TransferWarehouseInventoryDetail> TransferWarehouseInventoryDetails { get; set; }
 
@@ -394,7 +394,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             var originalValues = new Dictionary<string, object>();
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                if (entry.Entity is AuditLog || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
                 var auditEntry = new AuditEntry(entry);
                 auditEntry.TableName = entry.Entity.GetType().Name;
