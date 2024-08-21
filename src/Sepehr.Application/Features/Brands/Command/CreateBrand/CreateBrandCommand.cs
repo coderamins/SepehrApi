@@ -5,11 +5,13 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using Newtonsoft.Json;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Serilog;
 
 namespace Sepehr.Application.Features.Brands.Command.CreateBrand
 {
@@ -20,15 +22,22 @@ namespace Sepehr.Application.Features.Brands.Command.CreateBrand
     public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, Response<Brand>>
     {
         private readonly IBrandRepositoryAsync _brandRepository;
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        public CreateBrandCommandHandler(IBrandRepositoryAsync brandRepository, IMapper mapper)
+        public CreateBrandCommandHandler(
+            IBrandRepositoryAsync brandRepository, 
+            ILogger logger,
+            IMapper mapper)
         {
             _brandRepository = brandRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<Response<Brand>> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
+            _logger.Information(JsonConvert.SerializeObject(request));
+
             var checkDuplicate =await _brandRepository.GetBrandInfo(request.Name);
             if (checkDuplicate != null)
                 throw new ApiException(new ErrorMessageFactory().MakeError("برند", ErrorType.DuplicateForCreate));

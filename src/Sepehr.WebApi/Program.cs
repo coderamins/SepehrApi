@@ -29,6 +29,9 @@ using Sepehr.Domain.Entities;
 using Sepehr.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Infrastructure.Persistence.Seeds;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +95,9 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => new Dictionary<string, UserChatConnection>());
 
 builder.Services.AddHealthChecks();
+
+configureLogging();
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -178,4 +184,35 @@ using (var scope = scopeFactory.CreateScope())
     //});
 
     app.Run();
+}
+
+void configureLogging()
+{
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsetting.{environment}.json", optional: true
+    ).Build();
+
+    Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .Enrich.WithExceptionDetails()
+        .WriteTo.Debug()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(ConfigurationElasticSink(configuration, environment))
+        .Enrich.WithProperty("Environment", environment)
+        .ReadFrom.Configuration(configuration)
+        .CreateLogger();
+}
+
+ElasticsearchSinkOptions ConfigurationElasticSink(IConfigurationRoot configuration,string environment)
+{
+    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".","-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
+        NumberOfReplicas=1,
+        NumberOfShards=2
+    };
 }
