@@ -179,8 +179,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
                             {(filter.OrderCode==null ? "":
-                            $@"join sepdb.OrderDetails as t12 on t12.ProductBrandId=t2.Id
-                              join sepdb.Orders as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode ?? -1}")}
+                            $@"join sepdb.PurchaseOrderDetails as t12 on t12.ProductBrandId=t2.Id
+                              join sepdb.PurchaseOrder as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode ?? -1}")}
 							where t1.IsActive=1 and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
