@@ -92,15 +92,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                 ProductSize,
                                 ProductThickness,
                                 ApproximateWeight,
-                                NumberInPackage,
-                                ProductStandardId,
-                                ProductStateId,
-                                ProductMainUnitId,
+                                t1.ProductStandardId,
+                                t1.ProductStateId,
+                                t1.ProductMainUnitId,
                                 t9.UnitName as ProductMainUnitDesc,
                                 ProductSubUnitId,
                                 t10.UnitName as productSubUnitDesc,
                                 ExchangeRate,
-                                Description,
+                                t1.Description,
                                 t1.Created,
                                 t1.IsActive,
                                 0 as BrandId,
@@ -127,9 +126,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
-                            {(filter.OrderCode == null ? "" :
-                            $@"join sepdb.OrderDetails as t12 on t12.ProductBrandId=t2.Id
-                              join sepdb.Orders as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode}")}
 							where t1.IsActive=1 and t5.WarehouseTypeId=5 and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
@@ -137,42 +133,40 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                   (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1) 
                                   {(filter.HasPurchaseInventory==true ? " and 1=-1":"")} /*اگر محصولات دارای موجودی خرید درخواست شود از قسمت اول یونیون چشم پوشی می شود*/
                             union
-                            select t1.Id as ProductId,
-	                            ProductCode,
-                                ProductName,
-                                ProductTypeId,
-                                t11.[Desc] as ProductTypeDesc,
-                                ProductSize,
-                                ProductThickness,
-                                ApproximateWeight,
-                                NumberInPackage,
-                                ProductStandardId,
-                                ProductStateId,
-                                ProductMainUnitId,
-                                t9.UnitName as ProductMainUnitDesc,
-                                ProductSubUnitId,
-                                t10.UnitName as productSubUnitDesc,
-                                ExchangeRate,                                
-                                Description,
-                                t1.Created,
-                                t1.IsActive,
-                                BrandId,
-                                t3.ProductBrandId,
-                                t3.WarehouseId,
-                                t3.ApproximateInventory,
-                                t3.OnTransitInventory,
-                                t3.FloorInventory,
-                                t3.MaxInventory,
-                                t3.MinInventory,
-                                t3.OrderPoint,
-                                t4.Name as ProductBrandName,
-								t5.Name as WarehouseName,
-								t6.[Desc] as ProductStateDesc,
-								t7.[Desc] as ProductStandardDesc,
-								t8.Price as ProductPrice,
-                                t5.WarehouseTypeId,
-                                t3.PurchaseInventory
-
+                            select  t1.Id as ProductId,
+                                    t1.ProductCode,
+                                    ProductName,
+                                    ProductTypeId,
+                                    t11.[Desc] as ProductTypeDesc,
+                                    ProductSize,
+                                    ProductThickness,
+                                    ApproximateWeight,
+                                    t1.ProductStandardId,
+                                    t1.ProductStateId,
+                                    t1.ProductMainUnitId,
+                                    t9.UnitName as ProductMainUnitDesc,
+                                    t1.ProductSubUnitId,
+                                    t10.UnitName as productSubUnitDesc,
+                                    ExchangeRate,                                
+                                    t1.Description,
+                                    t1.Created,
+                                    t1.IsActive,
+                                    BrandId,
+                                    t3.ProductBrandId,
+                                    t3.WarehouseId,
+                                    t3.ApproximateInventory,
+                                    t3.OnTransitInventory,
+                                    t3.FloorInventory,
+                                    t3.MaxInventory,
+                                    t3.MinInventory,
+                                    t3.OrderPoint,
+                                    t4.Name as ProductBrandName,
+				                                t5.Name as WarehouseName,
+				                                t6.[Desc] as ProductStateDesc,
+				                                t7.[Desc] as ProductStandardDesc,
+				                                t8.Price as ProductPrice,
+                                    t5.WarehouseTypeId,
+                                    t3.PurchaseInventory
                             from sepdb.Products as t1
                             join sepdb.ProductBrands as t2 on t1.Id=t2.ProductId
                             left join sepdb.ProductInventories as t3 on t2.Id=t3.ProductBrandId

@@ -42,6 +42,10 @@ builder.Services.AddCors(options =>
                           .WithOrigins(
                               "http://localhost:3000",
                               "https://localhost:3000",
+                              "https://raminsolhi.ir",
+                              "http://raminsolhi.ir",
+                              "https://www.raminsolhi.ir",
+                              "http://www.raminsolhi.ir",
                               "http://192.168.10.125:8084",
                               "http://localhost:8084",
                               "http://manage.storm.net",
