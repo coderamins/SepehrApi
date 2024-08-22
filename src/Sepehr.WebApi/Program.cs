@@ -164,7 +164,8 @@ using (var scope = scopeFactory.CreateScope())
         await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
         await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
         await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);
-
+        await DefaultOrderStatus.SeedAsync(applicationDbContext);
+        
     }
 #endif
 

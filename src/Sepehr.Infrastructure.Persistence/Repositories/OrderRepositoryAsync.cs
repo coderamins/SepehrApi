@@ -605,5 +605,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task RevertOrderInvoiceType(Order order)
+        {
+            var o = await _orders.FirstAsync(o => o.Id== order.Id);
+            var oEntry=_orders.Entry(o);
+            oEntry.State= EntityState.Modified;
+
+            oEntry.CurrentValues.SetValues(order);
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

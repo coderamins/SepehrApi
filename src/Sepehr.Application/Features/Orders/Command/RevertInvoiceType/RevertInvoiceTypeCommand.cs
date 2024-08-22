@@ -10,18 +10,9 @@ using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
 {
-    public class ApproveInvoiceTypeCommand : IRequest<Response<bool>>
+    public class RevertInvoiceTypeCommand : IRequest<Response<bool>>
     {
         public Guid OrderId { get; set; }
-        public int InvoiceTypeId { get; set; }
-        public string InvoiceApproveDescription { get; set; } = string.Empty;
-        public int? CustomerOfficialCompanyId { get; set; }
-
-        public required List<ApproveInvoiceOrderDetail> Details { get; set; }
-
-        public List<AttachmentDto>? Attachments { get; set; }
-
-        public int OrderStatusId { get; set; }
 
         public class ApproveInvoiceTypeCommandHandler : IRequestHandler<ApproveInvoiceTypeCommand, Response<bool>>
         {
@@ -43,28 +34,15 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                     if (order.InvoiceTypeId != (int)EInvoiceType.Formal)
                         throw new ApiException("فاکتور سفارش رسمی نمی باشد !");
 
-                    if (order.OrderStatusId == (int)OrderStatusEnum.AccApproved)
-                        throw new ApiException("تایید حسابداری سفارش قبلا انجام شده است !");
+                    if (order.OrderStatusId != (int)OrderStatusEnum.AccApproved)
+                        throw new ApiException("وضعیت سفارش نامعتبر می باشد !");
                     
                     order = _mapper.Map(command, order);
-                    foreach (var item in command.Details)
-                    {
-                        var d = order.Details.FirstOrDefault(d => d.Id == item.Id);
-                        d.AlternativeProductBrandId = item.AlternativeProductBrandId;
-                        d.AlternativeProductPrice = item.AlternativeProductPrice;
-                        d.AlternativeProductAmount = item.AlternativeProductAmount;
-                    }
 
-                    order.OrderStatusId = (int)OrderStatusEnum.AccApproved;
-                    await _orderRepository.ApproveOrderInvoiceType(order);
+                    order.OrderStatusId = (int)OrderStatusEnum.AccNotApproved;
+                    await _orderRepository.RevertOrderInvoiceType(order);
 
 
-                    List<Attachment> orderAttachments = _mapper.Map<List<Attachment>>(command.Attachments);
-                    orderAttachments.ForEach(a=>a.OrderId=command.OrderId);
-                    orderAttachments.ForEach(a=>a.AttachmentType=AttachmentType.ApproveInvoiceType);
-
-                    await _orderRepository.AddAttachmnets(orderAttachments,command.OrderId);
-                    //await _orderRepository.UpdateAsync(order);
                     return new Response<bool>(true);
 
                 }

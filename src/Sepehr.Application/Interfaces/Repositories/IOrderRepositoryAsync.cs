@@ -24,6 +24,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> IsUniqueBarcodeAsync(string barcode);
         void RemoveRelatedDetails(Guid id);
         Task<bool> ReturnOrder(Guid orderId);
+        Task RevertOrderInvoiceType(Order order);
         Task<Order> UpdateOrder(Order order);
     }
 }

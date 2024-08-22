@@ -97,6 +97,14 @@ namespace Sepehr.WebApi.Controller
             return Ok(await Mediator.Send(command));
         }
 
+        [SwaggerOperation("عدم تایید حسابداری")]
+        [HasPermission("RevertOrderInvoiceType")]
+        [HttpPut("RevertOrderInvoiceType")]
+        public async Task<IActionResult> RevertOrderInvoiceType(RevertInvoiceTypeCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
         [HasPermission("ReturnOrder")]
         [SwaggerOperation("برگشت سفارش")]
         [HttpPut("ReturnOrder/{id}")]
