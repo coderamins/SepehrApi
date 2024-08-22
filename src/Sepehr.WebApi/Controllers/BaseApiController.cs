@@ -14,9 +14,11 @@ namespace Sepehr.WebApi.Controller
     public abstract class BaseApiController : ControllerBase
     {
         private IMediator _mediator;
+        private ILogger<BaseApiController> _logger; 
         //private ILogger<BaseApiController> _logger;
 
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        protected ILogger<BaseApiController> Logger => _logger ??= HttpContext.RequestServices.GetService<ILogger<BaseApiController>>();
         //protected BaseApiController(ILogger<BaseApiController> logger)
         //{
         //    _logger = logger;

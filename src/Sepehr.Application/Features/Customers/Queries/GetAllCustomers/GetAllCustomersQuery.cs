@@ -9,6 +9,7 @@ using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
+using Serilog;
 
 namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
 {
@@ -28,9 +29,14 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
     {
         private readonly ICustomerRepositoryAsync _customerRepository;
         private readonly IMapper _mapper;
-        public GetAllCustomerQueryHandler(ICustomerRepositoryAsync customerRepository, IMapper mapper)
+        private readonly ILogger _logger;
+        public GetAllCustomerQueryHandler(
+            ICustomerRepositoryAsync customerRepository,
+            ILogger logger,
+            IMapper mapper)
         {
             _customerRepository = customerRepository;
+            _logger = logger;
             _mapper = mapper;
         }
 

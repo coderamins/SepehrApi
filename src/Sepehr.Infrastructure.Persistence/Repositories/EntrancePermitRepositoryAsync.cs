@@ -55,7 +55,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     throw new ApiException("موجودی محصول یافت نشد !");
 
                 var entr = _prodInventory.Entry(_inv);
+                //----موجودی در راه کم و موجودی تقریبی اضافه می شود
                 _inv.OnTransitInventory-=item.TransferAmount;
+                _inv.ApproximateInventory += item.TransferAmount;
 
                 entr.State = EntityState.Modified;
                 entr.CurrentValues.SetValues(_inv);

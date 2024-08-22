@@ -340,7 +340,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         else
                         {
                             inv.FloorInventory += (double)udetail.UnloadedAmount;
-                            inv.ApproximateInventory += (decimal)udetail.UnloadedAmount;
+                            // باید مابه اتفاوت اضافه شود
+                            //inv.ApproximateInventory += (decimal)udetail.UnloadedAmount;
                             _productInventory.Update(inv);
                         }
                     }

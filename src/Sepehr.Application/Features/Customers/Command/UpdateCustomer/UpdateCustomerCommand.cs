@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
+using Azure.Core;
 using MediatR;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Features.Customers.Command.CreateCustomer;
@@ -49,7 +50,14 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
             }
             public async Task<Response<string>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
             {
-                var customer = await _customerRepository.GetCustomerInfo(command.Id);
+                var customer = await _customerRepository
+                    .LoadSingleWithRelatedAsync<Customer>(,);
+
+                _customerRepository.LoadAllWithRelatedAsQueryableAsync<ProductBrand>(request.PageNumber, request.PageSize,
+                p => p.Product,
+                    p => p.Product.ProductMainUnit,
+                    p => p.Product.ProductSubUnit,
+                    p => p.Brand);
                 if (customer == null)
                 {
                     throw new ApiException($"مشتری یافت نشد !");
