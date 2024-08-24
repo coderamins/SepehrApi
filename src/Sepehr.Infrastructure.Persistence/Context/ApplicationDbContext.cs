@@ -75,6 +75,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<UnloadingPermit> UnloadingPermits { get; set; }
         public DbSet<UnloadingPermitDetail> UnloadingPermitDetails { get; set; }
         public DbSet<ReceivePayStatus> ReceivePayStatus { get; set; }
+        public DbSet<FareAmountStatus> FareAmountStatus { get; set; }
         public DbSet<ShareHolder> ShareHolders { get; set; }
         public DbSet<PettyCash> PettyCashs { get; set; }
         public DbSet<CashDesk> CashDesks { get; set; }
@@ -267,6 +268,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .ValueGeneratedNever();
 
             builder.Entity<PaymentRequestReason>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
+            builder.Entity<FareAmountStatus>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 

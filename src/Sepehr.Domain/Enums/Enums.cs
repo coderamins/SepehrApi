@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Enums
 {
+    public enum EFareAmountStatus
+    {
+        InProgress=1,
+        Approved=2,
+        Payed=3,
+    }
 
     public enum EPaymentOriginType
     {

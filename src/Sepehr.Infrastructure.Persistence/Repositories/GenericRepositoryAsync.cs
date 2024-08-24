@@ -1,9 +1,11 @@
-using DocumentFormat.OpenXml.InkML;
+﻿using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Interfaces;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
+using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
 using Stimulsoft.Blockly.Model;
 using System.Collections;
@@ -103,9 +105,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return query.AsQueryable();
         }
 
-        public async Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(
-            TEntity entity, 
-            Guid id,
+        public async Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(Guid id,
             params Expression<Func<TEntity,
                 object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>
         {
@@ -189,6 +189,38 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return _dbContext
                  .Set<T>()
                  .AsQueryable();
+        }
+
+        public async Task<CustomerViewModel> GetCustomerAccountInfo(Guid CustId)
+        {
+            // بدهکاری مشتری
+            //-----لیست سفارشات فروش به مشتری ------
+            var cust_orders =await _dbContext.Set<Order>().Where(o=>o.CustomerId==CustId).ToListAsync();
+
+            // بستانکاری مشتری
+            //-----لیست سفارشات خرید از مشتری ------
+            var purchase_orders= await _dbContext.Set<PurchaseOrder>().Where(o=>o.CustomerId == CustId).ToListAsync();
+
+            #region مانده بستانکاری مشتری
+            //-----لیست پرداخت های بازرگانی به مشتری ------
+            var receive_payments = await _dbContext.Set<ReceivePay>()
+                .Where(r=>r.PayToCustomerId==CustId && r.ReceivePayStatusId==(int)EReceivePayStatus.AccApproved).ToListAsync();
+            
+            var cust_pay_requests=await _dbContext.Set<PaymentRequest>()
+                .Where(x=>x.CustomerId==CustId && x.PaymentRequestStatusId==(int)EPaymentRequestStatus.Payed).ToListAsync();
+            #endregion
+
+            decimal cust_creditor = (purchase_orders.Sum(o => o.TotalAmount) +
+                                    receive_payments.Sum(x => x.Amount));
+            decimal dept =
+                (cust_orders.Sum(c => c.TotalAmount) +
+                cust_pay_requests.Sum(x => x.Amount));
+
+
+            return new CustomerViewModel { 
+                CustomerDept = dept,
+                CustomerCreditor=cust_creditor,
+                CustomerCurrentDept= dept- cust_creditor };
         }
 
     }

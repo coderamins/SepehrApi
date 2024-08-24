@@ -49,7 +49,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ApplicationUser)
                 .Where(c =>
                 c.IsActive == true &&
-                (c.CargoAnnounceNo == validFilter.CargoAnnounceNo || validFilter.CargoAnnounceNo==null) &&
+                (c.CargoAnnounceNo == validFilter.CargoAnnounceNo || validFilter.CargoAnnounceNo == null) &&
                 (c.IsComplete == validFilter.IsCompletlyLading || !validFilter.IsCompletlyLading) &&
                 (c.Order.CustomerId == validFilter.CustomerId || validFilter.CustomerId == null) &&
                 (c.Order.OrderCode == validFilter.OrderCode || validFilter.OrderCode == null) &&
@@ -72,7 +72,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(ca => ca.Order).ThenInclude(o => o.FarePaymentType)
                 .Include(ca => ca.Order).ThenInclude(o => o.OrderServices)
                 .Include(ca => ca.Order).ThenInclude(o => o.OrderSendType)
-                .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.LadingExitPermitDetail).ThenInclude(x=>x.LadingExitPermit)
+                .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.LadingExitPermitDetail).ThenInclude(x => x.LadingExitPermit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.Product).ThenInclude(p => p.ProductSubUnit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.Product).ThenInclude(p => p.ProductMainUnit)
                 .Include(ca => ca.CargoAnnounceDetails).ThenInclude(c => c.OrderDetail).ThenInclude(c => c.ProductBrand).ThenInclude(b => b.Brand)
@@ -121,6 +121,20 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.OrderDetail).ThenInclude(c => c.Product)
                 .Where(cd => cd.OrderDetailId == orderDetailId)
                 .ToListAsync();
+        }
+
+        public async Task<CargoAnnounce> CreateCargoAnnounce(CargoAnnounce cargoAnnc, Order order)
+        {
+            var _o = await _order.FirstAsync(o => o.Id == order.Id);
+            var orderEntry=_order.Entry(_o);
+            orderEntry.State = EntityState.Modified;
+
+            orderEntry.CurrentValues.SetValues(order);
+            
+            await _cargoAnnouncements.AddAsync(cargoAnnc);
+            await _dbContext.SaveChangesAsync();
+
+            return cargoAnnc;
         }
     }
 }

@@ -83,8 +83,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddApiVersioningExtension();
 builder.Services.AddHealthChecks();
 
-
-//builder.Services.AddScoped<IdentityContext>();
 builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<IAuthenticatedUserService, Sepehr.WebApi.Services.AuthenticatedUserService>();
@@ -165,6 +163,7 @@ using (var scope = scopeFactory.CreateScope())
         await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
         await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);
         await DefaultOrderStatus.SeedAsync(applicationDbContext);
+        await DefaultFareAmountStatus.SeedAsync(applicationDbContext);
         
     }
 #endif

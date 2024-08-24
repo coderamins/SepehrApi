@@ -41,8 +41,8 @@ namespace Sepehr.Application.Features.DriverFareAmounts
         {
             try
             {
-                var purchaseOrderTransferRemittUnloadPermit = await _puOrderTransRemitUnload.GetByIdAsync(request.PurOrderTransRemittUnloadingPermitId);
-                if (purchaseOrderTransferRemittUnloadPermit == null)
+                var transferRemittUnloadPermit = await _puOrderTransRemitUnload.GetByIdAsync(request.PurOrderTransRemittUnloadingPermitId);
+                if (transferRemittUnloadPermit == null)
                 {
                     throw new ApiException("مجوز تخلیه یافت نشد !");
                 }
@@ -51,8 +51,11 @@ namespace Sepehr.Application.Features.DriverFareAmounts
 
                 driverFareAmount = await _driverFareAmountApprove.AddAsync(driverFareAmount);
 
-                purchaseOrderTransferRemittUnloadPermit.FareAmountApproved = true;
-                await _puOrderTransRemitUnload.UpdateAsync(purchaseOrderTransferRemittUnloadPermit);
+                if (transferRemittUnloadPermit.FareAmountApproved)
+                    throw new ApiException("کرایه قبلا تایید شده است !");
+
+                transferRemittUnloadPermit.FareAmountApproved = true;
+                await _puOrderTransRemitUnload.UpdateAsync(transferRemittUnloadPermit);
 
                 return new Response<DriverFareAmountApprove>(driverFareAmount,
                     "تایید کرایه با موفقیت انجام شد !");

@@ -1,4 +1,5 @@
 ﻿using Sepehr.Domain.Common;
+using Sepehr.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,7 +33,7 @@ namespace Sepehr.Domain.Entities
         public int? AccountingDocNo { get; set; }
         public string? Description { get; set; }
         public string AccountingDescription { get; set; } = string.Empty;
-        public int ReceivePayStatusId { get; set; } = 1;
+        public int ReceivePayStatusId { get; set; } = (int)EReceivePayStatus.New;
         public string ChequeNo { get; set; } = string.Empty;
         public DateTime? ChequeDate { get; set; }
 

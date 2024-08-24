@@ -1,4 +1,5 @@
 using Sepehr.Domain.Common;
+using Sepehr.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Sepehr.Application.Interfaces
         Task<IReadOnlyList<T>> GetAllAsync();
         IQueryable<T> GetAllAsQueryable();
         Task<IReadOnlyList<T>> GetPagedReponseAsync(int pageNumber, int pageSize);
-        Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(TEntity entity,Guid Id,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>;
+        Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(Guid Id,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>;
         Task<IQueryable<TEntity>> LoadAllWithRelatedAsQueryableAsync<TEntity>(int pageNumber, int pageSize,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class;
         Task<IEnumerable<TEntity>> LoadAllWithRelatedAsync<TEntity>(int pageNumber, int pageSize,
             params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class;
@@ -26,5 +27,6 @@ namespace Sepehr.Application.Interfaces
         Task UpdateAsync(T entity, T oldEntity);
         Task<List<T>> UpdateAsync(List<T> entity);
         Task DeleteAsync(T entity);
+        Task<CustomerViewModel> GetCustomerAccountInfo(Guid Id);
     }
 }

@@ -5,6 +5,7 @@ namespace Sepehr.Application.Interfaces.Repositories
 {
     public interface ICargoAnnouncementRepositoryAsync : IGenericRepositoryAsync<CargoAnnounce>
     {
+        Task<CargoAnnounce> CreateCargoAnnounce(CargoAnnounce cargoAnnc, Order order);
         Task<bool> CreateLadingPermit(Guid cargoAnnounceId);
         Task<IQueryable<CargoAnnounce>> GetAllCargoAnnounceAsync(GetAllCargoAnncsParameter validFilter);
         Task<CargoAnnounce> GetCargoAnnounceInfo(Guid id);

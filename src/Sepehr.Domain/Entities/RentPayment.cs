@@ -1,4 +1,5 @@
 ﻿using Sepehr.Domain.Common;
+using Sepehr.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace Sepehr.Domain.Entities
 {
     public class RentPayment:AuditableBaseEntity<int>
     {
-        public int ReceivePaymentOriginId { get; set; }
         /// <summary>
         /// شماره مجوز تخلیه
         /// </summary>
@@ -18,13 +18,32 @@ namespace Sepehr.Domain.Entities
         /// شماره مجوز خروج اعلام بار
         /// </summary>
         public Guid? LadingExitPermitId { get; set; }
-
         public required decimal TotalFareAmount { get; set; }
+        public EFareAmountStatus FareAmountStatusId { get; set; } = EFareAmountStatus.InProgress;
 
+        #region نوع و مبدا پرداخت
+        public int? PaymentOriginTypeId { get; set; }
+        public Guid? PaymentFromCustomerId { get; set; }
+        public int? PaymentFromOrganizationBankId { get; set; }
+        public int? PaymentFromCashDeskId { get; set; }
+        public int? PaymentFromIncomeId { get; set; }
+        public int? PaymentFromPettyCashId { get; set; }
+        public int? PaymentFromCostId { get; set; }
+        public Guid? PaymentFromShareHolderId { get; set; }
+
+        public virtual PaymentOriginType? PaymentOriginType { get; set; }
+        public virtual Customer? PaymentFromCustomer { get; set; }
+        public virtual OrganizationBank? PaymentFromOrganizationBank { get; set; }
+        public virtual CashDesk? PaymentFromCashDesk { get; set; }
+        public virtual Income? PaymentFromIncome { get; set; }
+        public virtual PettyCash? PaymentFromPettyCash { get; set; }
+        public virtual Cost? PaymentFromCost { get; set; }
+        public virtual ShareHolder? PaymentFromShareHolder { get; set; }
+
+        #endregion
 
         public string Description { get; set; } = string.Empty;
 
-        public required virtual PaymentOriginType ReceivePaymentOrigin { get; set; }
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual UnloadingPermit? UnloadingPermit { get; set; }
     }

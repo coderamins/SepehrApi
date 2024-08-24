@@ -50,6 +50,9 @@ namespace Sepehr.Application.Features.DriverFareAmounts
 
                 driverFareAmount = await _driverFareAmountApprove.AddAsync(driverFareAmount);
 
+                if (ladingExitPermit.FareAmountApproved)
+                    throw new ApiException("کرایه قبلا تایید شده است !");
+
                 ladingExitPermit.FareAmountApproved = true;
                 await _ladingExitPermit.UpdateAsync(ladingExitPermit);
 

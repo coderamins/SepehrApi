@@ -50,24 +50,12 @@ namespace Sepehr.Application.Features.Customers.Command.UpdateCustomer
             }
             public async Task<Response<string>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
             {
-                var customer = await _customerRepository
-                    .LoadSingleWithRelatedAsync<Customer>(,);
+                var customer = await _customerRepository.GetByIdAsync(command.Id);
 
-                _customerRepository.LoadAllWithRelatedAsQueryableAsync<ProductBrand>(request.PageNumber, request.PageSize,
-                p => p.Product,
-                    p => p.Product.ProductMainUnit,
-                    p => p.Product.ProductSubUnit,
-                    p => p.Brand);
                 if (customer == null)
-                {
                     throw new ApiException($"مشتری یافت نشد !");
-                }
                 else
                 {
-                    if (customer.Phonebook != null)
-                        customer.Phonebook.Clear();
-
-                    customer.Orders.Clear();
                     var updated_customer = _mapper.Map(command, customer);
 
                     await _customerRepository.UpdateCustomer(updated_customer);

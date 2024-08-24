@@ -47,5 +47,6 @@ namespace Sepehr.Domain.ViewModels
         public List<CustomerOfficialCompanyViewModel>? CustomerOfficialCompanies { get; set; }
         public List<WarehouseViewModel>? Warehouses { get; set; }
         public List<CustomerAssignedLabelViewModel>? CustomerLabels { get; set; }
+        public decimal CustomerCreditor { get; set; }
     }
 }
