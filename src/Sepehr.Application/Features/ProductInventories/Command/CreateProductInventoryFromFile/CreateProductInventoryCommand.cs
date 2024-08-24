@@ -100,8 +100,8 @@ namespace Sepehr.Application.Features.ProductInventories.Command.CreateProductIn
                             if (productBrandInfo == null)
                                 throw new ApiException($"کد کالای {productCode} یافت نشد !");
 
-                            else if(!productBrandInfo.ProductInventories.Any(x=>x.WarehouseId==1))
-                                throw new ApiException($"کد کالای {productCode} در انبار سپهر یافت نشد !");
+                            //else if(!productBrandInfo.ProductInventories.Any(x=>x.WarehouseId==1))
+                            //    throw new ApiException($"کد کالای {productCode} در انبار سپهر یافت نشد !");
 
                             ProductInventory? pbInventory = await _productInventoryRepository.GetProductInventory(productBrandId, 1);
                             if (pbInventory == null)
@@ -112,7 +112,7 @@ namespace Sepehr.Application.Features.ProductInventories.Command.CreateProductIn
                                     MaxInventory = MaxInventory,
                                     WarehouseId = 1,
                                     ApproximateInventory = ApproximateInventory,
-                                    FloorInventory = FloorInventory,
+                                    FloorInventory = (double)ApproximateInventory,
                                     OrderPoint = OrderPoint,
                                     MinInventory = MinInventory,
                                     IsActive = true,
@@ -125,7 +125,7 @@ namespace Sepehr.Application.Features.ProductInventories.Command.CreateProductIn
                                 pbInventory.MaxInventory = MaxInventory;
                                 pbInventory.WarehouseId = 1;
                                 pbInventory.ApproximateInventory = ApproximateInventory;
-                                pbInventory.FloorInventory = FloorInventory;
+                                pbInventory.FloorInventory = (double)ApproximateInventory;
                                 pbInventory.OrderPoint = OrderPoint;
                                 pbInventory.MinInventory = MinInventory;
                                 pbInventory.IsActive = true;

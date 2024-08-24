@@ -195,11 +195,6 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ProductName, opt => opt.MapFrom(d => d.ProductBrand.Product.ProductName))
                 .ForMember(m => m.BrandName, opt => opt.MapFrom(d => d.ProductBrand.Brand.Name));
 
-
-            CreateMap<EntrancePermit, EntrancePermitViewModel>()
-                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
-                .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.UnloadingPermits));
-
             CreateMap<TransferRemittance, TransferRemittanceViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.DestinationWarehouseName, opt => opt.MapFrom(d => d.DestinationWarehouse.Name))
@@ -904,6 +899,8 @@ namespace Sepehr.Application.Mapping
             CreateMap<GetAllEntrancePermitsQuery, GetAllEntrancePermitsParameter>();
             CreateMap<CreateEntrancePermitCommand, EntrancePermit>();
             CreateMap<EntrancePermit, EntrancePermitViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
+                .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.UnloadingPermits))
                 .ForMember(m => m.TransferRemitance, opt => opt.MapFrom(d => d.TransferRemittance))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 

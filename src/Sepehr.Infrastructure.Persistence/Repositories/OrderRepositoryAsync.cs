@@ -536,9 +536,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             foreach (var item in order.Details)
             {
                 var inv = await _officialWarehosesInv
-                    .FirstOrDefaultAsync(i => i.ProductId == _dbContext.ProductBrands
-                                            .First(b => b.Id == (item.AlternativeProductBrandId ?? item.ProductBrandId)).ProductId
-                    && i.WarehouseId == 2);
+                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductId);
                 if (inv != null)
                 {
                     inv.ApproximateInventory -= item.AlternativeProductAmount == 0 ? (double)item.ProximateAmount : (double)item.AlternativeProductAmount;

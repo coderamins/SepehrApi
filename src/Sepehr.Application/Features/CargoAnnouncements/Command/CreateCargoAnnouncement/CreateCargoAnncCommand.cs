@@ -18,15 +18,15 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
         public Guid OrderId { get; set; }
         public string UnloadingPlaceAddress { get; set; } = string.Empty;
         public string DriverName { get; set; } = string.Empty;
-        public string CarPlaque { get; set; }=string.Empty;
-        public string DriverMobile { get; set; }=string.Empty;
-        public string ApprovedUserName { get; set; }=string.Empty;
+        public string CarPlaque { get; set; } = string.Empty;
+        public string DriverMobile { get; set; } = string.Empty;
+        public string ApprovedUserName { get; set; } = string.Empty;
         public decimal FareAmount { get; set; }
         public bool IsComplete { get; set; }
         public int? VehicleTypeId { get; set; }
-        public string ShippingName { get; set; }=string.Empty;
-        public string DeliveryDate { get; set; }=string.Empty;
-        public string Description { get; set; }=string.Empty;
+        public string ShippingName { get; set; } = string.Empty;
+        public string DeliveryDate { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         public required List<CargoAnnounceDetailDto> CargoAnnounceDetails { get; set; }
         public List<AttachmentDto>? Attachments { get; set; }
@@ -41,15 +41,15 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
         private readonly ISmsService _smsService;
         public CreateCargoAnncCommandHandler(
             ILogger<CreateCargoAnncCommandHandler> logger,
-            ICargoAnnouncementRepositoryAsync cargoAnncRepository, 
-            IOrderRepositoryAsync orderRepository, 
-            IMapper mapper,ISmsService smsService)
+            ICargoAnnouncementRepositoryAsync cargoAnncRepository,
+            IOrderRepositoryAsync orderRepository,
+            IMapper mapper, ISmsService smsService)
         {
             _cargoAnncRepository = cargoAnncRepository;
             _orderRep = orderRepository;
             _mapper = mapper;
             _smsService = smsService;
-            _logger= logger;
+            _logger = logger;
         }
 
         public async Task<Response<List<CargoAnnounce>>> Handle(CreateCargoAnncCommand request, CancellationToken cancellationToken)
@@ -62,43 +62,42 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                 //var ladingPermitSummery = order.Details == null ? 0 : 
                 //    order.CargoAnnounces.Sum(a => a.CargoAnnounceDetails.Sum(l => l.LadingAmount));
 
-                if (order.OrderStatusId== (int)OrderStatusEnum.Sended)
+                if (order.OrderStatusId == (int)OrderStatusEnum.Sended)
                     throw new ApiException("ارسال سفارش تکمیل شده است !");
 
                 List<CargoAnnounce> cargoAnnounces = new List<CargoAnnounce>();
-                var orderDetailByWarehouse = order.Details.GroupBy(a => a.WarehouseId).Select(x => x.Key);
-                foreach (var whouse in orderDetailByWarehouse)
+                var orderDetailByWarehouse = order.Details.GroupBy(a => a.WarehouseId).ToList();
+
+                for (int i = 0; i < orderDetailByWarehouse.Count(); i++)
                 {
+                    var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
+                    List<int> _orderDetails = new List<int>();
                     foreach (var item in request.CargoAnnounceDetails)
                     {
-                        var orderDetail =await _orderRep.GetOrderDetailInfo(item.OrderDetailId);
-                        if (orderDetail == null)
-                            throw new ApiException("سفارش یافت نشد !");
-
-                        if (orderDetail.CargoAnnounces!=null && 
-                            orderDetail.CargoAnnounces.Sum(c => c.LadingAmount) + item.LadingAmount > orderDetail.ProximateAmount)
+                        var od = await _orderRep.GetOrderDetailInfo(item.OrderDetailId);
+                        if (od == null)
+                            throw new ApiException("خطا در ثبت اعلام بار!");
+                        if (od.CargoAnnounces != null && od.CargoAnnounces.Sum(c => c.LadingAmount) + item.LadingAmount > od.ProximateAmount)
                             throw new ApiException("مقدار بارگیری نمیتواند بیشتر از مقدار سفارش باشد !");
 
-                        if(orderDetail!=null && orderDetail.WarehouseId==whouse)
-                        {
-                            var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
-                            
-                            var filteredDetails = cargoAnnc.CargoAnnounceDetails.Where(d => d.OrderDetailId == orderDetail.Id);
-                            ICollection<CargoAnnounceDetail> newDetails = filteredDetails.ToList();
-                            cargoAnnc.CargoAnnounceDetails = newDetails;
-                            //if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
-                            //{
-                            //    cargoAnnc.LadingPermits.Add(new LadingPermit
-                            //    {
-                            //        HasExitPermit = false,
-                            //        IsActive = true,
-                            //        Description = "کالا از نوع واسطه بوده و بصورت خودکار مجوز بارگیری صادر شد"
-                            //    });
-                            //}
-
-                            cargoAnnounces.Add(cargoAnnc);
-                        }                       
+                        if (od.WarehouseId == orderDetailByWarehouse[i].Key)
+                            _orderDetails.Add(od.Id);
                     }
+
+                    var filteredDetails = cargoAnnc.CargoAnnounceDetails.Where(d => _orderDetails.Contains(d.OrderDetailId));
+                    ICollection<CargoAnnounceDetail> newDetails = filteredDetails.ToList();
+                    cargoAnnc.CargoAnnounceDetails = newDetails;
+                    //if(orderDetail.Warehouse.WarehouseTypeId==(int)EWarehouseType.Vaseteh)
+                    //{
+                    //    cargoAnnc.LadingPermits.Add(new LadingPermit
+                    //    {
+                    //        HasExitPermit = false,
+                    //        IsActive = true,
+                    //        Description = "کالا از نوع واسطه بوده و بصورت خودکار مجوز بارگیری صادر شد"
+                    //    });
+                    //}
+
+                    cargoAnnounces.Add(cargoAnnc);
                 }
 
                 //var cargoAnnc = _mapper.Map<CargoAnnounce>(request);
@@ -107,7 +106,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
                 if (request.IsComplete)
                     order.OrderStatusId = (int)OrderStatusEnum.Sended;
 
-                await _orderRep.UpdateAsync(order);                
+                await _orderRep.UpdateAsync(order);
 
                 await _cargoAnncRepository.AddAsync(cargoAnnounces);
                 return new Response<List<CargoAnnounce>>(cargoAnnounces, $"اعلام بار با موفقیت ثبت شد .");

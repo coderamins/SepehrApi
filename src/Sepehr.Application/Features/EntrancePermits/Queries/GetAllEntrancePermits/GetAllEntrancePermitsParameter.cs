@@ -11,6 +11,7 @@ namespace Sepehr.Application.Features.EntrancePermits.Queries.GetAllEntrancePerm
         public IEnumerable<int>? InvoiceTypeId { get; set; }
         public int? EntrancePermitStatusId { get; set; }
         public bool? IsNotTransferedToWarehouse { get; set; }
+        public int? EntrancePermitNo { get; set; }
         public long? OrderCode { get; set; }
     }
 }

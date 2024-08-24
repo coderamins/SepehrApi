@@ -600,12 +600,13 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(d => d.Product)
                         .FirstAsync(o => o.Id == order.Id);
 
+                var _poEntry = _purchaseOrders.Entry(purOrder);
+
                 foreach (var item in purOrder.Details)
                 {
                     var inv = await _ofWarehoseInventories
                         .Include(ow => ow.ProductBrand)
-                        .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId &&
-                                                  i.WarehouseId == 2);
+                        .FirstOrDefaultAsync(i => i.ProductId == item.ProductBrand.ProductId);
 
                     if (inv == null)
                     {
@@ -614,12 +615,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     }
                     else
                     {
+                        var offWareHouseEntry = _ofWarehoseInventories.Entry(inv);
+                        offWareHouseEntry.State = EntityState.Modified;
+
                         inv.ApproximateInventory += (double)(item.AlternativeProductAmount == 0 ? item.ProximateAmount : item.AlternativeProductAmount);
-                        _ofWarehoseInventories.Update(inv);
+
+                        offWareHouseEntry.CurrentValues.SetValues(inv);
                     }
                 }
 
-                _purchaseOrders.Update(order);
+                _poEntry.State = EntityState.Modified;
+                _poEntry.CurrentValues.SetValues(order);
+
                 await _dbContext.SaveChangesAsync();
                 return true;
             }

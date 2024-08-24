@@ -96,7 +96,7 @@ builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => n
 
 builder.Services.AddHealthChecks();
 
-configureLogging();
+//configureLogging();
 builder.Host.UseSerilog();
 
 var app = builder.Build();

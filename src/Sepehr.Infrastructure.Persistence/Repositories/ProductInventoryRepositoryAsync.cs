@@ -24,6 +24,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<Product> _products;
         private readonly DbSet<ProductBrand> _productBrands;
         public readonly DapperContext _dapperContext;
+        public readonly ApplicationDbContext _dbContext;
         public readonly IMapper _mapper;
 
         public ProductInventoryRepositoryAsync(
@@ -41,6 +42,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _inventoryHistories = dbContext.Set<ProductInventoryHistory>();
             _dapperContext = dapContext;
             _mapper = mapper;
+            _dbContext = dbContext;
         }
 
         public async Task<ProductInventory?> GetProductInventory(int productBrandId, int warehouseId)
@@ -402,6 +404,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 }
 
                 await _productInventory.AddRangeAsync(productInventories);
+                await _dbContext.SaveChangesAsync();
             }
             catch (Exception e)
             {

@@ -31,11 +31,11 @@ namespace Sepehr.Application.Features.EntrancePermits.Queries.GetAllEntrancePerm
     public class GetAllEntrancePermitsQueryHandler :
          IRequestHandler<GetAllEntrancePermitsQuery, PagedResponse<IEnumerable<EntrancePermitViewModel>>>
     {
-        private readonly IEntrancePermitRepositoryAsync __entrancePermitRepository;
+        private readonly IEntrancePermitRepositoryAsync _entrancePermitRepository;
         private readonly IMapper _mapper;
-        public GetAllEntrancePermitsQueryHandler(IEntrancePermitRepositoryAsync _entrancePermitRepository, IMapper mapper)
+        public GetAllEntrancePermitsQueryHandler(IEntrancePermitRepositoryAsync entrancePermitRepository, IMapper mapper)
         {
-            __entrancePermitRepository = _entrancePermitRepository;
+            _entrancePermitRepository = entrancePermitRepository;
             _mapper = mapper;
         }
 
@@ -44,7 +44,7 @@ namespace Sepehr.Application.Features.EntrancePermits.Queries.GetAllEntrancePerm
             try
             {
                 var validFilter = _mapper.Map<GetAllEntrancePermitsParameter>(request);
-                var _entrancePermit = await __entrancePermitRepository.GetAllEntrancePermitsAsync(validFilter);
+                var _entrancePermit = await _entrancePermitRepository.GetAllEntrancePermitsAsync(validFilter);
 
                 var _entrancePermitViewModel = _mapper.Map<IEnumerable<EntrancePermitViewModel>>(
                     _entrancePermit.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)

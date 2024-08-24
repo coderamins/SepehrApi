@@ -39,7 +39,8 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.ApprovePe
 
                     if (personnelPaymentRequest == null)
                         throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
-                    if (!new int[] { 1, 2, 4 }.Contains(personnelPaymentRequest.PaymentRequestStatusId))
+                    if (!new int[] { (int)EPaymentRequestStatus.InProgress, (int)EPaymentRequestStatus.Rejected }
+                        .Contains(personnelPaymentRequest.PaymentRequestStatusId))
                         throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
                     else
                     {

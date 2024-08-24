@@ -34,44 +34,53 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<EntrancePermit> CreateEntrancePermit(EntrancePermit entrancePermit)
         {
-            var transRemit = await _dbContext.TransferRemittances
-                   .AsNoTracking()
-                   .FirstOrDefaultAsync(o => o.Id == entrancePermit.TransferRemittanceId);
-
-            if (transRemit == null)
-                throw new ApiException("حواله انتقال یافت نشد !");
-
-            if (transRemit.TransferRemittanceStatusId == 2)
-                throw new ApiException("مجوز ورود حواله قبلا ثبت شده است !");
-            if (transRemit == null)
-                throw new ApiException("حواله یافت نشد !");
-
-            //------موجودی در راه انبار مقصد کم می شود-----
-            foreach(var item in transRemit.Details)
+            try
             {
-                var _inv=await _prodInventory
-                    .FirstOrDefaultAsync(x=>x.ProductBrandId==item.ProductBrandId && x.WarehouseId== transRemit.DestinationWarehouseId);
-                if (_inv == null)
-                    throw new ApiException("موجودی محصول یافت نشد !");
+                var transRemit = await _dbContext.TransferRemittances
+                            .Include(x => x.Details)
+                           .FirstOrDefaultAsync(o => o.Id == entrancePermit.TransferRemittanceId);
 
-                var entr = _prodInventory.Entry(_inv);
-                _inv.OnTransitInventory-=item.TransferAmount;
+                if (transRemit == null)
+                    throw new ApiException("حواله انتقال یافت نشد !");
 
-                entr.State = EntityState.Modified;
-                entr.CurrentValues.SetValues(_inv);
+                if (transRemit.TransferRemittanceStatusId == 2)
+                    throw new ApiException("مجوز ورود حواله قبلا ثبت شده است !");
+                if (transRemit == null)
+                    throw new ApiException("حواله یافت نشد !");
+
+                //------موجودی در راه انبار مقصد کم می شود و موجودی تقریبی اضافه می شود-----
+                foreach (var item in transRemit.Details)
+                {
+                    var _inv = await _prodInventory
+                        .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.WarehouseId == transRemit.DestinationWarehouseId);
+                    if (_inv == null)
+                        throw new ApiException("موجودی محصول یافت نشد !");
+
+                    var entr = _prodInventory.Entry(_inv);
+                    _inv.OnTransitInventory -= item.TransferAmount;
+                    _inv.ApproximateInventory += item.TransferAmount;
+
+                    entr.State = EntityState.Modified;
+                    entr.CurrentValues.SetValues(_inv);
+                }
+
+                var trnsRemitEntry = _transferRemittances.Entry(transRemit);
+                transRemit.TransferRemittanceStatusId = 2;
+
+                trnsRemitEntry.State = EntityState.Modified;
+                trnsRemitEntry.CurrentValues.SetValues(transRemit);
+
+                var newEntrancePermit = _mapper.Map<EntrancePermit>(entrancePermit);
+                await _dbContext.AddAsync(newEntrancePermit);
+
+                await _dbContext.SaveChangesAsync();
+                return newEntrancePermit;
             }
+            catch (Exception e)
+            {
 
-            var trnsRemitEntry = _transferRemittances.Entry(transRemit);
-            transRemit.TransferRemittanceStatusId = 2;
-
-            trnsRemitEntry.State = EntityState.Modified;
-            trnsRemitEntry.CurrentValues.SetValues(transRemit);            
-
-            var newEntrancePermit = _mapper.Map<EntrancePermit>(entrancePermit);
-            await _dbContext.AddAsync(newEntrancePermit);
-
-            await _dbContext.SaveChangesAsync();
-            return newEntrancePermit;
+                throw;
+            }
         }
 
         public async Task DeleteEntrancePermit(Guid id)
@@ -101,6 +110,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceType)
                 .Include(x => x.TransferRemittance).ThenInclude(x => x.OriginWarehouse)
                 .Include(x => x.TransferRemittance).ThenInclude(x => x.DestinationWarehouse)
+                .Where(x=>
+                        (x.TransferRemittance.TransferRemittanceStatusId==validFilter.EntrancePermitStatusId || validFilter.EntrancePermitStatusId==null) &&
+                        (x.PermitCode==validFilter.EntrancePermitNo || validFilter.EntrancePermitNo==null))
                 .ToListAsync();
         }
 

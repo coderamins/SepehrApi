@@ -16,7 +16,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<TransferRemittance> CreateTransferRemittance(TransferRemittance transRemittance);
         Task<TransferRemittance?> GetTransferRemittanceByPermitCodeAsync(int PermitCode);
         Task<EntrancePermit> TransRemittEntrancePermitById(Guid entrancePermitId);
-        Task<UnloadingPermit> CreatePOrderUnloadingPermit(
-            UnloadingPermit unloadingPermit);
+        Task<UnloadingPermit> CreatePOrderUnloadingPermit( UnloadingPermit unloadingPermit);
     }
 }

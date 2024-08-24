@@ -126,7 +126,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
-							where t1.IsActive=1 and t5.WarehouseTypeId=5 and
+							where t1.IsActive=1 and t5.WarehouseTypeId={(int)EWarehouseType.Rasmi} and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
                                   (t5.WarehouseTypeId={filter.WarehouseTypeId ?? -1} or {filter.WarehouseTypeId ?? -1}=-1) and

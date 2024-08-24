@@ -5,6 +5,7 @@ using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittance
 using Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransferRemittances;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 using System.Data;
 
@@ -15,6 +16,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         ITransferRemittanceRepositoryAsync
     {
         private readonly DbSet<ProductInventory> _productInventory;
+        private readonly DbSet<OfficialWarehoseInventory> _productOffInventory;
         private readonly DbSet<TransferRemittance> _transferRemittances;
         private readonly DbSet<TransferRemittanceDetail> _transferRemittanceDetails;
         private readonly DbSet<EntrancePermit> _transRemittEntrancePermits;
@@ -31,6 +33,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _transferRemittances = dbContext.Set<TransferRemittance>();
             _transferRemittanceDetails = dbContext.Set<TransferRemittanceDetail>();
             _orderTransferRemittanceUnloadingPermits = dbContext.Set<UnloadingPermit>();
+            _productOffInventory = dbContext.Set<OfficialWarehoseInventory>();
             _dbContext = dbContext;
             _mapper = mapper;
             _productInventory = dbContext.Set<ProductInventory>();
@@ -102,8 +105,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Brand)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product)
                 .Where(t =>
-                    (t.OriginWarehouse.CustomerWarehouses.Any(cw=>cw.CustomerId==validFilter.MarketerId) || validFilter.MarketerId==null) &&
-                    (t.OriginWarehouseId == validFilter.OriginWarehouseId || validFilter.OriginWarehouseId==null) &&
+                    (t.OriginWarehouse.CustomerWarehouses.Any(cw => cw.CustomerId == validFilter.MarketerId) || validFilter.MarketerId == null) &&
+                    (t.OriginWarehouseId == validFilter.OriginWarehouseId || validFilter.OriginWarehouseId == null) &&
                     (t.Id == validFilter.Id || validFilter.Id == null) &&
                     (t.TransferRemittanceStatusId == validFilter.TransferRemittStatusId || validFilter.TransferRemittStatusId == null) &&
                     ((t.TransferRemittanceStatusId == 2 && validFilter.IsEntranced == true) ||
@@ -201,7 +204,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.VehicleType)
                 .Include(t => t.DestinationWarehouse)
                 .Include(t => t.EntrancePermit).ThenInclude(t => t.Attachments)
-                .Include(t => t.Details).ThenInclude(d=>d.UnloadingPermitDetail)
+                .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
                 .Include(t => t.EntrancePermit)
                     .ThenInclude(t => t.UnloadingPermits)
                     .ThenInclude(t => t.Attachments)
@@ -281,13 +284,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return transferPermit.EntrancePermit;
         }
 
-        public async Task<UnloadingPermit> CreatePOrderUnloadingPermit
-            (UnloadingPermit unloadingPermit)
+        public async Task<UnloadingPermit> CreatePOrderUnloadingPermit(UnloadingPermit unloadingPermit)
         {
             try
             {
                 var transferRemitt = await _transferRemittances.AsNoTracking()
-                        .Include(t => t.Details).ThenInclude(d=>d.UnloadingPermitDetail).AsNoTracking()
+                        .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail).AsNoTracking()
                         .Include(t => t.EntrancePermit).AsNoTracking()
                         .FirstOrDefaultAsync(t =>
                         t.EntrancePermit.Id == unloadingPermit.EntrancePermitId);
@@ -298,6 +300,51 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     throw new ApiException("تخلیه حواله قبلا بصورت کامل انجام شده !");
 
                 transferRemitt = _mapper.Map(unloadingPermit, transferRemitt);
+
+                #region موجودی کف (واقعی) محصول اضافه می شود 
+                //foreach (var item in transferRemitt.Details)
+                //{
+                foreach (var udetail in unloadingPermit.UnloadingPermitDetails)
+                {
+                    var _tRemitt =await _transferRemittanceDetails
+                        .Include(x=>x.TransferRemittance)
+                        .FirstOrDefaultAsync(d => d.Id == udetail.TransferRemittanceDetailId);
+                    if (_tRemitt == null)
+                        throw new ApiException("خطا در اجرای درخواست !");
+
+                    var inv = await _productInventory
+                        .FirstOrDefaultAsync(i => i.ProductBrandId == _tRemitt.ProductBrandId &&
+                        i.WarehouseId == _tRemitt.TransferRemittance.DestinationWarehouseId);
+
+                    var _off_Inv = await _productOffInventory
+                        .FirstOrDefaultAsync(i => i.ProductId == _dbContext.Set<ProductBrand>().First(x=>x.Id==_tRemitt.ProductBrandId).ProductId &&
+                        i.WarehouseId == _tRemitt.TransferRemittance.DestinationWarehouseId);
+                    
+                    if (_off_Inv == null)
+                        throw new ApiException("موجودی رسمی یافت نشد !");
+
+                    var _off_whEntry=_productOffInventory.Entry(_off_Inv);
+                    _off_whEntry.State = EntityState.Modified;
+
+                    _off_Inv.FloorInventory += (double)udetail.UnloadedAmount;
+                    _off_Inv.ApproximateInventory += (double)(udetail.UnloadedAmount - _tRemitt.TransferAmount);
+
+                    _off_whEntry.CurrentValues.SetValues(_off_Inv);
+                    if (inv == null)
+                        throw new ApiException("انبار یافت نشد !");
+                    else
+                    {
+                        var invEntry = _productInventory.Entry(inv);
+                        invEntry.State = EntityState.Modified;
+
+                        inv.FloorInventory += (double)udetail.UnloadedAmount;
+                        inv.ApproximateInventory += (udetail.UnloadedAmount- _tRemitt.TransferAmount);
+
+                        invEntry.CurrentValues.SetValues(inv);
+                    }
+                }
+                //}
+                #endregion
 
                 #region اگر مجموع اقلام انتقال داده شده با مجموع اقلام خروج خورده یکسان باشد وضعیت حواله انتقال به تخلیه شده تبدیل خواهد شد
 
@@ -313,44 +360,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     unloadingPermit.UnloadingPermitDetails.Sum(t => t.UnloadedAmount);
 
                 if (transPermitAmounts >= unloadedAmounts)
-                    transferRemitt.TransferRemittanceStatusId = 3;//---تخلیه شده
+                    transferRemitt.TransferRemittanceStatusId = (int)ETransferRemittanceStatus.Unloaded;//---تخلیه شده
                 #endregion
 
-                #region موجودی کف (واقعی) محصول اضافه می شود 
-                foreach (var item in transferRemitt.Details)
-                {
-                    foreach(var udetail in item.UnloadingPermitDetail)
-                    {
-                        var inv = await _productInventory
-                            .FirstOrDefaultAsync(i => i.ProductBrandId == udetail.TransferRemittanceDetail.ProductBrandId &&
-                            i.WarehouseId == udetail.TransferRemittanceDetail.TransferRemittance.DestinationWarehouseId);
-                        
-                        if (inv == null) {
-                            _productInventory.Add(new ProductInventory
-                            {
-                                ProductBrandId = udetail.TransferRemittanceDetail.ProductBrandId,
-                                WarehouseId = udetail.TransferRemittanceDetail.TransferRemittance.DestinationWarehouseId,
-                                ApproximateInventory = 0,
-                                FloorInventory = (double)udetail.UnloadedAmount,
-                                IsActive = true,
-                                //CreatedBy = Guid.Parse(_userService.UserId),
-                            });
+                var transRemittEntry = _transferRemittances.Entry(transferRemitt);
+                transRemittEntry.State = EntityState.Modified;
 
-                        }
-                        else
-                        {
-                            inv.FloorInventory += (double)udetail.UnloadedAmount;
-                            inv.ApproximateInventory += (decimal)udetail.UnloadedAmount;
-                            _productInventory.Update(inv);
-                        }
-                    }
-                }
-                #endregion
+                transRemittEntry.CurrentValues.SetValues(transferRemitt);
 
-                _transferRemittances.Update(transferRemitt);
 
-                var UnloadingPermit = await _orderTransferRemittanceUnloadingPermits
-                    .AddAsync(unloadingPermit);
+                var UnloadingPermit = await _orderTransferRemittanceUnloadingPermits.AddAsync(unloadingPermit);
 
                 await _dbContext.SaveChangesAsync();
                 return UnloadingPermit.Entity;

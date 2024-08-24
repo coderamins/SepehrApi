@@ -6,11 +6,6 @@ using Sepehr.Application.Features.ApplicationUsers.Command.UpdateApplicationUser
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetApplicationUserById;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetLoginedUserInfo;
-using Sepehr.Application.Features.Products.Command.CreateProduct;
-using Sepehr.Application.Features.Products.Command.DeleteProductById;
-using Sepehr.Application.Features.Products.Command.UpdateProduct;
-using Sepehr.Application.Features.Products.Queries.GetAllProducts;
-using Sepehr.Application.Features.Products.Queries.GetProductById;
 using Sepehr.Infrastructure.Authentication;
 using Serilog;
 

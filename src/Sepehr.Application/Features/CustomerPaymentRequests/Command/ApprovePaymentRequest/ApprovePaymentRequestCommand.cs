@@ -33,8 +33,11 @@ namespace Sepehr.Application.Features.PaymentRequests.Command.ApprovePaymentRequ
 
                 if (paymentRequest == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
-                if (!new int[] { 1,2,4}.Contains(paymentRequest.PaymentRequestStatusId))
+                if (!new int[] { (int)EPaymentRequestStatus.InProgress, (int)EPaymentRequestStatus.Rejected }
+                    .Contains(paymentRequest.PaymentRequestStatusId))
+                {
                     throw new ApiException("وضعیت درخواست نامعتبر می باشد !");
+                }
                 else
                 {
                     await _paymentRequestRepository.ApproveAsync(paymentRequest);

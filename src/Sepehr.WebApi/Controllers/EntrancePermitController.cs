@@ -45,20 +45,15 @@ namespace Sepehr.WebApi.Controllers
 
         [SwaggerOperation("لیست مجوز های ورود")]
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllTransferRemittancesParameter filter)
+        public async Task<IActionResult> Get([FromQuery] GetAllEntrancePermitsParameter filter)
         {
             return Ok(await Mediator
                 .Send(new GetAllEntrancePermitsQuery()
                 {
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
-                    Id = filter.Id,
-                    RegisterDate = filter.RegisterDate,
-                    OriginWarehouseId = filter.OriginWarehouseId,
-                    DestinationWarehouseId = filter.DestinationWarehouseId,
-                    TransferEntransePermitNo = filter.TransferEntransePermitNo,
-                    TransferRemittStatusId = filter.TransferRemittStatusId,
-                    MarketerId = filter.MarketerId,
+                    TransferEntransePermitNo = filter.EntrancePermitNo,
+                    TransferRemittStatusId = filter.EntrancePermitStatusId
                 }));
         }
 
