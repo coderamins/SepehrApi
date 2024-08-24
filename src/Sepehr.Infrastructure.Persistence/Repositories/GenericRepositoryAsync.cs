@@ -103,10 +103,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return query.AsQueryable();
         }
 
-        public async Task<TEntity> LoadSingleWithRelatedAsync<TEntity>(TEntity entity, 
-            params Expression<Func<TEntity, object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>
+        public async Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(
+            TEntity entity, 
+            Guid id,
+            params Expression<Func<TEntity,
+                object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>
         {
-            throw new NotImplementedException();
+            var query = _dbContext.Set<TEntity>().Where(d=>d.Id==id).AsQueryable();
+            foreach (var expression in expressionList)
+            {
+                query = query.Include(expression);
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> GetPagedReponseWithRelatedIntAsync<TEntity>(TEntity entity,
