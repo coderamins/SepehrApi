@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Features.UnloadingPermits.Queries.GetAllUnloadingPermits;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
@@ -85,5 +86,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.Attachments)
                 .FirstOrDefaultAsync(/*x => x.UnloadingPermitCode == unloadingPermitCode*/);
         }
+
+        public EFarePaymentType CheckFarePaymentType(Guid id)
+        {
+            return (EFarePaymentType)_unloadingPermits.Include(x => x.EntrancePermit).ThenInclude(x => x.TransferRemittance).ThenInclude(x => x.PurchaseOrder)
+                .First(x => x.Id == id).EntrancePermit.TransferRemittance.PurchaseOrder.FarePaymentTypeId;
+        }
+
     }
 }

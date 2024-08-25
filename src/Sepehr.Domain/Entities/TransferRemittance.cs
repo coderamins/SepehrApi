@@ -9,7 +9,7 @@ namespace Sepehr.Domain.Entities
 {
     public class TransferRemittance:AuditableBaseEntity<int>
     {
-        public Guid? PurchaseOrderId { get; set; }
+        public Guid PurchaseOrderId { get; set; }
         public int OriginWarehouseId { get; set; }
         public int DestinationWarehouseId { get; set; }
         public int TransferRemittanceTypeId { get; set; }
@@ -29,7 +29,7 @@ namespace Sepehr.Domain.Entities
         public string? Description { get; set; }
 
 
-        public virtual PurchaseOrder? PurchaseOrder { get; set; }
+        public virtual required PurchaseOrder PurchaseOrder { get; set; }
         public virtual ICollection<TransferRemittanceDetail> Details { get; set; }=new List<TransferRemittanceDetail>();    
         public virtual required TransferRemittanceStatus TransferRemittanceStatus { get; set; }
         public virtual required VehicleType VehicleType { get; set; }

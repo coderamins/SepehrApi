@@ -4,6 +4,7 @@ using Sepehr.Application.Features.LadingExitPermits.Queries.GetAllLadingExitPerm
 using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
@@ -27,6 +28,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _officialInventory = dbContext.Set<OfficialWarehoseInventory>();
             _dbContext = dbContext;
             _authenticatedUser = authenticatedUser;
+        }
+
+        public EFarePaymentType CheckFarePaymentType(Guid id)
+        {
+            return (EFarePaymentType)_productLadingExitPermits.Include(x => x.LadingPermit).ThenInclude(x => x.CargoAnnounce).ThenInclude(x=>x.Order)
+                .First(x => x.Id == id).LadingPermit.CargoAnnounce.Order.FarePaymentTypeId;
         }
 
         public async Task<LadingExitPermit> CreateLadingExitPermit(LadingExitPermit ladingExitPermit)

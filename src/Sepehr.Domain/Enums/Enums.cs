@@ -7,11 +7,23 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Enums
 {
+    public enum EFarePaymentType
+    {
+        /// <summary>
+        /// کرایه با خودمان
+        /// </summary>
+        FareByOurselves = 1,
+        /// <summary>
+        /// کرایه با مشتری
+        /// </summary>
+        FareWithCustomer = 2,
+    }
+
     public enum EFareAmountStatus
     {
-        InProgress=1,
-        Approved=2,
-        Payed=3,
+        InProgress = 1,
+        Approved = 2,
+        Payed = 3,
     }
 
     public enum EPaymentOriginType

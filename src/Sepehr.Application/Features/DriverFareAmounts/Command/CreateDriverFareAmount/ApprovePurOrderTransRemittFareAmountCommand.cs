@@ -12,12 +12,14 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.DriverFareAmounts
 {
     public partial class ApprovePurOrderTransRemittFareAmountCommand : IRequest<Response<DriverFareAmountApprove>>
     {
         public Guid PurOrderTransRemittUnloadingPermitId { get; set; }
+        public double FareAmount { get; set; }
         public string Description { get; set; } = string.Empty;
     }
     public class ApprovePurOrderTransRemittFareAmountCommandHandler :
@@ -41,8 +43,8 @@ namespace Sepehr.Application.Features.DriverFareAmounts
         {
             try
             {
-                var transferRemittUnloadPermit = await _puOrderTransRemitUnload.GetByIdAsync(request.PurOrderTransRemittUnloadingPermitId);
-                if (transferRemittUnloadPermit == null)
+                var unloadPermit = await _puOrderTransRemitUnload.GetByIdAsync(request.PurOrderTransRemittUnloadingPermitId);
+                if (unloadPermit == null)
                 {
                     throw new ApiException("مجوز تخلیه یافت نشد !");
                 }
@@ -51,11 +53,12 @@ namespace Sepehr.Application.Features.DriverFareAmounts
 
                 driverFareAmount = await _driverFareAmountApprove.AddAsync(driverFareAmount);
 
-                if (transferRemittUnloadPermit.FareAmountApproved)
+                if (unloadPermit.FareAmountStatusId==(int)EFareAmountStatus.Approved)
                     throw new ApiException("کرایه قبلا تایید شده است !");
 
-                transferRemittUnloadPermit.FareAmountApproved = true;
-                await _puOrderTransRemitUnload.UpdateAsync(transferRemittUnloadPermit);
+                unloadPermit.FareAmountStatusId = (int)EFareAmountStatus.Approved;
+                unloadPermit.FareAmount = request.FareAmount>0 ? (decimal)request.FareAmount:unloadPermit.FareAmount;
+                await _puOrderTransRemitUnload.UpdateAsync(unloadPermit);
 
                 return new Response<DriverFareAmountApprove>(driverFareAmount,
                     "تایید کرایه با موفقیت انجام شد !");

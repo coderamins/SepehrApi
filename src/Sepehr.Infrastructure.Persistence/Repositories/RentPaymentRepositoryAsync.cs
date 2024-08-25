@@ -50,14 +50,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ApplicationUser)
                 .Include(x => x.LadingExitPermitDetails)
                 .Where(x=>
-                (x.IsActive && !x.FareAmountApproved) &&
+                (x.LadingPermit.CargoAnnounce.Order.FarePaymentTypeId==(int)EFarePaymentType.FareByOurselves) &&
+                (x.IsActive && x.FareAmountStatusId==(int?)EFareAmountStatus.InProgress) &&
                 (x.LadingPermit.CargoAnnounce!=null && x.LadingPermit.CargoAnnounce.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
                 (x.LadingPermit.CargoAnnounce != null && x.LadingPermit.CargoAnnounce.DriverMobile.Contains(validParams.DriverMobile) || string.IsNullOrEmpty(validParams.DriverMobile)) &&
                 (x.LadingExitPermitCode==validParams.ReferenceCode || validParams.ReferenceCode==null) &&
                 (x.Created>= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
                 (x.Created<= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
-                (validParams.OrderType== OrderClassType.Sale || validParams.OrderType == null) &&
-                !x.FareAmountPayStatus)                
+                (validParams.OrderType== OrderClassType.Sale || validParams.OrderType == null))                
                 .ToListAsync();
 
             var purOrdTransRemitUnloads =
@@ -66,14 +66,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(m => m.UnloadingPermitDetails)
                 .Include(m => m.EntrancePermit)
                 .Where(x=>
-                (x.IsActive && !x.FareAmountApproved) &&
+                (x.EntrancePermit.TransferRemittance.PurchaseOrder.FarePaymentTypeId == (int)EFarePaymentType.FareByOurselves) &&
+                (x.IsActive && x.FareAmountStatusId==(int)EFareAmountStatus.InProgress) &&
                 (x.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
                 (x.DriverMobile.Contains(validParams.DriverMobile) || string.IsNullOrEmpty(validParams.DriverMobile)) &&
                 (x.UnloadingPermitCode == validParams.ReferenceCode || validParams.ReferenceCode == null) &&
                 (x.Created >= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
                 (x.Created <= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
-                (validParams.OrderType == OrderClassType.Purchase || validParams.OrderType == null) &&
-                !x.FareAmountPayStatus)
+                (validParams.OrderType == OrderClassType.Purchase || validParams.OrderType == null))
                 .ToListAsync();
 
             return new Tuple<List<LadingExitPermit>?,List<UnloadingPermit>?>

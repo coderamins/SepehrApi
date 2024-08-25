@@ -10,12 +10,14 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 
 namespace Sepehr.Application.Features.DriverFareAmounts
 {
     public partial class ApproveLadingExitPermitFareAmountCommand : IRequest<Response<DriverFareAmountApprove>>
     {
         public Guid LadingExitPermitId { get; set; }
+        public double FareAmount { get; set; }
         public string Description { get; set; } = string.Empty;
     }
 
@@ -50,10 +52,12 @@ namespace Sepehr.Application.Features.DriverFareAmounts
 
                 driverFareAmount = await _driverFareAmountApprove.AddAsync(driverFareAmount);
 
-                if (ladingExitPermit.FareAmountApproved)
+                if (ladingExitPermit.FareAmountStatusId==(int)EFareAmountStatus.Approved)
                     throw new ApiException("کرایه قبلا تایید شده است !");
 
-                ladingExitPermit.FareAmountApproved = true;
+                ladingExitPermit.FareAmountStatusId = (int)EFareAmountStatus.Approved;
+                ladingExitPermit.FareAmount = request.FareAmount > 0 ? (decimal)request.FareAmount : ladingExitPermit.FareAmount;
+
                 await _ladingExitPermit.UpdateAsync(ladingExitPermit);
 
                 return new Response<DriverFareAmountApprove>(driverFareAmount,

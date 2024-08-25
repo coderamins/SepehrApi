@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sepehr.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,18 @@ namespace Sepehr.Domain.ViewModels
         public string CreatedDate { get; set; } = string.Empty;
         public Guid? UnloadingPermitId { get; set; }
         public Guid? LadingExitPermitId { get; set; }
+        public EPaymentOriginType PaymentOriginTypeId { get; set; }
+        public string PaymentOriginTypeDesc { get; set; } = string.Empty;
+        public string PaymentOriginId { get; set; } = string.Empty;
+        public string PaymentOriginDesc { get; set; } = string.Empty;
+
         public decimal TotalFareAmount { get; set; }
         public decimal OtherCosts { get; set; }
         public string DriverName { get; set; } = string.Empty;
-        public string DriverMobile { get; set; }=string.Empty;
+        public string DriverMobile { get; set; } = string.Empty;
         public int ReferenceCode { get; set; }
-        public string OrderType { get; set; }=string.Empty;
-        public string DriverAccountNo { get; set; }=string.Empty;
+        public string OrderType { get; set; } = string.Empty;
+        public string DriverAccountNo { get; set; } = string.Empty;
         public string CreatorName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }

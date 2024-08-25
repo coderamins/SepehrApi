@@ -23,9 +23,9 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
 
             foreach (var item in statuses)
             {
-                if (!applicationDbContext.ReceivePayStatus.Where(b => b.Id.Equals(item.Id)).Any())
+                if (!applicationDbContext.FareAmountStatus.Where(b => b.Id.Equals(item.Id)).Any())
                 {
-                    applicationDbContext.ReceivePayStatus.Add(item);
+                    applicationDbContext.FareAmountStatus.Add(item);
                 }
 
                 await applicationDbContext.SaveChangesAsync();

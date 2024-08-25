@@ -6,6 +6,7 @@ using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.Enums;
 using Serilog;
 
 namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
@@ -22,6 +23,16 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
         /// </summary>
         public IEnumerable<Guid> LadingExitPermitIds { get; set; } = new List<Guid>();
 
+        /// <summary>
+        /// نوع مبدا پرداخت
+        /// </summary>
+        public required int PaymentOriginTypeId { get; set; }
+        /// <summary>
+        /// شناسه مبدا پرداخت
+        /// </summary>
+        public required string PaymentOriginId { get; set; }
+
+
         public required decimal TotalFareAmount { get; set; }
         public string Description { get; set; } = string.Empty;
     }
@@ -29,7 +40,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
     {
         private readonly IRentPaymentRepositoryAsync _rentPaymentRepository;
         private readonly ILadingExitPermitRepositoryAsync _ladingExitPermit;
-        private readonly IUnloadingPermitRepositoryAsync _puOrderUnloadPermitRepository;
+        private readonly IUnloadingPermitRepositoryAsync _unloadingPermitRepo;
         private readonly IMapper _mapper;
         public CreateRentPaymentCommandHandler(
             IRentPaymentRepositoryAsync rentPaymentRepository,
@@ -40,7 +51,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
             _rentPaymentRepository = rentPaymentRepository;
             _mapper = mapper;
             _ladingExitPermit = ladingExitPermit;
-            _puOrderUnloadPermitRepository = puOrderUnloadPermitRepository;
+            _unloadingPermitRepo = puOrderUnloadPermitRepository;
         }
 
         public async Task<Response<List<RentPayment>>> Handle(CreateRentPaymentCommand request, CancellationToken cancellationToken)
@@ -57,13 +68,16 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                     if (ladingExitPermit == null)
                         throw new ApiException("کرایه یافت نشد !");
 
-                    if (!ladingExitPermit.FareAmountApproved)
+                    if (_ladingExitPermit.CheckFarePaymentType(ladingExitPermit.Id) != EFarePaymentType.FareByOurselves)
+                        throw new ApiException("پرداخت کرایه بر عهده مشتری می باشد !");
+
+                    if (ladingExitPermit.FareAmountStatusId==(int)EFareAmountStatus.InProgress)
                         throw new ApiException("کرایه تایید نشده است !");
 
-                    if (ladingExitPermit.FareAmountPayStatus)
+                    if (ladingExitPermit.FareAmountStatusId== (int)EFareAmountStatus.Payed)
                         throw new ApiException("این کرایه قبلا پرداخت شده است !");
 
-                    ladingExitPermit.FareAmountPayStatus = true;
+                    ladingExitPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
                     ladingExitPermits.Add(ladingExitPermit);
 
                     rentPaymentDtos.Add(new RentPaymentDto
@@ -80,17 +94,20 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 List<UnloadingPermit> unloadingPermits = new List<UnloadingPermit>();
                 foreach (var item in request.PuOrderTransRemittUnloadingPermitIds)
                 {
-                    var unloadingPermit = await _puOrderUnloadPermitRepository.GetByIdAsync(item);
+                    var unloadingPermit = await _unloadingPermitRepo.GetByIdAsync(item);
                     if (unloadingPermit == null)
                         throw new ApiException("کرایه یافت نشد !");
 
-                    if (!unloadingPermit.FareAmountApproved)
+                    if (unloadingPermit.FareAmountStatusId==(int)EFareAmountStatus.InProgress)
                         throw new ApiException("کرایه تایید نشده است !");
 
-                    if (unloadingPermit.FareAmountPayStatus)
+                    if (unloadingPermit.FareAmountStatusId==(int)EFareAmountStatus.Payed)
                         throw new ApiException("این کرایه قبلا پرداخت شده است !");
 
-                    unloadingPermit.FareAmountPayStatus = true;
+                    if (_unloadingPermitRepo.CheckFarePaymentType(unloadingPermit.Id) != EFarePaymentType.FareByOurselves)
+                        throw new ApiException("پرداخت کرایه بر عهده مشتری می باشد !");
+
+                    unloadingPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
                     unloadingPermits.Add(unloadingPermit);
 
                     rentPaymentDtos.Add(new RentPaymentDto
@@ -103,7 +120,7 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 }
                 #endregion
 
-                await _puOrderUnloadPermitRepository.UpdateAsync(unloadingPermits);
+                await _unloadingPermitRepo.UpdateAsync(unloadingPermits);
                 await _ladingExitPermit.UpdateAsync(ladingExitPermits);
 
                 var rentPayments = _mapper.Map<List<RentPayment>>(rentPaymentDtos);

@@ -1,5 +1,6 @@
 ﻿using Audit.EntityFramework;
 using Sepehr.Domain.Common;
+using Sepehr.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,13 @@ namespace Sepehr.Domain.Entities
         public decimal? OtherAmount { get; set; }
         public string? ExitPermitDescription { get; set; }
         public decimal? FareAmount { get; set; }
-        public bool FareAmountPayStatus { get; set; } = false;
+        public int? FareAmountStatusId { get; set; }=(int)EFareAmountStatus.InProgress;
         public bool? HasExitPermit { get; set; }
-        public bool FareAmountApproved { get; set; }
 
-        [AuditIgnore]
-        public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
-        [AuditIgnore]
+        //[AuditIgnore]
+        //public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
+        public virtual FareAmountStatus? FareAmountStatus { get; set; }
+        [AuditIgnore] 
         public required virtual ICollection<LadingExitPermitDetail> LadingExitPermitDetails { get; set; }
         public required virtual LadingPermit LadingPermit { get; set; }
         [AuditIgnore]

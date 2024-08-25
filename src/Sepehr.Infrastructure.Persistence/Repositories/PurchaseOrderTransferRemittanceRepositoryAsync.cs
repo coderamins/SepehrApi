@@ -305,34 +305,38 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var udetail in unloadingPermit.UnloadingPermitDetails)
                 {
                     var _tRemitt = await _transferRemittanceDetails
-                        .Include(x => x.TransferRemittance)
+                        .Include(x => x.TransferRemittance).ThenInclude(x=>x.PurchaseOrder)
                         .FirstOrDefaultAsync(d => d.Id == udetail.TransferRemittanceDetailId);
                     if (_tRemitt == null)
                         throw new ApiException("خطا در اجرای درخواست !");
 
 
-                    #region در این قسمت از سفارش خرید مربوطه جزئیات کالا واکشی شده و به موجودی انبار رسمی باید اضافه شود
-                    var po_Details = await _dbContext.Set<PurchaseOrderDetail>()
-                        .FirstAsync(x => x.OrderId == _tRemitt.TransferRemittance.PurchaseOrderId &&
-                        (x.AlternativeProductBrandId == _tRemitt.ProductBrandId ||
-                        x.ProductBrandId == _tRemitt.ProductBrandId));
+                    //---------اگر فاکتور رسمی باشد باید موجودی انبار رسمی بروزرسانی شود------
+                    if (_tRemitt.TransferRemittance.PurchaseOrder.InvoiceTypeId == (int)EInvoiceType.Formal)
+                    {
+                        #region در این قسمت از سفارش خرید مربوطه جزئیات کالا واکشی شده و به موجودی انبار رسمی باید اضافه شود
+                        var po_Details = await _dbContext.Set<PurchaseOrderDetail>()
+                            .FirstAsync(x => x.OrderId == _tRemitt.TransferRemittance.PurchaseOrderId &&
+                            (x.AlternativeProductBrandId == _tRemitt.ProductBrandId ||
+                            x.ProductBrandId == _tRemitt.ProductBrandId));
 
-                    var _off_Inv = await _productOffInventory
-                        .FirstOrDefaultAsync(i => i.ProductId == _dbContext.Set<ProductBrand>()
-                        .First(x => x.Id == (po_Details.AlternativeProductBrandId ?? po_Details.ProductBrandId)).ProductId &&
-                        i.WarehouseId == _tRemitt.TransferRemittance.DestinationWarehouseId);
+                        var _off_Inv = await _productOffInventory
+                            .FirstOrDefaultAsync(i => i.ProductId == _dbContext.Set<ProductBrand>()
+                            .First(x => x.Id == (po_Details.AlternativeProductBrandId ?? po_Details.ProductBrandId)).ProductId &&
+                            i.WarehouseId == _tRemitt.TransferRemittance.DestinationWarehouseId);
 
-                    if (_off_Inv == null)
-                        throw new ApiException("موجودی رسمی یافت نشد !");
+                        if (_off_Inv == null)
+                            throw new ApiException("موجودی رسمی یافت نشد !");
 
-                    var _off_whEntry = _productOffInventory.Entry(_off_Inv);
-                    _off_whEntry.State = EntityState.Modified;
+                        var _off_whEntry = _productOffInventory.Entry(_off_Inv);
+                        _off_whEntry.State = EntityState.Modified;
 
-                    _off_Inv.FloorInventory += (double)udetail.UnloadedAmount;
-                    _off_Inv.ApproximateInventory += (double)(udetail.UnloadedAmount - _tRemitt.TransferAmount);
+                        _off_Inv.FloorInventory += (double)udetail.UnloadedAmount;
+                        _off_Inv.ApproximateInventory += (double)(udetail.UnloadedAmount - _tRemitt.TransferAmount);
 
-                    _off_whEntry.CurrentValues.SetValues(_off_Inv);
-                    #endregion
+                        _off_whEntry.CurrentValues.SetValues(_off_Inv);
+                        #endregion
+                    }
 
                     #region موجودی واقعی و تقریبی کالا اضافه می شود
                     var inv = await _productInventory

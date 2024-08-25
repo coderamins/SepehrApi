@@ -41,12 +41,24 @@ namespace Sepehr.WebApi.Controller
                 {
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
-                    DriverMobile=filter.DriverMobile,
-                    DriverName=filter.DriverName,
-                    OrderType=filter.OrderType,
+                    DriverMobile = filter.DriverMobile,
+                    DriverName = filter.DriverName,
+                    OrderType = filter.OrderType,
                     ReferenceCode = filter.ReferenceCode,
                     FromDate = filter.FromDate,
-                    ToDate = filter.ToDate
+                    ToDate = filter.ToDate,
+                }));
+        }
+
+
+        [HasPermission("GetRentByReferenceCode")]
+        [HttpGet("GetRentByReferenceCode")]
+        public async Task<IActionResult> GetRentByReferenceCode(int refCode)
+        {
+            return Ok(await Mediator
+                .Send(new GetFareAmountByRefCodeQuery()
+                {
+                    ReferenceCode = refCode
                 }));
         }
 

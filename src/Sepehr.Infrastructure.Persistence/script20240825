@@ -1,0 +1,3170 @@
+﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF SCHEMA_ID(N'sepdb') IS NULL EXEC(N'CREATE SCHEMA [sepdb];');
+GO
+
+CREATE TABLE [sepdb].[Banks] (
+    [Id] int NOT NULL,
+    [BankName] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Banks] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Brands] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Status] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Brands] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[CashDesks] (
+    [Id] int NOT NULL IDENTITY,
+    [CashDeskDescription] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CashDesks] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Costs] (
+    [Id] int NOT NULL IDENTITY,
+    [CostDescription] nvarchar(200) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Costs] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[CustomerValidities] (
+    [Id] int NOT NULL IDENTITY,
+    [ValidityDesc] nvarchar(max) NOT NULL,
+    [ColorCode] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerValidities] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Incomes] (
+    [Id] int NOT NULL IDENTITY,
+    [IncomeDescription] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Incomes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[InvoiceTypes] (
+    [Id] int NOT NULL,
+    [TypeDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_InvoiceTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrderExitTypes] (
+    [Id] int NOT NULL,
+    [ExitTypeDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderExitTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrderSendTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Description] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderSendTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrderStatuses] (
+    [Id] int NOT NULL IDENTITY,
+    [StatusDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderStatuses] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PaymentTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PaymentTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PettyCashs] (
+    [Id] int NOT NULL IDENTITY,
+    [MobileNo] nvarchar(11) NOT NULL,
+    [PettyCashDescription] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PettyCashs] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PhoneNumberTypes] (
+    [Id] int NOT NULL,
+    [TypeDescription] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PhoneNumberTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ProductStandards] (
+    [Id] int NOT NULL IDENTITY,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductStandards] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ProductStates] (
+    [Id] int NOT NULL IDENTITY,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductStates] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ProductTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Desc] nvarchar(max) NOT NULL,
+    [TypeColor] nvarchar(max) NULL,
+    [ProductCodeSeedStart] int NOT NULL,
+    [Image] varbinary(max) NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ProductUnits] (
+    [Id] int NOT NULL IDENTITY,
+    [UnitName] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductUnits] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseInvoiceTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseInvoiceTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderFarePaymentTypes] (
+    [Id] int NOT NULL,
+    [TypeDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderFarePaymentTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderSendTypes] (
+    [Id] int NOT NULL,
+    [SendTypeDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderSendTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderStatus] (
+    [Id] int NOT NULL,
+    [StatusDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderStatus] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ReceivePaymentTypes] (
+    [Id] int NOT NULL,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ReceivePaymentTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ReceivePayStatus] (
+    [Id] int NOT NULL,
+    [StatusDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ReceivePayStatus] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Roles] (
+    [Id] uniqueidentifier NOT NULL,
+    [Name] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Roles] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Services] (
+    [Id] int NOT NULL IDENTITY,
+    [Description] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Services] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[TransferRemittanceStatus] (
+    [Id] int NOT NULL,
+    [StatusDesc] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_TransferRemittanceStatus] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[TransferRemittanceTypes] (
+    [Id] int NOT NULL,
+    [RemittanceTypeDesc] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_TransferRemittanceTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Users] (
+    [Id] uniqueidentifier NOT NULL,
+    [UserName] nvarchar(max) NOT NULL,
+    [PasswordHash] nvarchar(max) NOT NULL,
+    [FirstName] nvarchar(max) NOT NULL,
+    [LastName] nvarchar(max) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [EmailConfirmed] bit NOT NULL,
+    [IsDealerUser] bit NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[VehicleTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_VehicleTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[WarehouseTypes] (
+    [Id] int NOT NULL IDENTITY,
+    [Description] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_WarehouseTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrganizationBanks] (
+    [Id] int NOT NULL IDENTITY,
+    [BankId] int NOT NULL,
+    [AccountNo] nvarchar(max) NOT NULL,
+    [AccountOwner] nvarchar(max) NOT NULL,
+    [BranchName] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrganizationBanks] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrganizationBanks_Banks_BankId] FOREIGN KEY ([BankId]) REFERENCES [sepdb].[Banks] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ApplicationMenus] (
+    [Id] uniqueidentifier NOT NULL,
+    [AccessUrl] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [MenuIcon] nvarchar(max) NOT NULL,
+    [ApplicationMenuId] uniqueidentifier NULL,
+    [OrderNo] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ApplicationMenus] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ApplicationMenus_ApplicationMenus_ApplicationMenuId] FOREIGN KEY ([ApplicationMenuId]) REFERENCES [sepdb].[ApplicationMenus] ([Id]),
+    CONSTRAINT [FK_ApplicationMenus_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[AuditLogs] (
+    [Id] int NOT NULL IDENTITY,
+    [Type] nvarchar(max) NOT NULL,
+    [TableName] nvarchar(max) NOT NULL,
+    [OldValues] nvarchar(max) NOT NULL,
+    [NewValues] nvarchar(max) NOT NULL,
+    [AffectedColumns] nvarchar(max) NOT NULL,
+    [PrimaryKey] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_AuditLogs] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AuditLogs_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Customers] (
+    [Id] uniqueidentifier NOT NULL,
+    [CustomerCode] bigint NOT NULL IDENTITY,
+    [FirstName] nvarchar(max) NOT NULL,
+    [LastName] nvarchar(max) NOT NULL,
+    [FatherName] nvarchar(max) NOT NULL,
+    [OfficialName] nvarchar(max) NULL,
+    [NationalId] nvarchar(max) NOT NULL,
+    [NationalCode] nvarchar(max) NOT NULL,
+    [Mobile] nvarchar(max) NOT NULL,
+    [IsSupplier] bit NOT NULL,
+    [Address1] nvarchar(max) NOT NULL,
+    [Email] nvarchar(max) NULL,
+    [CustomerType] int NOT NULL,
+    [CustomerValidityId] int NOT NULL,
+    [Tel1] nvarchar(max) NULL,
+    [Tel2] nvarchar(max) NULL,
+    [Address2] nvarchar(max) NULL,
+    [Representative] nvarchar(max) NULL,
+    [SettlementType] int NOT NULL,
+    [SettlementDay] int NOT NULL,
+    [CustomerCharacteristics] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Customers_CustomerValidities_CustomerValidityId] FOREIGN KEY ([CustomerValidityId]) REFERENCES [sepdb].[CustomerValidities] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Customers_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ProductInventoryHistories] (
+    [Id] int NOT NULL IDENTITY,
+    [productBrandId] int NOT NULL,
+    [productCode] int NOT NULL,
+    [BrandId] int NOT NULL,
+    [ApproximateInventory] int NOT NULL,
+    [productName] nvarchar(max) NOT NULL,
+    [BrandName] nvarchar(max) NOT NULL,
+    [priceDate] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductInventoryHistories] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductInventoryHistories_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[RefreshToken] (
+    [Id] int NOT NULL IDENTITY,
+    [Token] nvarchar(max) NOT NULL,
+    [Expires] datetime2 NOT NULL,
+    [Created] datetime2 NOT NULL,
+    [CreatedByIp] nvarchar(max) NULL,
+    [Revoked] datetime2 NULL,
+    [RevokedByIp] nvarchar(max) NULL,
+    [ReplacedByToken] nvarchar(max) NULL,
+    [ApplicationUserId] uniqueidentifier NULL,
+    CONSTRAINT [PK_RefreshToken] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RefreshToken_Users_ApplicationUserId] FOREIGN KEY ([ApplicationUserId]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[ShareHolders] (
+    [Id] uniqueidentifier NOT NULL,
+    [ShareHolderCode] int NOT NULL IDENTITY(3030, 1),
+    [FirstName] nvarchar(150) NOT NULL,
+    [LastName] nvarchar(150) NOT NULL,
+    [FatherName] nvarchar(150) NOT NULL,
+    [MobileNo] nvarchar(11) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ShareHolders] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ShareHolders_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[UserRoles] (
+    [Id] uniqueidentifier NOT NULL,
+    [UserId] uniqueidentifier NOT NULL,
+    [RoleId] uniqueidentifier NOT NULL,
+    [Created] datetime2 NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_UserRoles] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UserRoles_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [sepdb].[Roles] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UserRoles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [sepdb].[Users] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[Warehouses] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [WarehouseTypeId] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    CONSTRAINT [PK_Warehouses] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Warehouses_WarehouseTypes_WarehouseTypeId] FOREIGN KEY ([WarehouseTypeId]) REFERENCES [sepdb].[WarehouseTypes] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[Permissions] (
+    [Id] uniqueidentifier NOT NULL,
+    [Name] nvarchar(max) NOT NULL,
+    [ApplicationMenuId] uniqueidentifier NULL,
+    [Description] nvarchar(max) NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Permissions] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Permissions_ApplicationMenus_ApplicationMenuId] FOREIGN KEY ([ApplicationMenuId]) REFERENCES [sepdb].[ApplicationMenus] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[RoleMenus] (
+    [Id] uniqueidentifier NOT NULL,
+    [ApplicationRoleId] uniqueidentifier NOT NULL,
+    [ApplicationMenuId] uniqueidentifier NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_RoleMenus] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RoleMenus_ApplicationMenus_ApplicationMenuId] FOREIGN KEY ([ApplicationMenuId]) REFERENCES [sepdb].[ApplicationMenus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_RoleMenus_Roles_ApplicationRoleId] FOREIGN KEY ([ApplicationRoleId]) REFERENCES [sepdb].[Roles] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[CustomerOfficialCompanies] (
+    [Id] int NOT NULL IDENTITY,
+    [CompanyName] nvarchar(max) NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [EconomicId] nvarchar(max) NULL,
+    [PostalCode] nvarchar(max) NULL,
+    [NationalId] nvarchar(11) NULL,
+    [CustomerType] int NULL,
+    [Tel1] nvarchar(11) NULL,
+    [Tel2] nvarchar(11) NULL,
+    [Address] nvarchar(500) NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerOfficialCompanies] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CustomerOfficialCompanies_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CustomerOfficialCompanies_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Phonebook] (
+    [Id] int NOT NULL IDENTITY,
+    [PhoneNumber] nvarchar(max) NOT NULL,
+    [CustomerId] uniqueidentifier NULL,
+    [PhoneNumberTypeId] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Phonebook] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Phonebook_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]),
+    CONSTRAINT [FK_Phonebook_PhoneNumberTypes_PhoneNumberTypeId] FOREIGN KEY ([PhoneNumberTypeId]) REFERENCES [sepdb].[PhoneNumberTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Phonebook_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[CustomerWarehouses] (
+    [Id] int NOT NULL IDENTITY,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [WarehouseId] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerWarehouses] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CustomerWarehouses_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CustomerWarehouses_Warehouses_WarehouseId] FOREIGN KEY ([WarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[Products] (
+    [Id] uniqueidentifier NOT NULL,
+    [ProductCode] int NOT NULL,
+    [Barcode] nvarchar(max) NULL,
+    [ProductName] nvarchar(max) NOT NULL,
+    [ProductTypeId] int NULL,
+    [ProductSize] nvarchar(max) NOT NULL,
+    [ProductThickness] nvarchar(max) NOT NULL,
+    [ApproximateWeight] decimal(18,6) NOT NULL,
+    [NumberInPackage] int NOT NULL,
+    [ProductStandardId] int NULL DEFAULT 1,
+    [ProductStateId] int NULL DEFAULT 1,
+    [ProductMainUnitId] int NOT NULL,
+    [ProductSubUnitId] int NULL,
+    [ExchangeRate] float NULL,
+    [Description] nvarchar(max) NULL,
+    [WarehouseId] int NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Products] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Products_ProductStandards_ProductStandardId] FOREIGN KEY ([ProductStandardId]) REFERENCES [sepdb].[ProductStandards] ([Id]),
+    CONSTRAINT [FK_Products_ProductStates_ProductStateId] FOREIGN KEY ([ProductStateId]) REFERENCES [sepdb].[ProductStates] ([Id]),
+    CONSTRAINT [FK_Products_ProductTypes_ProductTypeId] FOREIGN KEY ([ProductTypeId]) REFERENCES [sepdb].[ProductTypes] ([Id]),
+    CONSTRAINT [FK_Products_ProductUnits_ProductMainUnitId] FOREIGN KEY ([ProductMainUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Products_ProductUnits_ProductSubUnitId] FOREIGN KEY ([ProductSubUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]),
+    CONSTRAINT [FK_Products_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_Products_Warehouses_WarehouseId] FOREIGN KEY ([WarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[TransferRemittances] (
+    [Id] int NOT NULL IDENTITY,
+    [OriginWarehouseId] int NOT NULL,
+    [DestinationWarehouseId] int NOT NULL,
+    [TransferRemittanceTypeId] int NOT NULL,
+    [DriverName] nvarchar(max) NOT NULL,
+    [ShippingName] nvarchar(max) NOT NULL,
+    [Plaque] nvarchar(max) NOT NULL,
+    [VehicleTypeId] int NULL,
+    [DriverMobile] nvarchar(max) NOT NULL,
+    [DriverAccountNo] nvarchar(max) NOT NULL,
+    [DriverCreditCardNo] nvarchar(max) NULL,
+    [DeliverDate] datetime2 NULL,
+    [FareAmount] decimal(18,6) NULL,
+    [FareAmountApproved] bit NOT NULL,
+    [OtherCosts] decimal(18,6) NULL,
+    [TransferRemittanceStatusId] int NOT NULL,
+    [UnloadingPlaceAddress] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_TransferRemittances] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TransferRemittances_TransferRemittanceStatus_TransferRemittanceStatusId] FOREIGN KEY ([TransferRemittanceStatusId]) REFERENCES [sepdb].[TransferRemittanceStatus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferRemittances_TransferRemittanceTypes_TransferRemittanceTypeId] FOREIGN KEY ([TransferRemittanceTypeId]) REFERENCES [sepdb].[TransferRemittanceTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferRemittances_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_TransferRemittances_VehicleTypes_VehicleTypeId] FOREIGN KEY ([VehicleTypeId]) REFERENCES [sepdb].[VehicleTypes] ([Id]),
+    CONSTRAINT [FK_TransferRemittances_Warehouses_DestinationWarehouseId] FOREIGN KEY ([DestinationWarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferRemittances_Warehouses_OriginWarehouseId] FOREIGN KEY ([OriginWarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[RolePermissions] (
+    [Id] uniqueidentifier NOT NULL,
+    [PermissionId] uniqueidentifier NOT NULL,
+    [RoleId] uniqueidentifier NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_RolePermissions] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RolePermissions_Permissions_PermissionId] FOREIGN KEY ([PermissionId]) REFERENCES [sepdb].[Permissions] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_RolePermissions_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [sepdb].[Roles] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[Orders] (
+    [Id] uniqueidentifier NOT NULL,
+    [OrderCode] bigint NOT NULL IDENTITY,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [TotalAmount] decimal(18,6) NOT NULL,
+    [OrderSendTypeId] int NOT NULL,
+    [OrderStatusId] int NOT NULL,
+    [FarePaymentTypeId] int NOT NULL,
+    [InvoiceTypeId] int NOT NULL,
+    [CustomerOfficialCompanyId] int NULL,
+    [ApprovedDate] datetime2 NOT NULL,
+    [Barcode] nvarchar(max) NULL,
+    [Description] nvarchar(max) NULL,
+    [InvoiceApproveDescription] nvarchar(max) NOT NULL,
+    [IsTemporary] bit NOT NULL,
+    [OrderTypeId] int NOT NULL,
+    [DeliverDate] datetime2 NOT NULL,
+    [OrderExitTypeId] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Orders_CustomerOfficialCompanies_CustomerOfficialCompanyId] FOREIGN KEY ([CustomerOfficialCompanyId]) REFERENCES [sepdb].[CustomerOfficialCompanies] ([Id]),
+    CONSTRAINT [FK_Orders_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_InvoiceTypes_InvoiceTypeId] FOREIGN KEY ([InvoiceTypeId]) REFERENCES [sepdb].[InvoiceTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_OrderExitTypes_OrderExitTypeId] FOREIGN KEY ([OrderExitTypeId]) REFERENCES [sepdb].[OrderExitTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_OrderSendTypes_OrderSendTypeId] FOREIGN KEY ([OrderSendTypeId]) REFERENCES [sepdb].[OrderSendTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_OrderStatuses_OrderStatusId] FOREIGN KEY ([OrderStatusId]) REFERENCES [sepdb].[OrderStatuses] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_PaymentTypes_FarePaymentTypeId] FOREIGN KEY ([FarePaymentTypeId]) REFERENCES [sepdb].[PaymentTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Orders_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrder] (
+    [Id] uniqueidentifier NOT NULL,
+    [ExitType] int NOT NULL,
+    [OriginWarehouseId] int NOT NULL,
+    [DestinationWarehouseId] int NOT NULL,
+    [IsIntermediary] bit NOT NULL,
+    [ApprovingUserId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    [OrderCode] bigint NOT NULL IDENTITY,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [TotalAmount] decimal(18,6) NOT NULL,
+    [OrderSendTypeId] int NOT NULL,
+    [OrderStatusId] int NOT NULL,
+    [FarePaymentTypeId] int NOT NULL,
+    [InvoiceTypeId] int NOT NULL,
+    [CustomerOfficialCompanyId] int NULL,
+    [ApprovedDate] datetime2 NOT NULL,
+    [Barcode] nvarchar(max) NULL,
+    [Description] nvarchar(max) NULL,
+    [InvoiceApproveDescription] nvarchar(max) NOT NULL,
+    [IsTemporary] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrder] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrder_CustomerOfficialCompanies_CustomerOfficialCompanyId] FOREIGN KEY ([CustomerOfficialCompanyId]) REFERENCES [sepdb].[CustomerOfficialCompanies] ([Id]),
+    CONSTRAINT [FK_PurchaseOrder_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_InvoiceTypes_InvoiceTypeId] FOREIGN KEY ([InvoiceTypeId]) REFERENCES [sepdb].[InvoiceTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_PurchaseOrderFarePaymentTypes_FarePaymentTypeId] FOREIGN KEY ([FarePaymentTypeId]) REFERENCES [sepdb].[PurchaseOrderFarePaymentTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_PurchaseOrderSendTypes_OrderSendTypeId] FOREIGN KEY ([OrderSendTypeId]) REFERENCES [sepdb].[PurchaseOrderSendTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_PurchaseOrderStatus_OrderStatusId] FOREIGN KEY ([OrderStatusId]) REFERENCES [sepdb].[PurchaseOrderStatus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_PurchaseOrder_Warehouses_DestinationWarehouseId] FOREIGN KEY ([DestinationWarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrder_Warehouses_OriginWarehouseId] FOREIGN KEY ([OriginWarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ReceivePays] (
+    [Id] uniqueidentifier NOT NULL,
+    [ReceivePaymentTypeFromId] int NULL,
+    [ReceivePaymentTypeToId] int NULL,
+    [ReceivePayCode] bigint NOT NULL IDENTITY,
+    [Amount] decimal(18,6) NOT NULL,
+    [AccountOwner] nvarchar(max) NULL,
+    [TrachingCode] nvarchar(max) NULL,
+    [ContractCode] nvarchar(max) NULL,
+    [IsAccountingApproval] bit NOT NULL,
+    [AccountingApprovalDate] datetime2 NOT NULL,
+    [AccountingApproverId] nvarchar(max) NULL,
+    [AccountingDocNo] int NULL,
+    [Description] nvarchar(max) NULL,
+    [AccountingDescription] nvarchar(max) NOT NULL,
+    [ReceivePayStatusId] int NOT NULL,
+    [ChequeNo] nvarchar(max) NOT NULL,
+    [ChequeDate] datetime2 NULL,
+    [ReceiveFromCustomerId] uniqueidentifier NULL,
+    [ReceiveFromOrganizationBankId] int NULL,
+    [ReceiveFromCashDeskId] int NULL,
+    [ReceiveFromIncomeId] int NULL,
+    [ReceiveFromPettyCashId] int NULL,
+    [ReceiveFromCostId] int NULL,
+    [ReceiveFromShareHolderId] uniqueidentifier NULL,
+    [PayToCustomerId] uniqueidentifier NULL,
+    [PayToOrganizationBankId] int NULL,
+    [PayToCashDeskId] int NULL,
+    [PayToIncomeId] int NULL,
+    [PayToPettyCashId] int NULL,
+    [PayToCostId] int NULL,
+    [PayToShareHolderId] uniqueidentifier NULL,
+    [ReceiveFromCompanyId] int NULL,
+    [PayToCompanyId] int NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ReceivePays] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ReceivePays_CashDesks_PayToCashDeskId] FOREIGN KEY ([PayToCashDeskId]) REFERENCES [sepdb].[CashDesks] ([Id]),
+    CONSTRAINT [FK_ReceivePays_CashDesks_ReceiveFromCashDeskId] FOREIGN KEY ([ReceiveFromCashDeskId]) REFERENCES [sepdb].[CashDesks] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Costs_PayToCostId] FOREIGN KEY ([PayToCostId]) REFERENCES [sepdb].[Costs] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Costs_ReceiveFromCostId] FOREIGN KEY ([ReceiveFromCostId]) REFERENCES [sepdb].[Costs] ([Id]),
+    CONSTRAINT [FK_ReceivePays_CustomerOfficialCompanies_PayToCompanyId] FOREIGN KEY ([PayToCompanyId]) REFERENCES [sepdb].[CustomerOfficialCompanies] ([Id]),
+    CONSTRAINT [FK_ReceivePays_CustomerOfficialCompanies_ReceiveFromCompanyId] FOREIGN KEY ([ReceiveFromCompanyId]) REFERENCES [sepdb].[CustomerOfficialCompanies] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Customers_PayToCustomerId] FOREIGN KEY ([PayToCustomerId]) REFERENCES [sepdb].[Customers] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Customers_ReceiveFromCustomerId] FOREIGN KEY ([ReceiveFromCustomerId]) REFERENCES [sepdb].[Customers] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Incomes_PayToIncomeId] FOREIGN KEY ([PayToIncomeId]) REFERENCES [sepdb].[Incomes] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Incomes_ReceiveFromIncomeId] FOREIGN KEY ([ReceiveFromIncomeId]) REFERENCES [sepdb].[Incomes] ([Id]),
+    CONSTRAINT [FK_ReceivePays_OrganizationBanks_PayToOrganizationBankId] FOREIGN KEY ([PayToOrganizationBankId]) REFERENCES [sepdb].[OrganizationBanks] ([Id]),
+    CONSTRAINT [FK_ReceivePays_OrganizationBanks_ReceiveFromOrganizationBankId] FOREIGN KEY ([ReceiveFromOrganizationBankId]) REFERENCES [sepdb].[OrganizationBanks] ([Id]),
+    CONSTRAINT [FK_ReceivePays_PettyCashs_PayToPettyCashId] FOREIGN KEY ([PayToPettyCashId]) REFERENCES [sepdb].[PettyCashs] ([Id]),
+    CONSTRAINT [FK_ReceivePays_PettyCashs_ReceiveFromPettyCashId] FOREIGN KEY ([ReceiveFromPettyCashId]) REFERENCES [sepdb].[PettyCashs] ([Id]),
+    CONSTRAINT [FK_ReceivePays_ReceivePayStatus_ReceivePayStatusId] FOREIGN KEY ([ReceivePayStatusId]) REFERENCES [sepdb].[ReceivePayStatus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeFromId] FOREIGN KEY ([ReceivePaymentTypeFromId]) REFERENCES [sepdb].[ReceivePaymentTypes] ([Id]),
+    CONSTRAINT [FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeToId] FOREIGN KEY ([ReceivePaymentTypeToId]) REFERENCES [sepdb].[ReceivePaymentTypes] ([Id]),
+    CONSTRAINT [FK_ReceivePays_ShareHolders_PayToShareHolderId] FOREIGN KEY ([PayToShareHolderId]) REFERENCES [sepdb].[ShareHolders] ([Id]),
+    CONSTRAINT [FK_ReceivePays_ShareHolders_ReceiveFromShareHolderId] FOREIGN KEY ([ReceiveFromShareHolderId]) REFERENCES [sepdb].[ShareHolders] ([Id]),
+    CONSTRAINT [FK_ReceivePays_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OfficialWarehoseInventories] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductId] uniqueidentifier NOT NULL,
+    [Thickness] decimal(18,6) NOT NULL,
+    [WarehouseId] int NOT NULL,
+    [ApproximateInventory] float NOT NULL,
+    [FloorInventory] float NOT NULL,
+    [MaxInventory] float NOT NULL,
+    [MinInventory] float NOT NULL,
+    [OrderPoint] float NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OfficialWarehoseInventories] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OfficialWarehoseInventories_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OfficialWarehoseInventories_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_OfficialWarehoseInventories_Warehouses_WarehouseId] FOREIGN KEY ([WarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ProductBrands] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductId] uniqueidentifier NOT NULL,
+    [BrandId] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductBrands] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductBrands_Brands_BrandId] FOREIGN KEY ([BrandId]) REFERENCES [sepdb].[Brands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ProductBrands_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ProductDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [Size] nvarchar(max) NULL,
+    [Standard] nvarchar(max) NULL,
+    [ProductState] nvarchar(max) NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductDetails_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ProductSuppliers] (
+    [Id] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [Price] decimal(18,6) NOT NULL,
+    [RentAmount] decimal(18,6) NOT NULL,
+    [OverPrice] decimal(18,6) NOT NULL,
+    [PriceDate] datetime2 NOT NULL,
+    [Rate] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductSuppliers] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductSuppliers_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ProductSuppliers_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ProductSuppliers_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[EntrancePermits] (
+    [Id] uniqueidentifier NOT NULL,
+    [PermitCode] int NOT NULL IDENTITY(1001, 1),
+    [TransferRemittanceId] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_EntrancePermits] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_EntrancePermits_TransferRemittances_TransferRemittanceId] FOREIGN KEY ([TransferRemittanceId]) REFERENCES [sepdb].[TransferRemittances] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_EntrancePermits_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrderPayments] (
+    [Id] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [Amount] decimal(18,6) NOT NULL,
+    [PaymentDate] datetime2 NULL,
+    [DaysAfterExit] int NOT NULL,
+    [PaymentType] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderPayments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderPayments_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[OrderServices] (
+    [Id] int NOT NULL IDENTITY,
+    [OrderId] uniqueidentifier NOT NULL,
+    [ServiceId] int NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderServices] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderServices_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OrderServices_Services_ServiceId] FOREIGN KEY ([ServiceId]) REFERENCES [sepdb].[Services] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[CargoAnnounces] (
+    [Id] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [CargoAnnounceNo] int NOT NULL IDENTITY,
+    [UnloadingPlaceAddress] nvarchar(max) NOT NULL,
+    [DriverName] nvarchar(max) NOT NULL,
+    [CarPlaque] nvarchar(max) NOT NULL,
+    [DriverMobile] nvarchar(11) NOT NULL,
+    [ApprovedUserId] uniqueidentifier NOT NULL,
+    [ApprovedDate] datetime2 NOT NULL,
+    [FareAmount] decimal(18,6) NOT NULL,
+    [IsComplete] bit NOT NULL,
+    [VehicleTypeId] int NOT NULL,
+    [DeliveryDate] datetime2 NOT NULL,
+    [ShippingName] nvarchar(max) NOT NULL,
+    [HasLadingPermit] bit NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [PurchaseOrderId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CargoAnnounces] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CargoAnnounces_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CargoAnnounces_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]),
+    CONSTRAINT [FK_CargoAnnounces_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_CargoAnnounces_VehicleTypes_VehicleTypeId] FOREIGN KEY ([VehicleTypeId]) REFERENCES [sepdb].[VehicleTypes] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderPayments] (
+    [Id] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [Amount] decimal(18,6) NOT NULL,
+    [PaymentDate] datetime2 NULL,
+    [DaysAfterExit] int NOT NULL,
+    [PaymentType] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderPayments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrderPayments_PurchaseOrder_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderServices] (
+    [Id] int NOT NULL IDENTITY,
+    [OrderId] uniqueidentifier NOT NULL,
+    [ServiceId] int NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderServices] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrderServices_PurchaseOrder_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrderServices_Services_ServiceId] FOREIGN KEY ([ServiceId]) REFERENCES [sepdb].[Services] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderTransfers] (
+    [Id] uniqueidentifier NOT NULL,
+    [PurchaseOrderId] uniqueidentifier NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderTransfers] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrderTransfers_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrderTransfers_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[OrderDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [OrderId] uniqueidentifier NOT NULL,
+    [PurchaseOrderId] uniqueidentifier NULL,
+    [RowId] int NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [ProductBrandId] int NOT NULL,
+    [WarehouseId] int NOT NULL,
+    [ProximateAmount] decimal(18,6) NOT NULL,
+    [PackageNumber] int NOT NULL,
+    [NumberInPackage] int NOT NULL,
+    [Price] decimal(18,6) NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [SellerCompanyRow] nvarchar(max) NULL,
+    [PurchaserCustomerId] uniqueidentifier NULL,
+    [PurchasePrice] decimal(18,6) NOT NULL,
+    [PurchaseInvoiceTypeId] int NULL,
+    [PurchaseSettlementDate] datetime2 NULL,
+    [AlternativeProductBrandId] int NULL,
+    [AlternativeProductAmount] decimal(18,6) NOT NULL,
+    [AlternativeProductPrice] decimal(18,6) NOT NULL,
+    [ProductSubUnitId] int NULL,
+    [ProductSubUnitAmount] decimal(18,6) NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_OrderDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderDetails_Customers_PurchaserCustomerId] FOREIGN KEY ([PurchaserCustomerId]) REFERENCES [sepdb].[Customers] ([Id]),
+    CONSTRAINT [FK_OrderDetails_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OrderDetails_ProductBrands_AlternativeProductBrandId] FOREIGN KEY ([AlternativeProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]),
+    CONSTRAINT [FK_OrderDetails_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OrderDetails_ProductUnits_ProductSubUnitId] FOREIGN KEY ([ProductSubUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]),
+    CONSTRAINT [FK_OrderDetails_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OrderDetails_PurchaseInvoiceTypes_PurchaseInvoiceTypeId] FOREIGN KEY ([PurchaseInvoiceTypeId]) REFERENCES [sepdb].[PurchaseInvoiceTypes] ([Id]),
+    CONSTRAINT [FK_OrderDetails_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]),
+    CONSTRAINT [FK_OrderDetails_Warehouses_WarehouseId] FOREIGN KEY ([WarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ProductInventories] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductBrandId] int NOT NULL,
+    [WarehouseId] int NOT NULL,
+    [ApproximateInventory] decimal(18,6) NOT NULL,
+    [OnTransitInventory] decimal(18,6) NOT NULL,
+    [ReserveInventory] decimal(18,6) NOT NULL,
+    [PurchaseInventory] decimal(18,6) NOT NULL,
+    [FloorInventory] float NOT NULL,
+    [MaxInventory] float NOT NULL,
+    [MinInventory] float NOT NULL,
+    [Thickness] decimal(18,6) NOT NULL,
+    [OrderPoint] float NOT NULL,
+    [ProductId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductInventories] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductInventories_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ProductInventories_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]),
+    CONSTRAINT [FK_ProductInventories_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_ProductInventories_Warehouses_WarehouseId] FOREIGN KEY ([WarehouseId]) REFERENCES [sepdb].[Warehouses] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[ProductPrices] (
+    [Id] uniqueidentifier NOT NULL,
+    [Price] decimal(18,6) NOT NULL,
+    [ProductBrandId] int NOT NULL,
+    [ProductId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_ProductPrices] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_ProductPrices_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_ProductPrices_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]),
+    CONSTRAINT [FK_ProductPrices_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [PurchaseInvoiceTypeId] int NULL,
+    [PurchaserCustomerId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [RowId] int NOT NULL,
+    [ProductBrandId] int NOT NULL,
+    [ProximateAmount] decimal(18,6) NOT NULL,
+    [TransferedAmount] decimal(18,6) NOT NULL,
+    [PackageNumber] int NOT NULL,
+    [NumberInPackage] int NOT NULL,
+    [Price] decimal(18,6) NOT NULL,
+    [DeliverDate] datetime2 NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [AlternativeProductBrandId] int NULL,
+    [AlternativeProductAmount] decimal(18,6) NOT NULL,
+    [AlternativeProductPrice] decimal(18,6) NOT NULL,
+    [ProductSubUnitId] int NULL,
+    [ProductSubUnitAmount] decimal(18,6) NULL,
+    CONSTRAINT [PK_PurchaseOrderDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrderDetails_Customers_PurchaserCustomerId] FOREIGN KEY ([PurchaserCustomerId]) REFERENCES [sepdb].[Customers] ([Id]),
+    CONSTRAINT [FK_PurchaseOrderDetails_ProductBrands_AlternativeProductBrandId] FOREIGN KEY ([AlternativeProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]),
+    CONSTRAINT [FK_PurchaseOrderDetails_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrderDetails_ProductUnits_ProductSubUnitId] FOREIGN KEY ([ProductSubUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]),
+    CONSTRAINT [FK_PurchaseOrderDetails_PurchaseInvoiceTypes_PurchaseInvoiceTypeId] FOREIGN KEY ([PurchaseInvoiceTypeId]) REFERENCES [sepdb].[PurchaseInvoiceTypes] ([Id]),
+    CONSTRAINT [FK_PurchaseOrderDetails_PurchaseOrder_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrderDetails_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[TransferRemittanceDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductBrandId] int NOT NULL,
+    [TransferAmount] decimal(18,6) NOT NULL,
+    [TransferRemittanceId] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_TransferRemittanceDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TransferRemittanceDetails_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferRemittanceDetails_TransferRemittances_TransferRemittanceId] FOREIGN KEY ([TransferRemittanceId]) REFERENCES [sepdb].[TransferRemittances] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[LadingPermit] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoAnnounceId] uniqueidentifier NOT NULL,
+    [HasExitPermit] bit NULL,
+    [Description] nvarchar(max) NULL,
+    [OrderId] uniqueidentifier NULL,
+    [PurchaseOrderId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingPermit] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingPermit_CargoAnnounces_CargoAnnounceId] FOREIGN KEY ([CargoAnnounceId]) REFERENCES [sepdb].[CargoAnnounces] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingPermit_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]),
+    CONSTRAINT [FK_LadingPermit_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]),
+    CONSTRAINT [FK_LadingPermit_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[CargoAnnounceDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoAnnounceId] uniqueidentifier NOT NULL,
+    [OrderDetailId] int NOT NULL,
+    [LadingAmount] decimal(18,6) NOT NULL,
+    [RealAmount] decimal(18,6) NOT NULL,
+    [PackageCount] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CargoAnnounceDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CargoAnnounceDetails_CargoAnnounces_CargoAnnounceId] FOREIGN KEY ([CargoAnnounceId]) REFERENCES [sepdb].[CargoAnnounces] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CargoAnnounceDetails_OrderDetails_OrderDetailId] FOREIGN KEY ([OrderDetailId]) REFERENCES [sepdb].[OrderDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CargoAnnounceDetails_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PurchaseOrderTransferDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [PurchaseOrderDetailId] int NOT NULL,
+    [TransferedAmount] decimal(18,6) NOT NULL,
+    [PurchaseOrderTransferId] uniqueidentifier NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderTransferDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PurchaseOrderTransferDetails_PurchaseOrderDetails_PurchaseOrderDetailId] FOREIGN KEY ([PurchaseOrderDetailId]) REFERENCES [sepdb].[PurchaseOrderDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PurchaseOrderTransferDetails_PurchaseOrderTransfers_PurchaseOrderTransferId] FOREIGN KEY ([PurchaseOrderTransferId]) REFERENCES [sepdb].[PurchaseOrderTransfers] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[UnloadingPermits] (
+    [Id] uniqueidentifier NOT NULL,
+    [EntrancePermitId] uniqueidentifier NOT NULL,
+    [UnloadingPermitCode] int NOT NULL,
+    [TransferRemittanceDetailId] int NOT NULL,
+    [DriverAccountNo] nvarchar(max) NOT NULL,
+    [DriverCreditCardNo] nvarchar(max) NOT NULL,
+    [OtherCosts] decimal(18,6) NOT NULL,
+    [DriverName] nvarchar(max) NOT NULL,
+    [FareAmount] decimal(18,6) NOT NULL,
+    [FareAmountApproved] bit NOT NULL,
+    [FareAmountPayStatus] bit NOT NULL,
+    [ShippingName] nvarchar(max) NOT NULL,
+    [Plaque] nvarchar(max) NOT NULL,
+    [VehicleTypeId] int NOT NULL,
+    [DriverMobile] nvarchar(max) NOT NULL,
+    [DeliverDate] nvarchar(max) NOT NULL,
+    [UnloadingPlaceAddress] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_UnloadingPermits] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UnloadingPermits_EntrancePermits_EntrancePermitId] FOREIGN KEY ([EntrancePermitId]) REFERENCES [sepdb].[EntrancePermits] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UnloadingPermits_TransferRemittanceDetails_TransferRemittanceDetailId] FOREIGN KEY ([TransferRemittanceDetailId]) REFERENCES [sepdb].[TransferRemittanceDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UnloadingPermits_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[LadingExitPermit] (
+    [Id] uniqueidentifier NOT NULL,
+    [LadingExitPermitCode] int NOT NULL IDENTITY(100, 1),
+    [LadingPermitId] int NOT NULL,
+    [BankAccountNo] nvarchar(max) NULL,
+    [CreditCardNo] nvarchar(max) NULL,
+    [BankAccountOwnerName] nvarchar(max) NULL,
+    [OtherAmount] decimal(18,6) NULL,
+    [ExitPermitDescription] nvarchar(max) NULL,
+    [FareAmount] decimal(18,6) NULL,
+    [FareAmountPayStatus] bit NOT NULL,
+    [HasExitPermit] bit NULL,
+    [FareAmountApproved] bit NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingExitPermit] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingExitPermit_LadingPermit_LadingPermitId] FOREIGN KEY ([LadingPermitId]) REFERENCES [sepdb].[LadingPermit] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingExitPermit_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[LadingPermitDetail] (
+    [Id] int NOT NULL IDENTITY,
+    [LadingPermitId] int NOT NULL,
+    [OrderDetailId] int NOT NULL,
+    [LadingAmount] decimal(18,6) NOT NULL,
+    [RealAmount] decimal(18,6) NOT NULL,
+    [PackageCount] int NOT NULL,
+    [PurchaseOrderDetailId] int NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingPermitDetail] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingPermitDetail_LadingPermit_LadingPermitId] FOREIGN KEY ([LadingPermitId]) REFERENCES [sepdb].[LadingPermit] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingPermitDetail_OrderDetails_OrderDetailId] FOREIGN KEY ([OrderDetailId]) REFERENCES [sepdb].[OrderDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingPermitDetail_PurchaseOrderDetails_PurchaseOrderDetailId] FOREIGN KEY ([PurchaseOrderDetailId]) REFERENCES [sepdb].[PurchaseOrderDetails] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[UnloadingPermitDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [UnloadingPermitId] uniqueidentifier NOT NULL,
+    [TransferRemittanceDetailId] int NOT NULL,
+    [UnloadedAmount] decimal(18,6) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_UnloadingPermitDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_UnloadingPermitDetails_TransferRemittanceDetails_TransferRemittanceDetailId] FOREIGN KEY ([TransferRemittanceDetailId]) REFERENCES [sepdb].[TransferRemittanceDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UnloadingPermitDetails_UnloadingPermits_UnloadingPermitId] FOREIGN KEY ([UnloadingPermitId]) REFERENCES [sepdb].[UnloadingPermits] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE TABLE [sepdb].[DriverFareAmountApproves] (
+    [Id] int NOT NULL IDENTITY,
+    [Description] nvarchar(max) NOT NULL,
+    [PurOrderTransRemittUnloadingPermitId] uniqueidentifier NULL,
+    [LadingExitPermitId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_DriverFareAmountApproves] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_DriverFareAmountApproves_LadingExitPermit_LadingExitPermitId] FOREIGN KEY ([LadingExitPermitId]) REFERENCES [sepdb].[LadingExitPermit] ([Id]),
+    CONSTRAINT [FK_DriverFareAmountApproves_UnloadingPermits_PurOrderTransRemittUnloadingPermitId] FOREIGN KEY ([PurOrderTransRemittUnloadingPermitId]) REFERENCES [sepdb].[UnloadingPermits] ([Id]),
+    CONSTRAINT [FK_DriverFareAmountApproves_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[LadingExitPermitDetails] (
+    [Id] uniqueidentifier NOT NULL,
+    [LadingExitPermitId] uniqueidentifier NOT NULL,
+    [CargoAnnounceDetailId] int NOT NULL,
+    [RealAmount] decimal(18,6) NOT NULL,
+    [ProductSubUnitId] int NOT NULL,
+    [ProductSubUnitAmount] decimal(18,6) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingExitPermitDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingExitPermitDetails_CargoAnnounceDetails_CargoAnnounceDetailId] FOREIGN KEY ([CargoAnnounceDetailId]) REFERENCES [sepdb].[CargoAnnounceDetails] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingExitPermitDetails_LadingExitPermit_LadingExitPermitId] FOREIGN KEY ([LadingExitPermitId]) REFERENCES [sepdb].[LadingExitPermit] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingExitPermitDetails_ProductUnits_ProductSubUnitId] FOREIGN KEY ([ProductSubUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingExitPermitDetails_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[LadingLicense] (
+    [Id] int NOT NULL IDENTITY,
+    [CargoAnnounceId] uniqueidentifier NOT NULL,
+    [HasExitPermit] bit NULL,
+    [Description] nvarchar(max) NULL,
+    [FareAmount] decimal(18,6) NULL,
+    [BankAccountNo] nvarchar(max) NULL,
+    [CreditCardNo] nvarchar(max) NULL,
+    [BankAccountOwnerName] nvarchar(max) NULL,
+    [OtherAmount] decimal(18,6) NULL,
+    [ExitPermitDescription] nvarchar(max) NULL,
+    [ProductSubUnitId] int NULL,
+    [LadingExitPermitId] uniqueidentifier NULL,
+    [OrderId] uniqueidentifier NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingLicense] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingLicense_CargoAnnounces_CargoAnnounceId] FOREIGN KEY ([CargoAnnounceId]) REFERENCES [sepdb].[CargoAnnounces] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingLicense_LadingExitPermit_LadingExitPermitId] FOREIGN KEY ([LadingExitPermitId]) REFERENCES [sepdb].[LadingExitPermit] ([Id]),
+    CONSTRAINT [FK_LadingLicense_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]),
+    CONSTRAINT [FK_LadingLicense_ProductUnits_ProductSubUnitId] FOREIGN KEY ([ProductSubUnitId]) REFERENCES [sepdb].[ProductUnits] ([Id]),
+    CONSTRAINT [FK_LadingLicense_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[RentPayments] (
+    [Id] int NOT NULL IDENTITY,
+    [ReceivePaymentOriginId] int NOT NULL,
+    [UnloadingPermitId] uniqueidentifier NULL,
+    [LadingExitPermitId] uniqueidentifier NULL,
+    [TotalFareAmount] decimal(18,6) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_RentPayments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RentPayments_LadingExitPermit_LadingExitPermitId] FOREIGN KEY ([LadingExitPermitId]) REFERENCES [sepdb].[LadingExitPermit] ([Id]),
+    CONSTRAINT [FK_RentPayments_ReceivePaymentTypes_ReceivePaymentOriginId] FOREIGN KEY ([ReceivePaymentOriginId]) REFERENCES [sepdb].[ReceivePaymentTypes] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_RentPayments_UnloadingPermits_UnloadingPermitId] FOREIGN KEY ([UnloadingPermitId]) REFERENCES [sepdb].[UnloadingPermits] ([Id]),
+    CONSTRAINT [FK_RentPayments_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Attachment] (
+    [Id] uniqueidentifier NOT NULL,
+    [FileData] varbinary(max) NOT NULL,
+    [ReceivePayId] uniqueidentifier NULL,
+    [OrderId] uniqueidentifier NULL,
+    [PurchaseOrderId] uniqueidentifier NULL,
+    [LadingPermitId] int NULL,
+    [PurOrderTransRemittanceUnloadingPermitId] uniqueidentifier NULL,
+    [PurOrderTransRemittanceEntrancePermitId] uniqueidentifier NULL,
+    [LadingExitPermitId] uniqueidentifier NULL,
+    [AttachmentType] int NULL,
+    [CargoAnnounceId] uniqueidentifier NULL,
+    [LadingLicenseId] int NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Attachment] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Attachment_CargoAnnounces_CargoAnnounceId] FOREIGN KEY ([CargoAnnounceId]) REFERENCES [sepdb].[CargoAnnounces] ([Id]),
+    CONSTRAINT [FK_Attachment_EntrancePermits_PurOrderTransRemittanceEntrancePermitId] FOREIGN KEY ([PurOrderTransRemittanceEntrancePermitId]) REFERENCES [sepdb].[EntrancePermits] ([Id]),
+    CONSTRAINT [FK_Attachment_LadingExitPermit_LadingExitPermitId] FOREIGN KEY ([LadingExitPermitId]) REFERENCES [sepdb].[LadingExitPermit] ([Id]),
+    CONSTRAINT [FK_Attachment_LadingLicense_LadingLicenseId] FOREIGN KEY ([LadingLicenseId]) REFERENCES [sepdb].[LadingLicense] ([Id]),
+    CONSTRAINT [FK_Attachment_LadingPermit_LadingPermitId] FOREIGN KEY ([LadingPermitId]) REFERENCES [sepdb].[LadingPermit] ([Id]),
+    CONSTRAINT [FK_Attachment_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]),
+    CONSTRAINT [FK_Attachment_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]),
+    CONSTRAINT [FK_Attachment_ReceivePays_ReceivePayId] FOREIGN KEY ([ReceivePayId]) REFERENCES [sepdb].[ReceivePays] ([Id]),
+    CONSTRAINT [FK_Attachment_UnloadingPermits_PurOrderTransRemittanceUnloadingPermitId] FOREIGN KEY ([PurOrderTransRemittanceUnloadingPermitId]) REFERENCES [sepdb].[UnloadingPermits] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[LadingLicenseDetail] (
+    [Id] int NOT NULL IDENTITY,
+    [LadingLicenseId] int NOT NULL,
+    [OrderDetailId] int NOT NULL,
+    [LadingAmount] decimal(18,6) NOT NULL,
+    [RealAmount] decimal(18,6) NOT NULL,
+    [PackageCount] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_LadingLicenseDetail] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LadingLicenseDetail_LadingLicense_LadingLicenseId] FOREIGN KEY ([LadingLicenseId]) REFERENCES [sepdb].[LadingLicense] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LadingLicenseDetail_OrderDetails_OrderDetailId] FOREIGN KEY ([OrderDetailId]) REFERENCES [sepdb].[OrderDetails] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE INDEX [IX_ApplicationMenus_ApplicationMenuId] ON [sepdb].[ApplicationMenus] ([ApplicationMenuId]);
+GO
+
+CREATE INDEX [IX_ApplicationMenus_CreatedBy] ON [sepdb].[ApplicationMenus] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_Attachment_CargoAnnounceId] ON [sepdb].[Attachment] ([CargoAnnounceId]);
+GO
+
+CREATE INDEX [IX_Attachment_LadingExitPermitId] ON [sepdb].[Attachment] ([LadingExitPermitId]);
+GO
+
+CREATE INDEX [IX_Attachment_LadingLicenseId] ON [sepdb].[Attachment] ([LadingLicenseId]);
+GO
+
+CREATE INDEX [IX_Attachment_LadingPermitId] ON [sepdb].[Attachment] ([LadingPermitId]);
+GO
+
+CREATE INDEX [IX_Attachment_OrderId] ON [sepdb].[Attachment] ([OrderId]);
+GO
+
+CREATE INDEX [IX_Attachment_PurchaseOrderId] ON [sepdb].[Attachment] ([PurchaseOrderId]);
+GO
+
+CREATE INDEX [IX_Attachment_PurOrderTransRemittanceEntrancePermitId] ON [sepdb].[Attachment] ([PurOrderTransRemittanceEntrancePermitId]);
+GO
+
+CREATE INDEX [IX_Attachment_PurOrderTransRemittanceUnloadingPermitId] ON [sepdb].[Attachment] ([PurOrderTransRemittanceUnloadingPermitId]);
+GO
+
+CREATE INDEX [IX_Attachment_ReceivePayId] ON [sepdb].[Attachment] ([ReceivePayId]);
+GO
+
+CREATE INDEX [IX_AuditLogs_CreatedBy] ON [sepdb].[AuditLogs] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_CargoAnnounceDetails_CargoAnnounceId] ON [sepdb].[CargoAnnounceDetails] ([CargoAnnounceId]);
+GO
+
+CREATE INDEX [IX_CargoAnnounceDetails_CreatedBy] ON [sepdb].[CargoAnnounceDetails] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_CargoAnnounceDetails_OrderDetailId] ON [sepdb].[CargoAnnounceDetails] ([OrderDetailId]);
+GO
+
+CREATE INDEX [IX_CargoAnnounces_CreatedBy] ON [sepdb].[CargoAnnounces] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_CargoAnnounces_OrderId] ON [sepdb].[CargoAnnounces] ([OrderId]);
+GO
+
+CREATE INDEX [IX_CargoAnnounces_PurchaseOrderId] ON [sepdb].[CargoAnnounces] ([PurchaseOrderId]);
+GO
+
+CREATE INDEX [IX_CargoAnnounces_VehicleTypeId] ON [sepdb].[CargoAnnounces] ([VehicleTypeId]);
+GO
+
+CREATE INDEX [IX_CustomerOfficialCompanies_CreatedBy] ON [sepdb].[CustomerOfficialCompanies] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_CustomerOfficialCompanies_CustomerId] ON [sepdb].[CustomerOfficialCompanies] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_Customers_CreatedBy] ON [sepdb].[Customers] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_Customers_CustomerValidityId] ON [sepdb].[Customers] ([CustomerValidityId]);
+GO
+
+CREATE INDEX [IX_CustomerWarehouses_CustomerId] ON [sepdb].[CustomerWarehouses] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_CustomerWarehouses_WarehouseId] ON [sepdb].[CustomerWarehouses] ([WarehouseId]);
+GO
+
+CREATE INDEX [IX_DriverFareAmountApproves_CreatedBy] ON [sepdb].[DriverFareAmountApproves] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_DriverFareAmountApproves_LadingExitPermitId] ON [sepdb].[DriverFareAmountApproves] ([LadingExitPermitId]);
+GO
+
+CREATE INDEX [IX_DriverFareAmountApproves_PurOrderTransRemittUnloadingPermitId] ON [sepdb].[DriverFareAmountApproves] ([PurOrderTransRemittUnloadingPermitId]);
+GO
+
+CREATE INDEX [IX_EntrancePermits_CreatedBy] ON [sepdb].[EntrancePermits] ([CreatedBy]);
+GO
+
+CREATE UNIQUE INDEX [IX_EntrancePermits_TransferRemittanceId] ON [sepdb].[EntrancePermits] ([TransferRemittanceId]);
+GO
+
+CREATE INDEX [IX_LadingExitPermit_CreatedBy] ON [sepdb].[LadingExitPermit] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_LadingExitPermit_LadingPermitId] ON [sepdb].[LadingExitPermit] ([LadingPermitId]);
+GO
+
+CREATE INDEX [IX_LadingExitPermitDetails_CargoAnnounceDetailId] ON [sepdb].[LadingExitPermitDetails] ([CargoAnnounceDetailId]);
+GO
+
+CREATE INDEX [IX_LadingExitPermitDetails_CreatedBy] ON [sepdb].[LadingExitPermitDetails] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_LadingExitPermitDetails_LadingExitPermitId] ON [sepdb].[LadingExitPermitDetails] ([LadingExitPermitId]);
+GO
+
+CREATE INDEX [IX_LadingExitPermitDetails_ProductSubUnitId] ON [sepdb].[LadingExitPermitDetails] ([ProductSubUnitId]);
+GO
+
+CREATE INDEX [IX_LadingLicense_CargoAnnounceId] ON [sepdb].[LadingLicense] ([CargoAnnounceId]);
+GO
+
+CREATE INDEX [IX_LadingLicense_CreatedBy] ON [sepdb].[LadingLicense] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_LadingLicense_LadingExitPermitId] ON [sepdb].[LadingLicense] ([LadingExitPermitId]);
+GO
+
+CREATE INDEX [IX_LadingLicense_OrderId] ON [sepdb].[LadingLicense] ([OrderId]);
+GO
+
+CREATE INDEX [IX_LadingLicense_ProductSubUnitId] ON [sepdb].[LadingLicense] ([ProductSubUnitId]);
+GO
+
+CREATE INDEX [IX_LadingLicenseDetail_LadingLicenseId] ON [sepdb].[LadingLicenseDetail] ([LadingLicenseId]);
+GO
+
+CREATE INDEX [IX_LadingLicenseDetail_OrderDetailId] ON [sepdb].[LadingLicenseDetail] ([OrderDetailId]);
+GO
+
+CREATE UNIQUE INDEX [IX_LadingPermit_CargoAnnounceId_IsActive] ON [sepdb].[LadingPermit] ([CargoAnnounceId], [IsActive]);
+GO
+
+CREATE INDEX [IX_LadingPermit_CreatedBy] ON [sepdb].[LadingPermit] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_LadingPermit_OrderId] ON [sepdb].[LadingPermit] ([OrderId]);
+GO
+
+CREATE INDEX [IX_LadingPermit_PurchaseOrderId] ON [sepdb].[LadingPermit] ([PurchaseOrderId]);
+GO
+
+CREATE INDEX [IX_LadingPermitDetail_LadingPermitId] ON [sepdb].[LadingPermitDetail] ([LadingPermitId]);
+GO
+
+CREATE INDEX [IX_LadingPermitDetail_OrderDetailId] ON [sepdb].[LadingPermitDetail] ([OrderDetailId]);
+GO
+
+CREATE INDEX [IX_LadingPermitDetail_PurchaseOrderDetailId] ON [sepdb].[LadingPermitDetail] ([PurchaseOrderDetailId]);
+GO
+
+CREATE INDEX [IX_OfficialWarehoseInventories_CreatedBy] ON [sepdb].[OfficialWarehoseInventories] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_OfficialWarehoseInventories_ProductId] ON [sepdb].[OfficialWarehoseInventories] ([ProductId]);
+GO
+
+CREATE INDEX [IX_OfficialWarehoseInventories_WarehouseId] ON [sepdb].[OfficialWarehoseInventories] ([WarehouseId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_AlternativeProductBrandId] ON [sepdb].[OrderDetails] ([AlternativeProductBrandId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_OrderId] ON [sepdb].[OrderDetails] ([OrderId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_ProductBrandId] ON [sepdb].[OrderDetails] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_ProductId] ON [sepdb].[OrderDetails] ([ProductId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_ProductSubUnitId] ON [sepdb].[OrderDetails] ([ProductSubUnitId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_PurchaseInvoiceTypeId] ON [sepdb].[OrderDetails] ([PurchaseInvoiceTypeId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_PurchaseOrderId] ON [sepdb].[OrderDetails] ([PurchaseOrderId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_PurchaserCustomerId] ON [sepdb].[OrderDetails] ([PurchaserCustomerId]);
+GO
+
+CREATE INDEX [IX_OrderDetails_WarehouseId] ON [sepdb].[OrderDetails] ([WarehouseId]);
+GO
+
+CREATE INDEX [IX_OrderPayments_OrderId] ON [sepdb].[OrderPayments] ([OrderId]);
+GO
+
+CREATE INDEX [IX_Orders_CreatedBy] ON [sepdb].[Orders] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_Orders_CustomerId] ON [sepdb].[Orders] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_Orders_CustomerOfficialCompanyId] ON [sepdb].[Orders] ([CustomerOfficialCompanyId]);
+GO
+
+CREATE INDEX [IX_Orders_FarePaymentTypeId] ON [sepdb].[Orders] ([FarePaymentTypeId]);
+GO
+
+CREATE INDEX [IX_Orders_InvoiceTypeId] ON [sepdb].[Orders] ([InvoiceTypeId]);
+GO
+
+CREATE INDEX [IX_Orders_OrderExitTypeId] ON [sepdb].[Orders] ([OrderExitTypeId]);
+GO
+
+CREATE INDEX [IX_Orders_OrderSendTypeId] ON [sepdb].[Orders] ([OrderSendTypeId]);
+GO
+
+CREATE INDEX [IX_Orders_OrderStatusId] ON [sepdb].[Orders] ([OrderStatusId]);
+GO
+
+CREATE INDEX [IX_OrderServices_OrderId] ON [sepdb].[OrderServices] ([OrderId]);
+GO
+
+CREATE INDEX [IX_OrderServices_ServiceId] ON [sepdb].[OrderServices] ([ServiceId]);
+GO
+
+CREATE INDEX [IX_OrganizationBanks_BankId] ON [sepdb].[OrganizationBanks] ([BankId]);
+GO
+
+CREATE INDEX [IX_Permissions_ApplicationMenuId] ON [sepdb].[Permissions] ([ApplicationMenuId]);
+GO
+
+CREATE INDEX [IX_Phonebook_CreatedBy] ON [sepdb].[Phonebook] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_Phonebook_CustomerId] ON [sepdb].[Phonebook] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_Phonebook_PhoneNumberTypeId] ON [sepdb].[Phonebook] ([PhoneNumberTypeId]);
+GO
+
+CREATE INDEX [IX_ProductBrands_BrandId] ON [sepdb].[ProductBrands] ([BrandId]);
+GO
+
+CREATE INDEX [IX_ProductBrands_ProductId] ON [sepdb].[ProductBrands] ([ProductId]);
+GO
+
+CREATE INDEX [IX_ProductDetails_ProductId] ON [sepdb].[ProductDetails] ([ProductId]);
+GO
+
+CREATE INDEX [IX_ProductInventories_CreatedBy] ON [sepdb].[ProductInventories] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_ProductInventories_ProductBrandId] ON [sepdb].[ProductInventories] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_ProductInventories_ProductId] ON [sepdb].[ProductInventories] ([ProductId]);
+GO
+
+CREATE INDEX [IX_ProductInventories_WarehouseId] ON [sepdb].[ProductInventories] ([WarehouseId]);
+GO
+
+CREATE INDEX [IX_ProductInventoryHistories_CreatedBy] ON [sepdb].[ProductInventoryHistories] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_ProductPrices_CreatedBy] ON [sepdb].[ProductPrices] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_ProductPrices_ProductBrandId] ON [sepdb].[ProductPrices] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_ProductPrices_ProductId] ON [sepdb].[ProductPrices] ([ProductId]);
+GO
+
+CREATE INDEX [IX_Products_CreatedBy] ON [sepdb].[Products] ([CreatedBy]);
+GO
+
+CREATE UNIQUE INDEX [IX_Products_ProductCode] ON [sepdb].[Products] ([ProductCode]);
+GO
+
+CREATE INDEX [IX_Products_ProductMainUnitId] ON [sepdb].[Products] ([ProductMainUnitId]);
+GO
+
+CREATE INDEX [IX_Products_ProductStandardId] ON [sepdb].[Products] ([ProductStandardId]);
+GO
+
+CREATE INDEX [IX_Products_ProductStateId] ON [sepdb].[Products] ([ProductStateId]);
+GO
+
+CREATE INDEX [IX_Products_ProductSubUnitId] ON [sepdb].[Products] ([ProductSubUnitId]);
+GO
+
+CREATE INDEX [IX_Products_ProductTypeId] ON [sepdb].[Products] ([ProductTypeId]);
+GO
+
+CREATE INDEX [IX_Products_WarehouseId] ON [sepdb].[Products] ([WarehouseId]);
+GO
+
+CREATE INDEX [IX_ProductSuppliers_CreatedBy] ON [sepdb].[ProductSuppliers] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_ProductSuppliers_CustomerId] ON [sepdb].[ProductSuppliers] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_ProductSuppliers_ProductId] ON [sepdb].[ProductSuppliers] ([ProductId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_CreatedBy] ON [sepdb].[PurchaseOrder] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_CustomerId] ON [sepdb].[PurchaseOrder] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_CustomerOfficialCompanyId] ON [sepdb].[PurchaseOrder] ([CustomerOfficialCompanyId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_DestinationWarehouseId] ON [sepdb].[PurchaseOrder] ([DestinationWarehouseId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_FarePaymentTypeId] ON [sepdb].[PurchaseOrder] ([FarePaymentTypeId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_InvoiceTypeId] ON [sepdb].[PurchaseOrder] ([InvoiceTypeId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_OrderSendTypeId] ON [sepdb].[PurchaseOrder] ([OrderSendTypeId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_OrderStatusId] ON [sepdb].[PurchaseOrder] ([OrderStatusId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrder_OriginWarehouseId] ON [sepdb].[PurchaseOrder] ([OriginWarehouseId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_AlternativeProductBrandId] ON [sepdb].[PurchaseOrderDetails] ([AlternativeProductBrandId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_CreatedBy] ON [sepdb].[PurchaseOrderDetails] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_OrderId] ON [sepdb].[PurchaseOrderDetails] ([OrderId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_ProductBrandId] ON [sepdb].[PurchaseOrderDetails] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_ProductSubUnitId] ON [sepdb].[PurchaseOrderDetails] ([ProductSubUnitId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_PurchaseInvoiceTypeId] ON [sepdb].[PurchaseOrderDetails] ([PurchaseInvoiceTypeId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderDetails_PurchaserCustomerId] ON [sepdb].[PurchaseOrderDetails] ([PurchaserCustomerId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderPayments_OrderId] ON [sepdb].[PurchaseOrderPayments] ([OrderId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderServices_OrderId] ON [sepdb].[PurchaseOrderServices] ([OrderId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderServices_ServiceId] ON [sepdb].[PurchaseOrderServices] ([ServiceId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderTransferDetails_PurchaseOrderDetailId] ON [sepdb].[PurchaseOrderTransferDetails] ([PurchaseOrderDetailId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderTransferDetails_PurchaseOrderTransferId] ON [sepdb].[PurchaseOrderTransferDetails] ([PurchaseOrderTransferId]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderTransfers_CreatedBy] ON [sepdb].[PurchaseOrderTransfers] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_PurchaseOrderTransfers_PurchaseOrderId] ON [sepdb].[PurchaseOrderTransfers] ([PurchaseOrderId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_CreatedBy] ON [sepdb].[ReceivePays] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToCashDeskId] ON [sepdb].[ReceivePays] ([PayToCashDeskId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToCompanyId] ON [sepdb].[ReceivePays] ([PayToCompanyId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToCostId] ON [sepdb].[ReceivePays] ([PayToCostId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToCustomerId] ON [sepdb].[ReceivePays] ([PayToCustomerId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToIncomeId] ON [sepdb].[ReceivePays] ([PayToIncomeId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToOrganizationBankId] ON [sepdb].[ReceivePays] ([PayToOrganizationBankId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToPettyCashId] ON [sepdb].[ReceivePays] ([PayToPettyCashId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_PayToShareHolderId] ON [sepdb].[ReceivePays] ([PayToShareHolderId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromCashDeskId] ON [sepdb].[ReceivePays] ([ReceiveFromCashDeskId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromCompanyId] ON [sepdb].[ReceivePays] ([ReceiveFromCompanyId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromCostId] ON [sepdb].[ReceivePays] ([ReceiveFromCostId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromCustomerId] ON [sepdb].[ReceivePays] ([ReceiveFromCustomerId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromIncomeId] ON [sepdb].[ReceivePays] ([ReceiveFromIncomeId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromOrganizationBankId] ON [sepdb].[ReceivePays] ([ReceiveFromOrganizationBankId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromPettyCashId] ON [sepdb].[ReceivePays] ([ReceiveFromPettyCashId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceiveFromShareHolderId] ON [sepdb].[ReceivePays] ([ReceiveFromShareHolderId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceivePaymentTypeFromId] ON [sepdb].[ReceivePays] ([ReceivePaymentTypeFromId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceivePaymentTypeToId] ON [sepdb].[ReceivePays] ([ReceivePaymentTypeToId]);
+GO
+
+CREATE INDEX [IX_ReceivePays_ReceivePayStatusId] ON [sepdb].[ReceivePays] ([ReceivePayStatusId]);
+GO
+
+CREATE INDEX [IX_RefreshToken_ApplicationUserId] ON [sepdb].[RefreshToken] ([ApplicationUserId]);
+GO
+
+CREATE INDEX [IX_RentPayments_CreatedBy] ON [sepdb].[RentPayments] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_RentPayments_LadingExitPermitId] ON [sepdb].[RentPayments] ([LadingExitPermitId]);
+GO
+
+CREATE INDEX [IX_RentPayments_ReceivePaymentOriginId] ON [sepdb].[RentPayments] ([ReceivePaymentOriginId]);
+GO
+
+CREATE INDEX [IX_RentPayments_UnloadingPermitId] ON [sepdb].[RentPayments] ([UnloadingPermitId]);
+GO
+
+CREATE INDEX [IX_RoleMenus_ApplicationMenuId] ON [sepdb].[RoleMenus] ([ApplicationMenuId]);
+GO
+
+CREATE INDEX [IX_RoleMenus_ApplicationRoleId] ON [sepdb].[RoleMenus] ([ApplicationRoleId]);
+GO
+
+CREATE INDEX [IX_RolePermissions_PermissionId] ON [sepdb].[RolePermissions] ([PermissionId]);
+GO
+
+CREATE INDEX [IX_RolePermissions_RoleId] ON [sepdb].[RolePermissions] ([RoleId]);
+GO
+
+CREATE INDEX [IX_ShareHolders_CreatedBy] ON [sepdb].[ShareHolders] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_TransferRemittanceDetails_ProductBrandId] ON [sepdb].[TransferRemittanceDetails] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_TransferRemittanceDetails_TransferRemittanceId] ON [sepdb].[TransferRemittanceDetails] ([TransferRemittanceId]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_CreatedBy] ON [sepdb].[TransferRemittances] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_DestinationWarehouseId] ON [sepdb].[TransferRemittances] ([DestinationWarehouseId]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_OriginWarehouseId] ON [sepdb].[TransferRemittances] ([OriginWarehouseId]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_TransferRemittanceStatusId] ON [sepdb].[TransferRemittances] ([TransferRemittanceStatusId]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_TransferRemittanceTypeId] ON [sepdb].[TransferRemittances] ([TransferRemittanceTypeId]);
+GO
+
+CREATE INDEX [IX_TransferRemittances_VehicleTypeId] ON [sepdb].[TransferRemittances] ([VehicleTypeId]);
+GO
+
+CREATE INDEX [IX_UnloadingPermitDetails_TransferRemittanceDetailId] ON [sepdb].[UnloadingPermitDetails] ([TransferRemittanceDetailId]);
+GO
+
+CREATE INDEX [IX_UnloadingPermitDetails_UnloadingPermitId] ON [sepdb].[UnloadingPermitDetails] ([UnloadingPermitId]);
+GO
+
+CREATE INDEX [IX_UnloadingPermits_CreatedBy] ON [sepdb].[UnloadingPermits] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_UnloadingPermits_EntrancePermitId] ON [sepdb].[UnloadingPermits] ([EntrancePermitId]);
+GO
+
+CREATE INDEX [IX_UnloadingPermits_TransferRemittanceDetailId] ON [sepdb].[UnloadingPermits] ([TransferRemittanceDetailId]);
+GO
+
+CREATE INDEX [IX_UserRoles_RoleId] ON [sepdb].[UserRoles] ([RoleId]);
+GO
+
+CREATE INDEX [IX_UserRoles_UserId] ON [sepdb].[UserRoles] ([UserId]);
+GO
+
+CREATE INDEX [IX_Warehouses_WarehouseTypeId] ON [sepdb].[Warehouses] ([WarehouseTypeId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240725202938_202407251030pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var0 sysname;
+SELECT @var0 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[ApplicationMenus]') AND [c].[name] = N'OrderNo');
+IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[ApplicationMenus] DROP CONSTRAINT [' + @var0 + '];');
+ALTER TABLE [sepdb].[ApplicationMenus] ALTER COLUMN [OrderNo] int NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240725204929_202407251218pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Customers]') AND [c].[name] = N'Mobile');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Customers] DROP CONSTRAINT [' + @var1 + '];');
+ALTER TABLE [sepdb].[Customers] DROP COLUMN [Mobile];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240727083113_202407271157am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DROP INDEX [IX_Phonebook_CustomerId] ON [sepdb].[Phonebook];
+GO
+
+CREATE UNIQUE INDEX [IX_Phonebook_CustomerId_PhoneNumberTypeId] ON [sepdb].[Phonebook] ([CustomerId], [PhoneNumberTypeId]) WHERE [CustomerId] IS NOT NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240728211252_202407291241am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DROP INDEX [IX_Phonebook_CustomerId_PhoneNumberTypeId] ON [sepdb].[Phonebook];
+GO
+
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Phonebook]') AND [c].[name] = N'PhoneNumber');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Phonebook] DROP CONSTRAINT [' + @var2 + '];');
+ALTER TABLE [sepdb].[Phonebook] ALTER COLUMN [PhoneNumber] nvarchar(450) NOT NULL;
+GO
+
+CREATE UNIQUE INDEX [IX_Phonebook_CustomerId_PhoneNumber_PhoneNumberTypeId] ON [sepdb].[Phonebook] ([CustomerId], [PhoneNumber], [PhoneNumberTypeId]) WHERE [CustomerId] IS NOT NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240728212723_202407291256am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+CREATE TABLE [sepdb].[CustomerLabelType] (
+    [Id] int NOT NULL IDENTITY,
+    [LabelTypeDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerLabelType] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[CustomerLabel] (
+    [Id] int NOT NULL IDENTITY,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [CustomerLabelTypeId] int NOT NULL,
+    [LabelNameCode] nvarchar(max) NOT NULL,
+    [LabelName] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerLabel] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CustomerLabel_CustomerLabelType_CustomerLabelTypeId] FOREIGN KEY ([CustomerLabelTypeId]) REFERENCES [sepdb].[CustomerLabelType] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CustomerLabel_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CustomerLabel_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE INDEX [IX_CustomerLabel_CreatedBy] ON [sepdb].[CustomerLabel] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_CustomerLabel_CustomerId] ON [sepdb].[CustomerLabel] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_CustomerLabel_CustomerLabelTypeId] ON [sepdb].[CustomerLabel] ([CustomerLabelTypeId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240731190258_202407311031pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var3 sysname;
+SELECT @var3 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[ApplicationMenus]') AND [c].[name] = N'OrderNo');
+IF @var3 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[ApplicationMenus] DROP CONSTRAINT [' + @var3 + '];');
+ALTER TABLE [sepdb].[ApplicationMenus] ALTER COLUMN [OrderNo] nvarchar(max) NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240803082539_202408031154am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabel] DROP CONSTRAINT [FK_CustomerLabel_Customers_CustomerId];
+GO
+
+DROP INDEX [IX_CustomerLabel_CustomerId] ON [sepdb].[CustomerLabel];
+GO
+
+DECLARE @var4 sysname;
+SELECT @var4 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabel]') AND [c].[name] = N'CustomerId');
+IF @var4 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabel] DROP CONSTRAINT [' + @var4 + '];');
+ALTER TABLE [sepdb].[CustomerLabel] DROP COLUMN [CustomerId];
+GO
+
+CREATE TABLE [sepdb].[CustomerAssignedLabel] (
+    [Id] int NOT NULL IDENTITY,
+    [CustomerLabelId] int NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_CustomerAssignedLabel] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_CustomerAssignedLabel_CustomerLabel_CustomerLabelId] FOREIGN KEY ([CustomerLabelId]) REFERENCES [sepdb].[CustomerLabel] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_CustomerAssignedLabel_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE INDEX [IX_CustomerAssignedLabel_CustomerId] ON [sepdb].[CustomerAssignedLabel] ([CustomerId]);
+GO
+
+CREATE INDEX [IX_CustomerAssignedLabel_CustomerLabelId] ON [sepdb].[CustomerAssignedLabel] ([CustomerLabelId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240805202326_202408051151pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabel] DROP CONSTRAINT [FK_CustomerAssignedLabel_CustomerLabel_CustomerLabelId];
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabel] DROP CONSTRAINT [FK_CustomerAssignedLabel_Customers_CustomerId];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabel] DROP CONSTRAINT [FK_CustomerLabel_CustomerLabelType_CustomerLabelTypeId];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabel] DROP CONSTRAINT [FK_CustomerLabel_Users_CreatedBy];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabel] DROP CONSTRAINT [PK_CustomerLabel];
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabel] DROP CONSTRAINT [PK_CustomerAssignedLabel];
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerLabel]', N'CustomerLabels';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerAssignedLabel]', N'CustomerAssignedLabels';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerLabels].[IX_CustomerLabel_CustomerLabelTypeId]', N'IX_CustomerLabels_CustomerLabelTypeId', N'INDEX';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerLabels].[IX_CustomerLabel_CreatedBy]', N'IX_CustomerLabels_CreatedBy', N'INDEX';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerAssignedLabels].[IX_CustomerAssignedLabel_CustomerLabelId]', N'IX_CustomerAssignedLabels_CustomerLabelId', N'INDEX';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerAssignedLabels].[IX_CustomerAssignedLabel_CustomerId]', N'IX_CustomerAssignedLabels_CustomerId', N'INDEX';
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [PK_CustomerLabels] PRIMARY KEY ([Id]);
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabels] ADD CONSTRAINT [PK_CustomerAssignedLabels] PRIMARY KEY ([Id]);
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabels] ADD CONSTRAINT [FK_CustomerAssignedLabels_CustomerLabels_CustomerLabelId] FOREIGN KEY ([CustomerLabelId]) REFERENCES [sepdb].[CustomerLabels] ([Id]) ON DELETE NO ACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerAssignedLabels] ADD CONSTRAINT [FK_CustomerAssignedLabels_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_CustomerLabelType_CustomerLabelTypeId] FOREIGN KEY ([CustomerLabelTypeId]) REFERENCES [sepdb].[CustomerLabelType] ([Id]) ON DELETE NO ACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240805204854_202408051216pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var5 sysname;
+SELECT @var5 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabels]') AND [c].[name] = N'LabelNameCode');
+IF @var5 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabels] DROP CONSTRAINT [' + @var5 + '];');
+ALTER TABLE [sepdb].[CustomerLabels] ALTER COLUMN [LabelNameCode] nvarchar(max) NULL;
+GO
+
+DECLARE @var6 sysname;
+SELECT @var6 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabels]') AND [c].[name] = N'LabelName');
+IF @var6 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabels] DROP CONSTRAINT [' + @var6 + '];');
+ALTER TABLE [sepdb].[CustomerLabels] ALTER COLUMN [LabelName] nvarchar(max) NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240805205824_202408051227pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] DROP CONSTRAINT [FK_CustomerLabels_CustomerLabelType_CustomerLabelTypeId];
+GO
+
+DROP INDEX [IX_CustomerLabels_CustomerLabelTypeId] ON [sepdb].[CustomerLabels];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelType] DROP CONSTRAINT [PK_CustomerLabelType];
+GO
+
+DECLARE @var7 sysname;
+SELECT @var7 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabelType]') AND [c].[name] = N'IsActive');
+IF @var7 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabelType] DROP CONSTRAINT [' + @var7 + '];');
+ALTER TABLE [sepdb].[CustomerLabelType] DROP COLUMN [IsActive];
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerLabelType]', N'CustomerLabelTypes';
+GO
+
+EXEC sp_rename N'[sepdb].[CustomerLabelTypes].[Id]', N'CustomerLabelTypeId', N'COLUMN';
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelTypes] ADD CONSTRAINT [PK_CustomerLabelTypes] PRIMARY KEY ([CustomerLabelTypeId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240805222445_202408060120am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelTypes] DROP CONSTRAINT [PK_CustomerLabelTypes];
+GO
+
+DECLARE @var8 sysname;
+SELECT @var8 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabelTypes]') AND [c].[name] = N'CustomerLabelTypeId');
+IF @var8 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabelTypes] DROP CONSTRAINT [' + @var8 + '];');
+ALTER TABLE [sepdb].[CustomerLabelTypes] DROP COLUMN [CustomerLabelTypeId];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelTypes] ADD [Id] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelTypes] ADD [IsActive] bit NOT NULL DEFAULT CAST(0 AS bit);
+GO
+
+ALTER TABLE [sepdb].[CustomerLabelTypes] ADD CONSTRAINT [PK_CustomerLabelTypes] PRIMARY KEY ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240805222640_202408060156am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var9 sysname;
+SELECT @var9 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[CustomerLabels]') AND [c].[name] = N'LabelNameCode');
+IF @var9 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[CustomerLabels] DROP CONSTRAINT [' + @var9 + '];');
+ALTER TABLE [sepdb].[CustomerLabels] DROP COLUMN [LabelNameCode];
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD [BrandId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD [ProductBrandId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD [ProductId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD [ProductTypeId] int NULL;
+GO
+
+CREATE INDEX [IX_CustomerLabels_BrandId] ON [sepdb].[CustomerLabels] ([BrandId]);
+GO
+
+CREATE INDEX [IX_CustomerLabels_CustomerLabelTypeId] ON [sepdb].[CustomerLabels] ([CustomerLabelTypeId]);
+GO
+
+CREATE INDEX [IX_CustomerLabels_ProductBrandId] ON [sepdb].[CustomerLabels] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_CustomerLabels_ProductId] ON [sepdb].[CustomerLabels] ([ProductId]);
+GO
+
+CREATE INDEX [IX_CustomerLabels_ProductTypeId] ON [sepdb].[CustomerLabels] ([ProductTypeId]);
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_Brands_BrandId] FOREIGN KEY ([BrandId]) REFERENCES [sepdb].[Brands] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_CustomerLabelTypes_CustomerLabelTypeId] FOREIGN KEY ([CustomerLabelTypeId]) REFERENCES [sepdb].[CustomerLabelTypes] ([Id]) ON DELETE NO ACTION;
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_ProductTypes_ProductTypeId] FOREIGN KEY ([ProductTypeId]) REFERENCES [sepdb].[ProductTypes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[CustomerLabels] ADD CONSTRAINT [FK_CustomerLabels_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [sepdb].[Products] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240806122357_202408060352pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[Orders] ADD [BusinessCode] nvarchar(max) NOT NULL DEFAULT N'';
+GO
+
+ALTER TABLE [sepdb].[Customers] ADD [NickName] nvarchar(max) NOT NULL DEFAULT N'';
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240807194831_202408071116pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DROP INDEX [IX_LadingExitPermitDetails_CargoAnnounceDetailId] ON [sepdb].[LadingExitPermitDetails];
+GO
+
+CREATE UNIQUE INDEX [IX_LadingExitPermitDetails_CargoAnnounceDetailId] ON [sepdb].[LadingExitPermitDetails] ([CargoAnnounceDetailId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810113801_202408100306pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[UnloadingPermits] DROP CONSTRAINT [FK_UnloadingPermits_TransferRemittanceDetails_TransferRemittanceDetailId];
+GO
+
+DROP INDEX [IX_UnloadingPermits_TransferRemittanceDetailId] ON [sepdb].[UnloadingPermits];
+GO
+
+DECLARE @var10 sysname;
+SELECT @var10 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[UnloadingPermits]') AND [c].[name] = N'TransferRemittanceDetailId');
+IF @var10 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[UnloadingPermits] DROP CONSTRAINT [' + @var10 + '];');
+ALTER TABLE [sepdb].[UnloadingPermits] DROP COLUMN [TransferRemittanceDetailId];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810114304_202408100310pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810173101_202408100854pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var11 sysname;
+SELECT @var11 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[UnloadingPermits]') AND [c].[name] = N'UnloadingPermitCode');
+IF @var11 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[UnloadingPermits] DROP CONSTRAINT [' + @var11 + '];');
+ALTER TABLE [sepdb].[UnloadingPermits] DROP COLUMN [UnloadingPermitCode];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810181409_202408100902pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[UnloadingPermits] ADD [UnloadingPermitCode] int NOT NULL DEFAULT 0;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810181916_202408100948pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var12 sysname;
+SELECT @var12 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[UnloadingPermits]') AND [c].[name] = N'UnloadingPermitCode');
+IF @var12 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[UnloadingPermits] DROP CONSTRAINT [' + @var12 + '];');
+ALTER TABLE [sepdb].[UnloadingPermits] DROP COLUMN [UnloadingPermitCode];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810190629_202408101035pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[UnloadingPermits] ADD [UnloadingPermitCode] int NOT NULL IDENTITY;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240810190927_202408101038pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var13 sysname;
+SELECT @var13 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[WarehouseTypes]') AND [c].[name] = N'IsActive');
+IF @var13 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[WarehouseTypes] DROP CONSTRAINT [' + @var13 + '];');
+ALTER TABLE [sepdb].[WarehouseTypes] DROP COLUMN [IsActive];
+GO
+
+EXEC sp_rename N'[sepdb].[WarehouseTypes].[Id]', N'WarehouseTypeId', N'COLUMN';
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240811180823_20240810110936pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[Warehouses] DROP CONSTRAINT [FK_Warehouses_WarehouseTypes_WarehouseTypeId];
+GO
+
+DROP INDEX [IX_Warehouses_WarehouseTypeId] ON [sepdb].[Warehouses];
+GO
+
+ALTER TABLE [sepdb].[Phonebook] ADD [PersonnelId] uniqueidentifier NULL;
+GO
+
+DECLARE @var14 sysname;
+SELECT @var14 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Customers]') AND [c].[name] = N'NickName');
+IF @var14 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Customers] DROP CONSTRAINT [' + @var14 + '];');
+ALTER TABLE [sepdb].[Customers] ALTER COLUMN [NickName] nvarchar(max) NULL;
+GO
+
+ALTER TABLE [sepdb].[Attachment] ADD [PaymentRequestId] uniqueidentifier NULL;
+GO
+
+CREATE TABLE [sepdb].[PaymentRequestReasons] (
+    [Id] int NOT NULL,
+    [ReasonDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PaymentRequestReasons] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PaymentRequestStatus] (
+    [Id] int NOT NULL,
+    [StatusDesc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PaymentRequestStatus] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[Personnels] (
+    [Id] uniqueidentifier NOT NULL,
+    [PersonnelCode] bigint NOT NULL,
+    [FirstName] nvarchar(max) NOT NULL,
+    [LastName] nvarchar(max) NOT NULL,
+    [FatherName] nvarchar(max) NOT NULL,
+    [OfficialName] nvarchar(max) NULL,
+    [NationalId] nvarchar(max) NOT NULL,
+    [NickName] nvarchar(max) NOT NULL,
+    [NationalCode] nvarchar(max) NOT NULL,
+    [Address1] nvarchar(max) NOT NULL,
+    [Address2] nvarchar(max) NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_Personnels] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Personnels_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[PaymentRequests] (
+    [Id] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Amount] decimal(18,6) NOT NULL,
+    [PaymentReason] nvarchar(max) NOT NULL,
+    [BankAccountOrShabaNo] nvarchar(max) NOT NULL,
+    [AccountOwnerName] nvarchar(max) NOT NULL,
+    [BankId] int NOT NULL,
+    [ApplicatorName] nvarchar(max) NOT NULL,
+    [ApproverId] uniqueidentifier NULL,
+    [PaymentRequestStatusId] int NOT NULL,
+    [PaymentRequestDescription] nvarchar(max) NOT NULL,
+    [RejectReasonDesc] nvarchar(max) NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PaymentRequests] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PaymentRequests_Banks_BankId] FOREIGN KEY ([BankId]) REFERENCES [sepdb].[Banks] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PaymentRequests_PaymentRequestStatus_PaymentRequestStatusId] FOREIGN KEY ([PaymentRequestStatusId]) REFERENCES [sepdb].[PaymentRequestStatus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PaymentRequests_Users_ApproverId] FOREIGN KEY ([ApproverId]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_PaymentRequests_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE INDEX [IX_Phonebook_PersonnelId] ON [sepdb].[Phonebook] ([PersonnelId]);
+GO
+
+CREATE INDEX [IX_Attachment_PaymentRequestId] ON [sepdb].[Attachment] ([PaymentRequestId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_ApproverId] ON [sepdb].[PaymentRequests] ([ApproverId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_BankId] ON [sepdb].[PaymentRequests] ([BankId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_CreatedBy] ON [sepdb].[PaymentRequests] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentRequestStatusId] ON [sepdb].[PaymentRequests] ([PaymentRequestStatusId]);
+GO
+
+CREATE INDEX [IX_Personnels_CreatedBy] ON [sepdb].[Personnels] ([CreatedBy]);
+GO
+
+ALTER TABLE [sepdb].[Attachment] ADD CONSTRAINT [FK_Attachment_PaymentRequests_PaymentRequestId] FOREIGN KEY ([PaymentRequestId]) REFERENCES [sepdb].[PaymentRequests] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[Phonebook] ADD CONSTRAINT [FK_Phonebook_Personnels_PersonnelId] FOREIGN KEY ([PersonnelId]) REFERENCES [sepdb].[Personnels] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240812182026_20240810120921pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[WarehouseTypes] DROP CONSTRAINT [PK_WarehouseTypes];
+GO
+
+DECLARE @var15 sysname;
+SELECT @var15 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[WarehouseTypes]') AND [c].[name] = N'WarehouseTypeId');
+IF @var15 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[WarehouseTypes] DROP CONSTRAINT [' + @var15 + '];');
+ALTER TABLE [sepdb].[WarehouseTypes] DROP COLUMN [WarehouseTypeId];
+GO
+
+ALTER TABLE [sepdb].[WarehouseTypes] ADD [Id] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [sepdb].[WarehouseTypes] ADD CONSTRAINT [PK_WarehouseTypes] PRIMARY KEY ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240812183606_20240810120957pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[WarehouseTypes] ADD [IsActive] bit NOT NULL DEFAULT CAST(0 AS bit);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240812183849_2024081012108pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+CREATE INDEX [IX_Warehouses_WarehouseTypeId] ON [sepdb].[Warehouses] ([WarehouseTypeId]);
+GO
+
+ALTER TABLE [sepdb].[Warehouses] ADD CONSTRAINT [FK_Warehouses_WarehouseTypes_WarehouseTypeId] FOREIGN KEY ([WarehouseTypeId]) REFERENCES [sepdb].[WarehouseTypes] ([Id]) ON DELETE NO ACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240812190519_20240810121033pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+CREATE TABLE [sepdb].[TransferWarehouseInventories] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductBrantId] int NOT NULL,
+    [OriginWarehouseId] int NOT NULL,
+    [Amount] int NOT NULL,
+    [ProductBrandId] int NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_TransferWarehouseInventories] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TransferWarehouseInventories_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferWarehouseInventories_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE TABLE [sepdb].[TransferWarehouseInventoryDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [TransferWarehouseInventoryId] int NOT NULL,
+    [ProductBrandId] int NOT NULL,
+    [TransferAmount] decimal(18,6) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_TransferWarehouseInventoryDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TransferWarehouseInventoryDetails_ProductBrands_ProductBrandId] FOREIGN KEY ([ProductBrandId]) REFERENCES [sepdb].[ProductBrands] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_TransferWarehouseInventoryDetails_TransferWarehouseInventories_TransferWarehouseInventoryId] FOREIGN KEY ([TransferWarehouseInventoryId]) REFERENCES [sepdb].[TransferWarehouseInventories] ([Id]) ON DELETE NO ACTION
+);
+GO
+
+CREATE INDEX [IX_TransferWarehouseInventories_CreatedBy] ON [sepdb].[TransferWarehouseInventories] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_TransferWarehouseInventories_ProductBrandId] ON [sepdb].[TransferWarehouseInventories] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_TransferWarehouseInventoryDetails_ProductBrandId] ON [sepdb].[TransferWarehouseInventoryDetails] ([ProductBrandId]);
+GO
+
+CREATE INDEX [IX_TransferWarehouseInventoryDetails_TransferWarehouseInventoryId] ON [sepdb].[TransferWarehouseInventoryDetails] ([TransferWarehouseInventoryId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240812203145_20240810121158pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP CONSTRAINT [FK_TransferWarehouseInventories_ProductBrands_ProductBrandId];
+GO
+
+DROP INDEX [IX_TransferWarehouseInventories_ProductBrandId] ON [sepdb].[TransferWarehouseInventories];
+GO
+
+DECLARE @var16 sysname;
+SELECT @var16 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[TransferWarehouseInventories]') AND [c].[name] = N'Amount');
+IF @var16 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP CONSTRAINT [' + @var16 + '];');
+ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP COLUMN [Amount];
+GO
+
+DECLARE @var17 sysname;
+SELECT @var17 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[TransferWarehouseInventories]') AND [c].[name] = N'ProductBrandId');
+IF @var17 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP CONSTRAINT [' + @var17 + '];');
+ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP COLUMN [ProductBrandId];
+GO
+
+DECLARE @var18 sysname;
+SELECT @var18 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[TransferWarehouseInventories]') AND [c].[name] = N'ProductBrantId');
+IF @var18 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP CONSTRAINT [' + @var18 + '];');
+ALTER TABLE [sepdb].[TransferWarehouseInventories] DROP COLUMN [ProductBrantId];
+GO
+
+DECLARE @var19 sysname;
+SELECT @var19 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PaymentRequests]') AND [c].[name] = N'PaymentReason');
+IF @var19 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [' + @var19 + '];');
+ALTER TABLE [sepdb].[PaymentRequests] DROP COLUMN [PaymentReason];
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentRequestCode] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentRequestReasonId] int NOT NULL DEFAULT 0;
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentRequestReasonId] ON [sepdb].[PaymentRequests] ([PaymentRequestReasonId]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_PaymentRequestReasons_PaymentRequestReasonId] FOREIGN KEY ([PaymentRequestReasonId]) REFERENCES [sepdb].[PaymentRequestReasons] ([Id]) ON DELETE NO ACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813081304_202408131051am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var20 sysname;
+SELECT @var20 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Orders]') AND [c].[name] = N'OrderCode');
+IF @var20 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Orders] DROP CONSTRAINT [' + @var20 + '];');
+ALTER TABLE [sepdb].[Orders] ALTER COLUMN [OrderCode] bigint NOT NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813081740_202408131147am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var21 sysname;
+SELECT @var21 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PurchaseOrder]') AND [c].[name] = N'OrderCode');
+IF @var21 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PurchaseOrder] DROP CONSTRAINT [' + @var21 + '];');
+ALTER TABLE [sepdb].[PurchaseOrder] ALTER COLUMN [OrderCode] bigint NOT NULL;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813083616_202408131205am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var22 sysname;
+SELECT @var22 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PaymentRequests]') AND [c].[name] = N'PaymentRequestCode');
+IF @var22 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [' + @var22 + '];');
+ALTER TABLE [sepdb].[PaymentRequests] DROP COLUMN [PaymentRequestCode];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813110425_202408130224pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentRequestCode] int NOT NULL IDENTITY(100, 1);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813110606_202408130235pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DECLARE @var23 sysname;
+SELECT @var23 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Personnels]') AND [c].[name] = N'PersonnelCode');
+IF @var23 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Personnels] DROP CONSTRAINT [' + @var23 + '];');
+ALTER TABLE [sepdb].[Personnels] DROP COLUMN [PersonnelCode];
+GO
+
+DECLARE @var24 sysname;
+SELECT @var24 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[Customers]') AND [c].[name] = N'CustomerCode');
+IF @var24 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[Customers] DROP CONSTRAINT [' + @var24 + '];');
+ALTER TABLE [sepdb].[Customers] DROP COLUMN [CustomerCode];
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813111811_202408130237pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[Personnels] ADD [PersonnelCode] bigint NOT NULL IDENTITY(1000, 1);
+GO
+
+ALTER TABLE [sepdb].[Customers] ADD [CustomerCode] bigint NOT NULL IDENTITY(100, 1);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813112325_202408130252pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+DROP INDEX [IX_ProductInventories_ProductBrandId] ON [sepdb].[ProductInventories];
+GO
+
+CREATE UNIQUE INDEX [IX_ProductInventories_ProductBrandId_WarehouseId] ON [sepdb].[ProductInventories] ([ProductBrandId], [WarehouseId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_CustomerId] ON [sepdb].[PaymentRequests] ([CustomerId]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [sepdb].[Customers] ([Id]) ON DELETE NO ACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240813201119_20240810131139pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+EXEC sp_rename N'[sepdb].[PaymentRequests].[PaymentRequestDescription]', N'PersonnelPaymentRequestDescription', N'COLUMN';
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentRequestTypeId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [sepdb].[Attachment] ADD [PersonnelPaymentRequestId] uniqueidentifier NULL;
+GO
+
+CREATE TABLE [sepdb].[PersonnelPaymentRequests] (
+    [Id] uniqueidentifier NOT NULL,
+    [PersonnelId] uniqueidentifier NOT NULL,
+    [CreatedBy] uniqueidentifier NULL,
+    [Created] datetime2 NOT NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    [LastModified] datetime2 NULL,
+    [IsActive] bit NOT NULL,
+    [PaymentRequestCode] int NOT NULL IDENTITY(1000, 1),
+    [PaymentRequestTypeId] int NOT NULL,
+    [Amount] decimal(18,6) NOT NULL,
+    [PaymentRequestReasonId] int NOT NULL,
+    [BankAccountOrShabaNo] nvarchar(max) NOT NULL,
+    [AccountOwnerName] nvarchar(max) NOT NULL,
+    [BankId] int NOT NULL,
+    [ApplicatorName] nvarchar(max) NOT NULL,
+    [ApproverId] uniqueidentifier NULL,
+    [PaymentRequestStatusId] int NOT NULL,
+    [PersonnelPaymentRequestDescription] nvarchar(max) NOT NULL,
+    [RejectReasonDesc] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_PersonnelPaymentRequests] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_PersonnelPaymentRequests_Banks_BankId] FOREIGN KEY ([BankId]) REFERENCES [sepdb].[Banks] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PersonnelPaymentRequests_PaymentRequestReasons_PaymentRequestReasonId] FOREIGN KEY ([PaymentRequestReasonId]) REFERENCES [sepdb].[PaymentRequestReasons] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PersonnelPaymentRequests_PaymentRequestStatus_PaymentRequestStatusId] FOREIGN KEY ([PaymentRequestStatusId]) REFERENCES [sepdb].[PaymentRequestStatus] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PersonnelPaymentRequests_Personnels_PersonnelId] FOREIGN KEY ([PersonnelId]) REFERENCES [sepdb].[Personnels] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_PersonnelPaymentRequests_Users_ApproverId] FOREIGN KEY ([ApproverId]) REFERENCES [sepdb].[Users] ([Id]),
+    CONSTRAINT [FK_PersonnelPaymentRequests_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [sepdb].[Users] ([Id])
+);
+GO
+
+CREATE INDEX [IX_Attachment_PersonnelPaymentRequestId] ON [sepdb].[Attachment] ([PersonnelPaymentRequestId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_ApproverId] ON [sepdb].[PersonnelPaymentRequests] ([ApproverId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_BankId] ON [sepdb].[PersonnelPaymentRequests] ([BankId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_CreatedBy] ON [sepdb].[PersonnelPaymentRequests] ([CreatedBy]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentRequestReasonId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentRequestReasonId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentRequestStatusId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentRequestStatusId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PersonnelId] ON [sepdb].[PersonnelPaymentRequests] ([PersonnelId]);
+GO
+
+ALTER TABLE [sepdb].[Attachment] ADD CONSTRAINT [FK_Attachment_PersonnelPaymentRequests_PersonnelPaymentRequestId] FOREIGN KEY ([PersonnelPaymentRequestId]) REFERENCES [sepdb].[PersonnelPaymentRequests] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240814170036_20240810140812pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240815204731_20240810161215am', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[OrderDetails] DROP CONSTRAINT [FK_OrderDetails_Orders_OrderId];
+GO
+
+ALTER TABLE [sepdb].[OrderDetails] ADD CONSTRAINT [FK_OrderDetails_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [sepdb].[Orders] ([Id]) ON DELETE CASCADE;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240816153526_20240810160703pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[CargoAnnounceDetails] DROP CONSTRAINT [FK_CargoAnnounceDetails_CargoAnnounces_CargoAnnounceId];
+GO
+
+ALTER TABLE [sepdb].[CargoAnnounceDetails] ADD CONSTRAINT [FK_CargoAnnounceDetails_CargoAnnounces_CargoAnnounceId] FOREIGN KEY ([CargoAnnounceId]) REFERENCES [sepdb].[CargoAnnounces] ([Id]) ON DELETE CASCADE;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240816153917_20240810160708pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [FK_PaymentRequests_Banks_BankId];
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [FK_PaymentRequests_PaymentRequestReasons_PaymentRequestReasonId];
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP CONSTRAINT [FK_PersonnelPaymentRequests_Banks_BankId];
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP CONSTRAINT [FK_PersonnelPaymentRequests_PaymentRequestReasons_PaymentRequestReasonId];
+GO
+
+ALTER TABLE [sepdb].[ReceivePays] DROP CONSTRAINT [FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeFromId];
+GO
+
+ALTER TABLE [sepdb].[ReceivePays] DROP CONSTRAINT [FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeToId];
+GO
+
+ALTER TABLE [sepdb].[RentPayments] DROP CONSTRAINT [FK_RentPayments_ReceivePaymentTypes_ReceivePaymentOriginId];
+GO
+
+DROP TABLE [sepdb].[ReceivePaymentTypes];
+GO
+
+DROP INDEX [IX_PersonnelPaymentRequests_BankId] ON [sepdb].[PersonnelPaymentRequests];
+GO
+
+DROP INDEX [IX_PersonnelPaymentRequests_PaymentRequestReasonId] ON [sepdb].[PersonnelPaymentRequests];
+GO
+
+DROP INDEX [IX_PaymentRequests_BankId] ON [sepdb].[PaymentRequests];
+GO
+
+DROP INDEX [IX_PaymentRequests_PaymentRequestReasonId] ON [sepdb].[PaymentRequests];
+GO
+
+DECLARE @var25 sysname;
+SELECT @var25 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PersonnelPaymentRequests]') AND [c].[name] = N'BankId');
+IF @var25 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP CONSTRAINT [' + @var25 + '];');
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP COLUMN [BankId];
+GO
+
+DECLARE @var26 sysname;
+SELECT @var26 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PersonnelPaymentRequests]') AND [c].[name] = N'PaymentRequestReasonId');
+IF @var26 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP CONSTRAINT [' + @var26 + '];');
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] DROP COLUMN [PaymentRequestReasonId];
+GO
+
+DECLARE @var27 sysname;
+SELECT @var27 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PaymentRequests]') AND [c].[name] = N'BankId');
+IF @var27 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [' + @var27 + '];');
+ALTER TABLE [sepdb].[PaymentRequests] DROP COLUMN [BankId];
+GO
+
+DECLARE @var28 sysname;
+SELECT @var28 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[sepdb].[PaymentRequests]') AND [c].[name] = N'PaymentRequestReasonId');
+IF @var28 IS NOT NULL EXEC(N'ALTER TABLE [sepdb].[PaymentRequests] DROP CONSTRAINT [' + @var28 + '];');
+ALTER TABLE [sepdb].[PaymentRequests] DROP COLUMN [PaymentRequestReasonId];
+GO
+
+EXEC sp_rename N'[sepdb].[PersonnelPaymentRequests].[PersonnelPaymentRequestDescription]', N'PaymentRequestReasonDesc', N'COLUMN';
+GO
+
+EXEC sp_rename N'[sepdb].[PersonnelPaymentRequests].[ApplicatorName]', N'PaymentRequestDescription', N'COLUMN';
+GO
+
+EXEC sp_rename N'[sepdb].[PaymentRequests].[PersonnelPaymentRequestDescription]', N'PaymentRequestReasonDesc', N'COLUMN';
+GO
+
+EXEC sp_rename N'[sepdb].[PaymentRequests].[ApplicatorName]', N'PaymentRequestDescription', N'COLUMN';
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromCashDeskId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromCostId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromCustomerId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromIncomeId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromOrganizationBankId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromPettyCashId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentFromShareHolderId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD [PaymentOriginTypeId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromCashDeskId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromCostId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromCustomerId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromIncomeId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromOrganizationBankId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromPettyCashId] int NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentFromShareHolderId] uniqueidentifier NULL;
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD [PaymentOriginTypeId] int NULL;
+GO
+
+CREATE TABLE [sepdb].[PaymentOriginTypes] (
+    [Id] int NOT NULL,
+    [Desc] nvarchar(max) NOT NULL,
+    [IsActive] bit NOT NULL,
+    CONSTRAINT [PK_PaymentOriginTypes] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromCashDeskId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromCashDeskId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromCostId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromCostId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromCustomerId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromCustomerId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromIncomeId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromIncomeId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromOrganizationBankId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromOrganizationBankId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromPettyCashId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromPettyCashId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentFromShareHolderId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentFromShareHolderId]);
+GO
+
+CREATE INDEX [IX_PersonnelPaymentRequests_PaymentOriginTypeId] ON [sepdb].[PersonnelPaymentRequests] ([PaymentOriginTypeId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromCashDeskId] ON [sepdb].[PaymentRequests] ([PaymentFromCashDeskId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromCostId] ON [sepdb].[PaymentRequests] ([PaymentFromCostId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromCustomerId] ON [sepdb].[PaymentRequests] ([PaymentFromCustomerId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromIncomeId] ON [sepdb].[PaymentRequests] ([PaymentFromIncomeId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromOrganizationBankId] ON [sepdb].[PaymentRequests] ([PaymentFromOrganizationBankId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromPettyCashId] ON [sepdb].[PaymentRequests] ([PaymentFromPettyCashId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentFromShareHolderId] ON [sepdb].[PaymentRequests] ([PaymentFromShareHolderId]);
+GO
+
+CREATE INDEX [IX_PaymentRequests_PaymentOriginTypeId] ON [sepdb].[PaymentRequests] ([PaymentOriginTypeId]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_CashDesks_PaymentFromCashDeskId] FOREIGN KEY ([PaymentFromCashDeskId]) REFERENCES [sepdb].[CashDesks] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_Costs_PaymentFromCostId] FOREIGN KEY ([PaymentFromCostId]) REFERENCES [sepdb].[Costs] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_Customers_PaymentFromCustomerId] FOREIGN KEY ([PaymentFromCustomerId]) REFERENCES [sepdb].[Customers] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_Incomes_PaymentFromIncomeId] FOREIGN KEY ([PaymentFromIncomeId]) REFERENCES [sepdb].[Incomes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_OrganizationBanks_PaymentFromOrganizationBankId] FOREIGN KEY ([PaymentFromOrganizationBankId]) REFERENCES [sepdb].[OrganizationBanks] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_PaymentOriginTypes_PaymentOriginTypeId] FOREIGN KEY ([PaymentOriginTypeId]) REFERENCES [sepdb].[PaymentOriginTypes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_PettyCashs_PaymentFromPettyCashId] FOREIGN KEY ([PaymentFromPettyCashId]) REFERENCES [sepdb].[PettyCashs] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PaymentRequests] ADD CONSTRAINT [FK_PaymentRequests_ShareHolders_PaymentFromShareHolderId] FOREIGN KEY ([PaymentFromShareHolderId]) REFERENCES [sepdb].[ShareHolders] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_CashDesks_PaymentFromCashDeskId] FOREIGN KEY ([PaymentFromCashDeskId]) REFERENCES [sepdb].[CashDesks] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_Costs_PaymentFromCostId] FOREIGN KEY ([PaymentFromCostId]) REFERENCES [sepdb].[Costs] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_Customers_PaymentFromCustomerId] FOREIGN KEY ([PaymentFromCustomerId]) REFERENCES [sepdb].[Customers] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_Incomes_PaymentFromIncomeId] FOREIGN KEY ([PaymentFromIncomeId]) REFERENCES [sepdb].[Incomes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_OrganizationBanks_PaymentFromOrganizationBankId] FOREIGN KEY ([PaymentFromOrganizationBankId]) REFERENCES [sepdb].[OrganizationBanks] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_PaymentOriginTypes_PaymentOriginTypeId] FOREIGN KEY ([PaymentOriginTypeId]) REFERENCES [sepdb].[PaymentOriginTypes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_PettyCashs_PaymentFromPettyCashId] FOREIGN KEY ([PaymentFromPettyCashId]) REFERENCES [sepdb].[PettyCashs] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[PersonnelPaymentRequests] ADD CONSTRAINT [FK_PersonnelPaymentRequests_ShareHolders_PaymentFromShareHolderId] FOREIGN KEY ([PaymentFromShareHolderId]) REFERENCES [sepdb].[ShareHolders] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[ReceivePays] ADD CONSTRAINT [FK_ReceivePays_PaymentOriginTypes_ReceivePaymentTypeFromId] FOREIGN KEY ([ReceivePaymentTypeFromId]) REFERENCES [sepdb].[PaymentOriginTypes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[ReceivePays] ADD CONSTRAINT [FK_ReceivePays_PaymentOriginTypes_ReceivePaymentTypeToId] FOREIGN KEY ([ReceivePaymentTypeToId]) REFERENCES [sepdb].[PaymentOriginTypes] ([Id]);
+GO
+
+ALTER TABLE [sepdb].[RentPayments] ADD CONSTRAINT [FK_RentPayments_PaymentOriginTypes_ReceivePaymentOriginId] FOREIGN KEY ([ReceivePaymentOriginId]) REFERENCES [sepdb].[PaymentOriginTypes] ([Id]) ON DELETE NO ACTION;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240817180529_20240810170934pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [sepdb].[TransferRemittances] ADD [PurchaseOrderId] uniqueidentifier NULL;
+GO
+
+CREATE INDEX [IX_TransferRemittances_PurchaseOrderId] ON [sepdb].[TransferRemittances] ([PurchaseOrderId]);
+GO
+
+ALTER TABLE [sepdb].[TransferRemittances] ADD CONSTRAINT [FK_TransferRemittances_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId]) REFERENCES [sepdb].[PurchaseOrder] ([Id]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240818182613_20240810180948pm', N'8.0.7');
+GO
+
+COMMIT;
+GO
+

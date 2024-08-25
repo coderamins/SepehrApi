@@ -27,6 +27,16 @@ namespace Sepehr.Application.Features.RentPayments.Command.UpdateRentPayment
         /// شماره مجوز خروج اعلام بار
         /// </summary>
         public Guid? LadingExitPermitId { get; set; }
+
+        /// <summary>
+        /// نوع مبدا پرداخت
+        /// </summary>
+        public required int PaymentOriginTypeId { get; set; }
+        /// <summary>
+        /// شناسه مبدا پرداخت
+        /// </summary>
+        public required string PaymentOriginId { get; set; }
+
         public required decimal TotalFareAmount { get; set; }
         public string Description { get; set; } = string.Empty;
 
