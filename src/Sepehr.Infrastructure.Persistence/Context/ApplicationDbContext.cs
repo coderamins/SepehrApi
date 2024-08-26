@@ -227,6 +227,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(p => p.Id)
                 .ValueGeneratedNever();
 
+            builder.Entity<OrderStatus>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
+
             builder.Entity<PhoneNumberType>()
                 .Property(p => p.Id)
                 .ValueGeneratedNever();

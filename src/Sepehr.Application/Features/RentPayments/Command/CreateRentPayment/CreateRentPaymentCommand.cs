@@ -68,16 +68,16 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                     if (ladingExitPermit == null)
                         throw new ApiException("کرایه یافت نشد !");
 
-                    if (_ladingExitPermit.CheckFarePaymentType(ladingExitPermit.Id) != EFarePaymentType.FareByOurselves)
-                        throw new ApiException("پرداخت کرایه بر عهده مشتری می باشد !");
+                    //if (_ladingExitPermit.CheckFarePaymentType(ladingExitPermit.Id) != EFarePaymentType.FareByOurselves)
+                    //    throw new ApiException("پرداخت کرایه بر عهده مشتری می باشد !");
 
-                    if (ladingExitPermit.FareAmountStatusId==(int)EFareAmountStatus.InProgress)
-                        throw new ApiException("کرایه تایید نشده است !");
+                    //if (ladingExitPermit.FareAmountStatusId==(int)EFareAmountStatus.InProgress)
+                    //    throw new ApiException("کرایه تایید نشده است !");
 
-                    if (ladingExitPermit.FareAmountStatusId== (int)EFareAmountStatus.Payed)
-                        throw new ApiException("این کرایه قبلا پرداخت شده است !");
+                    //if (ladingExitPermit.FareAmountStatusId== (int)EFareAmountStatus.Payed)
+                    //    throw new ApiException("این کرایه قبلا پرداخت شده است !");
 
-                    ladingExitPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
+                    //ladingExitPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
                     ladingExitPermits.Add(ladingExitPermit);
 
                     rentPaymentDtos.Add(new RentPaymentDto

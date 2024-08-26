@@ -38,7 +38,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.LadingPermits.Where(l => l.IsActive))
                 .Include(ca => ca.Order).ThenInclude(o => o.Details).ThenInclude(od => od.Warehouse)
                 .Include(ca => ca.Order).ThenInclude(o => o.Customer).ThenInclude(c => c.CustomerOfficialCompanies)
-                .Include(ca => ca.Order).ThenInclude(o => o.OrderStatus)
+                //.Include(ca => ca.Order).ThenInclude(o => o.OrderStatus)
                 .Include(ca => ca.Order).ThenInclude(o => o.InvoiceType)
                 .Include(ca => ca.Order).ThenInclude(o => o.FarePaymentType)
                 .Include(ca => ca.Order).ThenInclude(o => o.OrderServices)

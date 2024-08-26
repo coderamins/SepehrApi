@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826104458_202408260214pm")]
+    partial class _202408260214pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1463,8 +1466,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("OrderSendTypeId");
 
-                    b.HasIndex("OrderStatusId");
-
                     b.ToTable("Orders", "sepdb", t =>
                         {
                             t.HasTrigger("ordertrigger");
@@ -1706,9 +1707,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderStatuses", "sepdb", t =>
+                    b.ToTable("OrderStatus", "sepdb", t =>
                         {
-                            t.HasTrigger("OrderStatusesTrigger");
+                            t.HasTrigger("OrderStatusTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -4815,12 +4816,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Sepehr.Domain.Entities.OrderStatus", "OrderStatus")
-                        .WithMany()
-                        .HasForeignKey("OrderStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Customer");
@@ -4834,8 +4829,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("OrderExitType");
 
                     b.Navigation("OrderSendType");
-
-                    b.Navigation("OrderStatus");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetail", b =>
