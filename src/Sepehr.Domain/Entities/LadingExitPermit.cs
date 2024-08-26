@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Entities
 {
-    public class LadingExitPermit:AuditableBaseEntity<Guid>
+    public class LadingExitPermit : AuditableBaseEntity<Guid>
     {
         public int LadingExitPermitCode { get; set; }
         public int LadingPermitId { get; set; }
@@ -19,13 +19,13 @@ namespace Sepehr.Domain.Entities
         public decimal? OtherAmount { get; set; }
         public string? ExitPermitDescription { get; set; }
         public decimal? FareAmount { get; set; }
-        public int? FareAmountStatusId { get; set; }=(int)EFareAmountStatus.InProgress;
+        public int? FareAmountStatusId { get; set; } = (int)EFareAmountStatus.InProgress;
         public bool? HasExitPermit { get; set; }
 
         //[AuditIgnore]
         //public ICollection<DriverFareAmountApprove>? DriverFareAmountApproves { get; set; }
         public virtual FareAmountStatus? FareAmountStatus { get; set; }
-        [AuditIgnore] 
+        [AuditIgnore]
         public required virtual ICollection<LadingExitPermitDetail> LadingExitPermitDetails { get; set; }
         public required virtual LadingPermit LadingPermit { get; set; }
         [AuditIgnore]

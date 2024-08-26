@@ -10,6 +10,7 @@ namespace Sepehr.Domain.Entities
 {
     public class OrderStatus:BaseEntity<int>
     {
+        //public int OrderStatusId { get; set; }
         public required string StatusDesc { get; set; }
     }
 }

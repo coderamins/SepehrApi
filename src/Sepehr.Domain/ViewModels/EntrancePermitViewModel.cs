@@ -15,6 +15,6 @@ namespace Sepehr.Domain.ViewModels
 
         public TransferRemittanceViewModel TransferRemitance { get; set; }
         public List<AttachmentViewModel>? Attachments { get; set; }
-        public IEnumerable<UnloadingPermitViewModel>? UnloadingPermits { get; set; }
+        public UnloadingPermitViewModel? UnloadingPermits { get; set; }
     }
 }

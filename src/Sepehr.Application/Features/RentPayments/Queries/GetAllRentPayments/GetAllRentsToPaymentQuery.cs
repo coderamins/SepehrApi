@@ -21,6 +21,7 @@ namespace Sepehr.Application.Features.RentPayments.Queries.GetAllRentPayments
         public string DriverName { get; set; } = string.Empty;
         public string DriverMobile { get; set; } = string.Empty;
         public OrderClassType? OrderType { get; set; }
+        public EFareAmountStatus? FareAmountStatusId { get; set; }
         public string FromDate { get; set; } = string.Empty;
         public string ToDate { get; set; } = string.Empty;
     }

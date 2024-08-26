@@ -41,52 +41,60 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<TransferRemittance> CreateTransferRemittance(TransferRemittance transRemittance)
         {
-            foreach (var item in transRemittance.Details)
+            try
             {
-                var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
-                                    w.WarehouseId == transRemittance.OriginWarehouseId
-                                    && w.ProductBrandId == item.ProductBrandId);
-                if (_originWarehouse == null)
-                    throw new ApiException(string.Format("موجودی خرید برای کالا برند {0} یافت نشد !",
-                        _dbContext.Set<ProductBrand>().AsNoTracking().First(b => b.Id == item.ProductBrandId).Brand.Name));
-
-                var _destWarehouse = await _productInventory.FirstOrDefaultAsync(w =>
-                                    w.WarehouseId == transRemittance.DestinationWarehouseId
-                                    && w.ProductBrandId == item.ProductBrandId);
-
-                //----موجودی تقریبی انبار مبدا کم می شود
-                var prodInvEntry1 = _productInventory.Entry(_originWarehouse);
-                prodInvEntry1.State = EntityState.Modified;
-
-                _originWarehouse.ApproximateInventory -= item.TransferAmount;
-                prodInvEntry1.CurrentValues.SetValues(_originWarehouse);
-
-                //----موجودی در راه انبار مقصد زیاد می شود
-                if (_destWarehouse == null)
+                foreach (var item in transRemittance.Details)
                 {
-                    await _dbContext.ProductInventories
-                        .AddAsync(new ProductInventory
-                        {
-                            OnTransitInventory = item.TransferAmount,
-                            ProductBrandId = item.ProductBrandId,
-                            WarehouseId = transRemittance.OriginWarehouseId,
-                            IsActive = true,
-                        });
-                }
-                else
-                {
-                    var prodInvEntry = _productInventory.Entry(_destWarehouse);
-                    prodInvEntry.State = EntityState.Modified;
+                    var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
+                                        w.WarehouseId == transRemittance.OriginWarehouseId
+                                        && w.ProductBrandId == item.ProductBrandId);
+                    if (_originWarehouse == null)
+                        throw new ApiException(string.Format("موجودی خرید برای کالا برند {0} یافت نشد !",
+                            _dbContext.Set<ProductBrand>().AsNoTracking().First(b => b.Id == item.ProductBrandId).Brand.Name));
 
-                    _destWarehouse.OnTransitInventory += item.TransferAmount;
-                    prodInvEntry.CurrentValues.SetValues(_destWarehouse);
+                    var _destWarehouse = await _productInventory.FirstOrDefaultAsync(w =>
+                                        w.WarehouseId == transRemittance.DestinationWarehouseId
+                                        && w.ProductBrandId == item.ProductBrandId);
+
+                    //----موجودی تقریبی انبار مبدا کم می شود
+                    var prodInvEntry1 = _productInventory.Entry(_originWarehouse);
+                    prodInvEntry1.State = EntityState.Modified;
+
+                    _originWarehouse.ApproximateInventory -= item.TransferAmount;
+                    prodInvEntry1.CurrentValues.SetValues(_originWarehouse);
+
+                    //----موجودی در راه انبار مقصد زیاد می شود
+                    if (_destWarehouse == null)
+                    {
+                        await _dbContext.ProductInventories
+                            .AddAsync(new ProductInventory
+                            {
+                                OnTransitInventory = item.TransferAmount,
+                                ProductBrandId = item.ProductBrandId,
+                                WarehouseId = transRemittance.DestinationWarehouseId,
+                                IsActive = true,
+                            });
+                    }
+                    else
+                    {
+                        var prodInvEntry = _productInventory.Entry(_destWarehouse);
+                        prodInvEntry.State = EntityState.Modified;
+
+                        _destWarehouse.OnTransitInventory += item.TransferAmount;
+                        prodInvEntry.CurrentValues.SetValues(_destWarehouse);
+                    }
                 }
+
+                var transRemitt = await _transferRemittances.AddAsync(transRemittance);
+                await _dbContext.SaveChangesAsync();
+
+                return transRemittance;
             }
+            catch (Exception e)
+            {
 
-            var transRemitt = await _transferRemittances.AddAsync(transRemittance);
-            await _dbContext.SaveChangesAsync();
-
-            return transRemittance;
+                throw;
+            }
         }
 
         public async Task<IEnumerable<TransferRemittance>> GetAllTransferRemittancesAsync(GetAllTransferRemittancesParameter validFilter)
@@ -98,7 +106,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.DestinationWarehouse)
                 .Include(t => t.OriginWarehouse)
                 .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
-                .Include(t => t.EntrancePermit).ThenInclude(t => t.UnloadingPermits)
+                .Include(t => t.EntrancePermit).ThenInclude(t => t.UnloadingPermit)
                 .Include(t => t.TransferRemittanceStatus)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductSubUnit)
                 .Include(t => t.Details).ThenInclude(d => d.ProductBrand).ThenInclude(b => b.Product).ThenInclude(t => t.ProductMainUnit)
@@ -206,7 +214,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.EntrancePermit).ThenInclude(t => t.Attachments)
                 .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
                 .Include(t => t.EntrancePermit)
-                    .ThenInclude(t => t.UnloadingPermits)
+                    .ThenInclude(t => t.UnloadingPermit)
                     .ThenInclude(t => t.Attachments)
                 .Include(t => t.OriginWarehouse)
                 .Include(t => t.TransferRemittanceStatus)
@@ -226,7 +234,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(t => t.EntrancePermit).ThenInclude(t => t.Attachments)
                 .Include(t => t.Details).ThenInclude(d => d.UnloadingPermitDetail)
                 .Include(t => t.EntrancePermit)
-                    .ThenInclude(t => t.UnloadingPermits)
+                    .ThenInclude(t => t.UnloadingPermit)
                     .ThenInclude(t => t.Attachments)
                 .Include(t => t.OriginWarehouse)
                 .Include(t => t.TransferRemittanceStatus)

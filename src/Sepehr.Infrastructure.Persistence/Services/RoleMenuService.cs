@@ -27,7 +27,7 @@ namespace Sepehr.Infrastructure.Persistence
         private readonly IMapper _mapper;
         public RoleMenuService(
             IAuthenticatedUserService authenticatedUserService,
-            ApplicationDbContext dbContext, 
+            ApplicationDbContext dbContext,
             IMapper mapper)
         {
             _mapper = mapper;
@@ -105,22 +105,23 @@ namespace Sepehr.Infrastructure.Persistence
 
         public async Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus()
         {
-            var userRoles = _authenticatedUserService.UserRoles; 
+            var userRoles = _authenticatedUserService.UserRoles;
             string uRoles = string.Join(',', userRoles.ToArray());
             string menus = string.Join(',', _dbContext.RoleMenus.Where(r => uRoles.Contains(r.ApplicationRole.Name)).Select(r => r.ApplicationMenuId));
 
             var appMenus =
-                _dbContext.ApplicationMenus.OrderBy(x =>  Convert.ToInt32(x.OrderNo))
-                .Include(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                _dbContext.ApplicationMenus.OrderBy(x => Convert.ToInt32(x.OrderNo))
+                .Include(i => i.Children.OrderBy(x => x.OrderNo))    //.Where(c => menus.Contains(c.Id.ToString())     || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
                 .Where(m => m.ApplicationMenuId == null)
                 .AsQueryable();
 
             var output = await appMenus
                 .Where(c => _dbContext.ApplicationMenus.Where(a =>
-                menus.Contains(a.Id.ToString())).Select(m => m.ApplicationMenuId).Contains(c.Id))
+                menus.Contains(a.Id.ToString()) || userRoles.Contains("Admin")).Select(m => m.ApplicationMenuId).Contains(c.Id))
                 //.OrderBy(m=>m.OrderNo)
                 .ToListAsync();
 
@@ -135,7 +136,7 @@ namespace Sepehr.Infrastructure.Persistence
             var appMenus =
                 await _dbContext.ApplicationMenus.OrderBy(x => Convert.ToInt32(x.OrderNo))
                 .Include(i => i.Children.OrderBy(x => x.OrderNo))
-                .ThenInclude(c=>c.Children.OrderBy(x => x.OrderNo))
+                .ThenInclude(c => c.Children.OrderBy(x => x.OrderNo))
                 .ThenInclude(c => c.Children.OrderBy(x => x.OrderNo))
                 .ThenInclude(c => c.Children.OrderBy(x => x.OrderNo))
                 .Where(m => m.ApplicationMenuId == null)

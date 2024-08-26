@@ -25,7 +25,7 @@ namespace Sepehr.Domain.Entities
 
         //public required virtual ProductUnit ProductSubUnit { get; set; }
         //public required virtual ICollection<LadingPermitDetail> LadingPermitDetails { get; set; }
-        public virtual ICollection<LadingExitPermit>? LadingExitPermit { get; set; }
+        public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual required CargoAnnounce CargoAnnounce { get; set; }
         public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
 

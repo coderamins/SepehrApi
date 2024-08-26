@@ -42,11 +42,11 @@ namespace Sepehr.Domain.ViewModels
 
         public decimal CustomerCurrentDept { get; set; }
         public decimal CustomerDept { get; set; }
+        public decimal CustomerCreditor { get; set; }
 
         public List<PhonebookViewModel> Phonebook { get; set; }
         public List<CustomerOfficialCompanyViewModel>? CustomerOfficialCompanies { get; set; }
         public List<WarehouseViewModel>? Warehouses { get; set; }
         public List<CustomerAssignedLabelViewModel>? CustomerLabels { get; set; }
-        public decimal CustomerCreditor { get; set; }
     }
 }

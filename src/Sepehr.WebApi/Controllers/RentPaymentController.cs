@@ -47,6 +47,7 @@ namespace Sepehr.WebApi.Controller
                     ReferenceCode = filter.ReferenceCode,
                     FromDate = filter.FromDate,
                     ToDate = filter.ToDate,
+                    FareAmountStatusId=filter.FareAmountStatusId,
                 }));
         }
 

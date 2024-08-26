@@ -41,6 +41,7 @@ namespace Sepehr.Domain.Entities
         public required virtual ICollection<PurchaseOrderPayment> OrderPayments { get; set; }=new List<PurchaseOrderPayment>();
         public virtual ICollection<PurchaseOrderService> OrderServices { get; set; }=new HashSet<PurchaseOrderService>();
         public virtual ICollection<CargoAnnounce> CargoAnnounces { get; set; }= new HashSet<CargoAnnounce>();
+        public virtual ICollection<TransferRemittance> TransferRemittances { get; set; }= new HashSet<TransferRemittance>();
         public virtual ICollection<Attachment> Attachments { get; set; }=new HashSet<Attachment>();
     }
 }

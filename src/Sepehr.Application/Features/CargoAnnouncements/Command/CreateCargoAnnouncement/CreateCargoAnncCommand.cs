@@ -58,7 +58,8 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.CreateCargoAnno
             {
                 var order = await _orderRep.GetOrderById(request.OrderId);
                 var custAccInfo = await _cargoAnncRepository.GetCustomerAccountInfo(order.CustomerId);
-                if ((double)custAccInfo.CustomerCurrentDept <= ((double)custAccInfo.CustomerDept * 0.90))
+                if (custAccInfo.CustomerDept > custAccInfo.CustomerCreditor && 
+                    !((decimal)custAccInfo.CustomerCurrentDept <= ((decimal)custAccInfo.CustomerDept * 0.1m)))
                     throw new ApiException("مشتری دارای بدهی می باشد و امکان صدور بارنامه وجود ندارد !");
 
                     //---محاسبه مقادیر بارگیری شده

@@ -120,7 +120,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await
                 _dbContext.EntrancePermits
-                .Include(x => x.UnloadingPermits).ThenInclude(x=>x.UnloadingPermitDetails)
+                .Include(x => x.UnloadingPermit).ThenInclude(x=>x.UnloadingPermitDetails)
                 .Include(x => x.ApplicationUser)
                 .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceStatus)
                 .Include(x => x.TransferRemittance).ThenInclude(x => x.TransferRemittanceType)

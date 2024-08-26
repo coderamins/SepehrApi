@@ -17,6 +17,6 @@ namespace Sepehr.Domain.Entities
         
         public virtual ICollection<Attachment>? Attachments { get; set; }
         public required virtual TransferRemittance TransferRemittance { get; set; }
-        public virtual ICollection<UnloadingPermit>? UnloadingPermits { get; set; }
+        public virtual UnloadingPermit? UnloadingPermit { get; set; }
     }
 }

@@ -197,9 +197,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //-----لیست سفارشات فروش به مشتری ------
             var cust_orders =await _dbContext.Set<Order>().Where(o=>o.CustomerId==CustId).ToListAsync();
 
+            //----لیست سفارشاتی که خروج داشته اند-----
+            var cust_exited_cargo = await _dbContext.Set<Order>()
+                                .Include(x => x.LadingPermits.Where(x => x.LadingExitPermit != null))
+                                    .ThenInclude(x => x.LadingExitPermit)
+                                .Include(x => x.LadingPermits)
+                                    .ThenInclude(x => x.CargoAnnounce)
+                                .Where(o => o.LadingPermits.Count() > 0)
+                                .ToListAsync();
             // بستانکاری مشتری
             //-----لیست سفارشات خرید از مشتری ------
             var purchase_orders= await _dbContext.Set<PurchaseOrder>().Where(o=>o.CustomerId == CustId).ToListAsync();
+
+            //-----لیست سفارشاتی که تخلیه بار شده اند------
+            var cust_unloaded_orders = await _dbContext.Set<PurchaseOrder>()
+                    .Include(x => x.TransferRemittances.Where(x => x.EntrancePermit != null && x.EntrancePermit.UnloadingPermit!=null))
+                        .ThenInclude(x => x.EntrancePermit)
+                        .ThenInclude(x => x.UnloadingPermit)
+                    .ToListAsync();
+
 
             #region مانده بستانکاری مشتری
             //-----لیست پرداخت های بازرگانی به مشتری ------
@@ -208,6 +224,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             
             var cust_pay_requests=await _dbContext.Set<PaymentRequest>()
                 .Where(x=>x.CustomerId==CustId && x.PaymentRequestStatusId==(int)EPaymentRequestStatus.Payed).ToListAsync();
+
             #endregion
 
             decimal cust_creditor = (purchase_orders.Sum(o => o.TotalAmount) +
@@ -220,7 +237,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return new CustomerViewModel { 
                 CustomerDept = dept,
                 CustomerCreditor=cust_creditor,
-                CustomerCurrentDept= dept- cust_creditor };
+                CustomerCurrentDept= dept - cust_creditor
+            };
         }
 
     }

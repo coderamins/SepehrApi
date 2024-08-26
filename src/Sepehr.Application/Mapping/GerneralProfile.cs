@@ -900,7 +900,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<CreateEntrancePermitCommand, EntrancePermit>();
             CreateMap<EntrancePermit, EntrancePermitViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
-                .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.UnloadingPermits))
+                .ForMember(m => m.UnloadingPermits, opt => opt.MapFrom(d => d.UnloadingPermit))
                 .ForMember(m => m.TransferRemitance, opt => opt.MapFrom(d => d.TransferRemittance))
                 .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
 
@@ -1029,6 +1029,8 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.DriverName, opt => opt.MapFrom(d => d.DriverName))
                 .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => d.DriverMobile))
                 .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.DriverAccountNo))
+                .ForMember(m => m.FarePaymentStatusDesc, opt => opt.MapFrom(d => d.FareAmountStatus.StatusDesc))
+                .ForMember(m => m.FarePaymentStatusId, opt => opt.MapFrom(d => d.FareAmountStatus.Id))
                 .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.CargoTotalWeight, opt =>
                 opt.MapFrom(d => d.UnloadingPermitDetails.Sum(s => s.UnloadedAmount)))
@@ -1040,6 +1042,8 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.TotalAmount, opt => opt.MapFrom(d => d.FareAmount))
                 .ForMember(m => m.ReferenceCode, opt => opt.MapFrom(d => d.LadingExitPermitCode))
                 .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.OtherAmount))
+                .ForMember(m => m.FarePaymentStatusDesc, opt => opt.MapFrom(d =>  d.FareAmountStatus.StatusDesc))
+                .ForMember(m => m.FarePaymentStatusId, opt => opt.MapFrom(d =>  d.FareAmountStatus.Id))
                 .ForMember(m => m.OrderTypeDesc, opt => opt.MapFrom(d => "سفارش فروش"))
                 .ForMember(m => m.DriverName, opt => opt.MapFrom(d => (d.LadingPermit == null || d.LadingPermit.CargoAnnounce == null) ? "" : d.LadingPermit.CargoAnnounce.DriverName))
                 .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => (d.LadingPermit == null || d.LadingPermit.CargoAnnounce == null) ? "" : d.LadingPermit.CargoAnnounce.DriverMobile))
