@@ -13,26 +13,31 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             var brands =
                 new List<CustomerValidity> {
                      new CustomerValidity{
+                        Id = 1,
                         ValidityDesc= "عادی",
                         ColorCode= "F59AA1",
                         IsActive= true
                       },
                       new CustomerValidity{
+                          Id = 2,
                         ValidityDesc= "نامطلوب",
                         ColorCode= "D12A37",
                         IsActive= true
                       },
                      new CustomerValidity {
+                         Id = 3,
                         ValidityDesc= "طلائی",
                         ColorCode= "E6DD21",
                         IsActive= true
                       },
                       new CustomerValidity{
+                          Id = 4,
                         ValidityDesc= "VIP",
                         ColorCode= "0EA31A",
                         IsActive= true
                       },
                       new CustomerValidity{
+                          Id = 5,
                         ValidityDesc= "لیست سیاه",
                         ColorCode= "2A080B",
                         IsActive= true

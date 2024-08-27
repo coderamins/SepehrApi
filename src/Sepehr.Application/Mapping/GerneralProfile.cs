@@ -582,6 +582,8 @@ namespace Sepehr.Application.Mapping
 
             #region Customers
             CreateMap<CustomerWarehouseDto, CustomerWarehouse>();
+            CreateMap<CustomerDto, Customer>();
+            
             CreateMap<CreateCustomerCommand, Customer>()
                 .ForMember(m => m.Phonebook, opt => opt.MapFrom(d => d.Phonebook));
             CreateMap<CustomerWarehouse, WarehouseViewModel>()

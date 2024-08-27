@@ -1,4 +1,4 @@
-using Sepehr.Application.Helpers;
+﻿using Sepehr.Application.Helpers;
 using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -28,9 +28,15 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             if (!dbContext.Users.Any(u => u.UserName == defaultUser.UserName))
             {
                 var newUser = await dbContext.Users.AddAsync(defaultUser);
+                var adminRole= await dbContext.Roles.AddAsync(new ApplicationRole
+                {                    
+                    Name="Admin",
+                    Description ="مدیر سیستم",
+                    IsActive = true,
+                });
                 await dbContext.UserRoles.AddAsync(new UserRole
                 {
-                    RoleId = Guid.Parse("A54DCEEF-54CC-4081-8C01-A8CEC88392ED"),
+                    RoleId = adminRole.Entity.Id,
                     UserId = newUser.Entity.Id
                 });
 

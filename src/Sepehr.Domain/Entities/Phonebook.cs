@@ -16,6 +16,7 @@ namespace Sepehr.Domain.Entities
         public int PhoneNumberTypeId { get; set; }
 
         public virtual required PhoneNumberType PhoneNumberType { get; set; }
+        public virtual ICollection<InternalPhoneNumber> InternalPhones  { get; set; }  =new List<InternalPhoneNumber>();
         //public Customer? Customer { get; set; }
         //public Personnel? Personnel { get; set; }
     }

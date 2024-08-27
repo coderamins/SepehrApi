@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826215414_202408270111am")]
+    partial class _202408270111am
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -513,8 +516,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("CustomerValidityId");
-
                     b.ToTable("Customers", "sepdb", t =>
                         {
                             t.HasTrigger("CustomersTrigger");
@@ -704,32 +705,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.ToTable("CustomerOfficialCompanies", "sepdb", t =>
                         {
                             t.HasTrigger("CustomerOfficialCompaniesTrigger");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("Sepehr.Domain.Entities.CustomerValidity", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ValidityDesc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CustomerValidities", "sepdb", t =>
-                        {
-                            t.HasTrigger("CustomerValiditiesTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -4482,15 +4457,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("Sepehr.Domain.Entities.CustomerValidity", "CustomerValidity")
-                        .WithMany()
-                        .HasForeignKey("CustomerValidityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("CustomerValidity");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerAssignedLabel", b =>

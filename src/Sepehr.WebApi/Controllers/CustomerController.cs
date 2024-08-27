@@ -43,10 +43,16 @@ namespace Sepehr.WebApi.Controller
         }
 
         // POST api/<controller>
-        //[HasPermission("CreateCustomer")]
-        [AllowAnonymous]
+        [HasPermission("CreateCustomer")]
         [HttpPost]
         public async Task<IActionResult> Post(CreateCustomerCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HasPermission("ImportCustomers")]
+        [HttpPost("ImportCustomers")]
+        public async Task<IActionResult> ImportCustomers(ImportCustomersCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

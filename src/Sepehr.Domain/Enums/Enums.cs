@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Enums
 {
+    public enum ECustomerValidity
+    {
+        Usual=1,
+        undesirable,
+        Golden,
+        VIP,
+        BlackListed
+    }
     public enum EFarePaymentType
     {
         /// <summary>

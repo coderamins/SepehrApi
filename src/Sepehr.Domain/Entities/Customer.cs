@@ -33,13 +33,13 @@ namespace Sepehr.Domain.Entities
         /// آیا تامین کننده می باشد؟
         /// </summary>
         public bool IsSupplier { get; set; }
-        public required string Address1 { get; set; }
+        public string Address1 { get; set; } = string.Empty;
         public string? Email { get; set; }
         /// <summary>
         /// نوع مشتری
         /// </summary>
         public CustomerType CustomerType { get; set; }
-        public required int CustomerValidityId { get; set; }
+        public int CustomerValidityId { get; set; }
 
         public string? Tel1 { get; set; }
         public string? Tel2 { get; set; }

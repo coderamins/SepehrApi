@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826215617_202408270125am")]
+    partial class _202408270125am
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,8 +515,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
-
-                    b.HasIndex("CustomerValidityId");
 
                     b.ToTable("Customers", "sepdb", t =>
                         {
@@ -4482,15 +4483,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("Sepehr.Domain.Entities.CustomerValidity", "CustomerValidity")
-                        .WithMany()
-                        .HasForeignKey("CustomerValidityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("CustomerValidity");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerAssignedLabel", b =>
