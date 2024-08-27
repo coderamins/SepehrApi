@@ -56,7 +56,7 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
                             List<CreatePhonebookRequest> phonebooks = new List<CreatePhonebookRequest>();
                             foreach (var item in mobiles)
                             {
-                                if (!string.IsNullOrEmpty(item))
+                                if (!string.IsNullOrEmpty(item) && !phonebooks.Any(x=>x.PhoneNumber==item.Trim()))
                                 {
                                     phonebooks.Add(new CreatePhonebookRequest
                                     {
@@ -66,9 +66,9 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
                                 }
                             }
 
-                            foreach (var item in phones)
+                            foreach (var item in phones )
                             {
-                                if (!string.IsNullOrEmpty(item) && item.Length>=4)
+                                if (!string.IsNullOrEmpty(item) && item.Length>=4 && !phonebooks.Any(x => x.PhoneNumber == item.Trim()))
                                 {
                                     phonebooks.Add(new CreatePhonebookRequest
                                     {

@@ -1020,7 +1020,7 @@ namespace Sepehr.Application.Mapping
 
             #endregion
 
-            #region RentPayments
+            #region UnloadingPermit
             CreateMap<UnloadingPermit, RentsViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
                 .ForMember(m => m.ReferenceDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
@@ -1058,6 +1058,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<LadingExitPermit, RentPaymentViewModel>();
             CreateMap<RentPayment, RentPaymentViewModel>()
                 .ForMember(m => m.PaymentOriginTypeDesc, opt => opt.MapFrom(d => d.PaymentOriginType == null ? "" : d.PaymentOriginType.Desc))
+                .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.OtherAmount :d.UnloadingPermit.FareAmount))
                 .ForMember(m => m.PaymentOriginId, opt => opt.MapFrom(d =>
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Customer ? d.PaymentFromCustomer == null ? "" : d.PaymentFromCustomer.Id.ToString() :
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Bank ? d.PaymentFromOrganizationBank == null ? "" : d.PaymentFromOrganizationBank.Id.ToString() :
@@ -1077,7 +1078,9 @@ namespace Sepehr.Application.Mapping
                                 d.PaymentOriginTypeId == (int)EPaymentOriginType.Cost ? d.PaymentFromCost == null ? "" : d.PaymentFromCost.CostDescription :
                                                          new int[] { 7, 8 }.Contains((int)(d.PaymentOriginTypeId ?? 0)) ? d.PaymentFromShareHolder == null ? "" : string.Concat(d.PaymentFromShareHolder.FirstName, d.PaymentFromShareHolder.LastName) : ""))
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
-                .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
+                .ForMember(m => m.CreatedDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()));
+
+            CreateMap<RentPaymentDetail, RentPaymentDetailViewModel>()
                 .ForMember(m => m.DriverName, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName :
                                                                d.UnloadingPermit.DriverName))
                 .ForMember(m => m.DriverMobile, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.LadingPermit.CargoAnnounce.DriverMobile :
@@ -1086,10 +1089,6 @@ namespace Sepehr.Application.Mapping
                                                                d.UnloadingPermit.UnloadingPermitCode))
                 .ForMember(m => m.DriverAccountNo, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.BankAccountNo :
                                                                d.UnloadingPermit.DriverAccountNo))
-                .ForMember(m => m.OtherCosts, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.OtherAmount :
-                //                                               d.UnloadingPermit.OtherCosts))
-                //.ForMember(m => m.TotalFareAmount, opt => opt.MapFrom(d => d.LadingExitPermit != null ? d.LadingExitPermit.FareAmount :
-                                                               d.UnloadingPermit.FareAmount))
                 .ForMember(m => m.OrderType, opt => opt.MapFrom(d => d.LadingExitPermit != null ? "سفارش فروش" : "سفارش خرید"));
 
             CreateMap<CreateRentPaymentCommand, RentPayment>()
@@ -1104,8 +1103,12 @@ namespace Sepehr.Application.Mapping
                                     (int)EPaymentOriginType.ShareHolderCashPay,
                                     (int)EPaymentOriginType.ShareHolderKhumsPay }.Contains((int)d.PaymentOriginTypeId) ? (Guid?)Guid.Parse(d.PaymentOriginId) : null));
 
-            CreateMap<RentPaymentDto, RentPayment>()
-                .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.TransferRemittanceUnloadingPermitId))
+            CreateMap<RentPaymentDetailDto, RentPaymentDetail>()
+                .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.UnloadingPermitId))
+                .ForMember(m => m.LadingExitPermitId, opt => opt.MapFrom(d => d.LadingExitPermitId));
+
+            CreateMap<RentPaymentDetail, RentPaymentDetail>()
+                .ForMember(m => m.UnloadingPermitId, opt => opt.MapFrom(d => d.UnloadingPermitId))
                 .ForMember(m => m.LadingExitPermitId, opt => opt.MapFrom(d => d.LadingExitPermitId));
 
             CreateMap<UpdateRentPaymentCommand, RentPayment>()

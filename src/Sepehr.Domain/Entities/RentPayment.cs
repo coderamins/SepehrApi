@@ -10,16 +10,8 @@ namespace Sepehr.Domain.Entities
 {
     public class RentPayment:AuditableBaseEntity<int>
     {
-        /// <summary>
-        /// شماره مجوز تخلیه
-        /// </summary>
-        public Guid? UnloadingPermitId { get; set; }
-        /// <summary>
-        /// شماره مجوز خروج اعلام بار
-        /// </summary>
-        public Guid? LadingExitPermitId { get; set; }
         public required decimal TotalFareAmount { get; set; }
-        public EFareAmountStatus FareAmountStatusId { get; set; } = EFareAmountStatus.InProgress;
+        public EFareAmountStatus FareAmountStatusId { get; set; } = EFareAmountStatus.Payed;
 
         #region نوع و مبدا پرداخت
         public int? PaymentOriginTypeId { get; set; }
@@ -44,7 +36,7 @@ namespace Sepehr.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
-        public virtual LadingExitPermit? LadingExitPermit { get; set; }
-        public virtual UnloadingPermit? UnloadingPermit { get; set; }
+        public virtual ICollection<RentPaymentDetail> RentPaymentDetails { get; set; }=new List<RentPaymentDetail>();
+ 
     }
 }

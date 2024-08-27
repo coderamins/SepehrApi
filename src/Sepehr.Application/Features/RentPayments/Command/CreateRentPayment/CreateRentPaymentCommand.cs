@@ -8,10 +8,11 @@ using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
 using Serilog;
+using System.Text.Json.Serialization;
 
 namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
 {
-    public partial class CreateRentPaymentCommand : IRequest<Response<List<RentPayment>>>
+    public partial class CreateRentPaymentCommand : IRequest<Response<RentPayment>>
     {
         public int ReceivePaymentOriginId { get; set; }
         /// <summary>
@@ -35,8 +36,11 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
 
         public required decimal TotalFareAmount { get; set; }
         public string Description { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public List<RentPaymentDetailDto> RentPaymentDetails { get; set; }
     }
-    public class CreateRentPaymentCommandHandler : IRequestHandler<CreateRentPaymentCommand, Response<List<RentPayment>>>
+    public class CreateRentPaymentCommandHandler : IRequestHandler<CreateRentPaymentCommand, Response<RentPayment>>
     {
         private readonly IRentPaymentRepositoryAsync _rentPaymentRepository;
         private readonly ILadingExitPermitRepositoryAsync _ladingExitPermit;
@@ -46,19 +50,19 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
             IRentPaymentRepositoryAsync rentPaymentRepository,
             IMapper mapper,
             ILadingExitPermitRepositoryAsync ladingExitPermit,
-            IUnloadingPermitRepositoryAsync puOrderUnloadPermitRepository)
+            IUnloadingPermitRepositoryAsync unloadPermitRepository)
         {
             _rentPaymentRepository = rentPaymentRepository;
             _mapper = mapper;
             _ladingExitPermit = ladingExitPermit;
-            _unloadingPermitRepo = puOrderUnloadPermitRepository;
+            _unloadingPermitRepo = unloadPermitRepository;
         }
 
-        public async Task<Response<List<RentPayment>>> Handle(CreateRentPaymentCommand request, CancellationToken cancellationToken)
+        public async Task<Response<RentPayment>> Handle(CreateRentPaymentCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                List<RentPaymentDto> rentPaymentDtos= new List<RentPaymentDto>();
+                List<RentPaymentDetailDto> rentPaymentDtos= new List<RentPaymentDetailDto>();
 
                 #region ثبت پرداخت کرایه خروج بار
                 List<LadingExitPermit> ladingExitPermits = new List<LadingExitPermit>();
@@ -80,12 +84,9 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                     //ladingExitPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
                     ladingExitPermits.Add(ladingExitPermit);
 
-                    rentPaymentDtos.Add(new RentPaymentDto
+                    rentPaymentDtos.Add(new RentPaymentDetailDto
                     {
-                        ReceivePaymentOriginId = request.ReceivePaymentOriginId,
                         LadingExitPermitId = item,
-                        TotalFareAmount = request.TotalFareAmount,
-                        Description = request.Description,
                     });
                 }
                 #endregion
@@ -110,12 +111,9 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                     unloadingPermit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
                     unloadingPermits.Add(unloadingPermit);
 
-                    rentPaymentDtos.Add(new RentPaymentDto
+                    rentPaymentDtos.Add(new RentPaymentDetailDto
                     {
-                        ReceivePaymentOriginId = request.ReceivePaymentOriginId,
-                        TransferRemittanceUnloadingPermitId = item,
-                        TotalFareAmount = request.TotalFareAmount,
-                        Description = request.Description,
+                        UnloadingPermitId=item,
                     });
                 }
                 #endregion
@@ -123,10 +121,15 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
                 await _unloadingPermitRepo.UpdateAsync(unloadingPermits);
                 await _ladingExitPermit.UpdateAsync(ladingExitPermits);
 
-                var rentPayments = _mapper.Map<List<RentPayment>>(rentPaymentDtos);
-                await _rentPaymentRepository.AddAsync(rentPayments);
+                request.RentPaymentDetails= rentPaymentDtos;
+                var rentPayment= _mapper.Map<RentPayment>(request);
 
-                return new Response<List<RentPayment>>(rentPayments, 
+                //var rentPaymentDetails = _mapper.Map<List<RentPaymentDetail>>(rentPaymentDtos);
+                
+
+                await _rentPaymentRepository.CreateRentPayment(rentPayment);
+
+                return new Response<RentPayment>(rentPayment, 
                     new ErrorMessageFactory()
                     .MakeError("کرایه", ErrorType.CreatedSuccess));
             }
