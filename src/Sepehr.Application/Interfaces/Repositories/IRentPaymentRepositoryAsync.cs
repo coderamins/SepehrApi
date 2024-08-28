@@ -11,5 +11,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>> GetAllRentsAsync(
             GetAllRentsToPaymentParameter validParams);
         Task<RentPayment?> GetRentPaymentInfo(int RentPaymentId);
+        Task UpdateRentPayment(RentPayment rentPayment);
     }
 }

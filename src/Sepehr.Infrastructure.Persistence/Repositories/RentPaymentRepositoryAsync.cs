@@ -21,23 +21,28 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _rentPayments = dbContext.Set<RentPayment>();
         }
 
+        public Task CreateRentPayment(RentPayment rentPayment)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<RentPayment>> GetAllRentPaymentsAsync(GetAllRentPaymentsParameter validFilter)
         {
             return
                 await _rentPayments
                 .Include(c => c.ApplicationUser)
-                .Include(r => r.UnloadingPermit)
-                .Include(r => r.LadingExitPermit).ThenInclude(x => x.LadingPermit).ThenInclude(x => x.CargoAnnounce)
+                .Include(r => r.RentPaymentDetails).ThenInclude(x => x.UnloadingPermit)
+                .Include(r => r.RentPaymentDetails).ThenInclude(r => r.LadingExitPermit).ThenInclude(x => x.LadingPermit).ThenInclude(x => x.CargoAnnounce)
                 .Where(x =>
                 x.IsActive &&
                 (validFilter.RentPaymentCode == x.Id || validFilter.RentPaymentCode == null) &&
                 (
-                (x.UnloadingPermit != null && x.UnloadingPermit.UnloadingPermitCode == validFilter.ReferenceCode) ||
-                (x.LadingExitPermit != null && x.LadingExitPermit.LadingExitPermitCode == validFilter.ReferenceCode) || validFilter.ReferenceCode == null) &&
+                // (x.UnloadingPermit != null && x.UnloadingPermit.UnloadingPermitCode == validFilter.ReferenceCode) ||
+                // (x.LadingExitPermit != null && x.LadingExitPermit.LadingExitPermitCode == validFilter.ReferenceCode) || validFilter.ReferenceCode == null) &&
                 (x.Created >= validFilter.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validFilter.FromDate)) &&
                 (x.Created <= validFilter.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validFilter.ToDate)) &&
-                ((x.UnloadingPermit != null && x.UnloadingPermit.DriverName.Contains(validFilter.DriverName)) ||
-                (x.LadingExitPermit != null && x.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName.Contains(validFilter.DriverName)) ||
+                // ((x.UnloadingPermit != null && x.UnloadingPermit.DriverName.Contains(validFilter.DriverName)) ||
+                // (x.LadingExitPermit != null && x.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName.Contains(validFilter.DriverName)) ||
                 string.IsNullOrEmpty(validFilter.DriverName))
                 ).ToListAsync();
         }
@@ -51,15 +56,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ApplicationUser)
                 .Include(x => x.LadingExitPermitDetails)
                 .Where(x =>
-                (x.FareAmountStatusId == (int?)validParams.FareAmountStatusId || validParams.FareAmountStatusId==null) &&
+                (x.FareAmountStatusId == (int?)validParams.FareAmountStatusId || validParams.FareAmountStatusId == null) &&
                 (x.LadingPermit.CargoAnnounce.Order.FarePaymentTypeId == (int)EFarePaymentType.FareByOurselves) &&
                 x.IsActive && //x.FareAmountStatusId==(int?)EFareAmountStatus.InProgress) &&
-                (x.LadingPermit.CargoAnnounce!=null && x.LadingPermit.CargoAnnounce.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
+                (x.LadingPermit.CargoAnnounce != null && x.LadingPermit.CargoAnnounce.DriverName.Contains(validParams.DriverName) || string.IsNullOrEmpty(validParams.DriverName)) &&
                 (x.LadingPermit.CargoAnnounce != null && x.LadingPermit.CargoAnnounce.DriverMobile.Contains(validParams.DriverMobile) || string.IsNullOrEmpty(validParams.DriverMobile)) &&
-                (x.LadingExitPermitCode==validParams.ReferenceCode || validParams.ReferenceCode==null) &&
-                (x.Created>= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
-                (x.Created<= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
-                (validParams.OrderType== OrderClassType.Sale || validParams.OrderType == null))                
+                (x.LadingExitPermitCode == validParams.ReferenceCode || validParams.ReferenceCode == null) &&
+                (x.Created >= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
+                (x.Created <= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
+                (validParams.OrderType == OrderClassType.Sale || validParams.OrderType == null))
                 .ToListAsync();
 
             var purOrdTransRemitUnloads =
@@ -68,7 +73,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(x => x.FareAmountStatus)
                 .Include(m => m.UnloadingPermitDetails)
                 .Include(m => m.EntrancePermit)
-                .Where(x=>
+                .Where(x =>
                 (x.FareAmountStatusId == (int?)validParams.FareAmountStatusId || validParams.FareAmountStatusId == null) &&
                 (x.EntrancePermit.TransferRemittance.PurchaseOrder.FarePaymentTypeId == (int)EFarePaymentType.FareByOurselves) &&
                 x.IsActive && //x.FareAmountStatusId==(int)EFareAmountStatus.InProgress) &&
@@ -80,7 +85,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (validParams.OrderType == OrderClassType.Purchase || validParams.OrderType == null))
                 .ToListAsync();
 
-            return new Tuple<List<LadingExitPermit>?,List<UnloadingPermit>?>
+            return new Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>
                 (ladingExitPermits, purOrdTransRemitUnloads);
         }
 
@@ -88,6 +93,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _rentPayments
                 .FirstOrDefaultAsync(p => p.Id == RentPaymentId);
+        }
+
+        public Task UpdateRentPayment(RentPayment rentPayment)
+        {
+            throw new NotImplementedException();
         }
     }
 }
