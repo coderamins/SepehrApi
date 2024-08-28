@@ -32,36 +32,33 @@ using Sepehr.Infrastructure.Persistence.Seeds;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
+using Sepehr.Domain.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var appSetting = builder.Configuration.GetSection("AppSetting").Get<AppSetting>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "CorsPolicy",
+    if (string.IsNullOrEmpty(appSetting.CorsPolicies))
+    {
+        options.AddPolicy(name: "CorsPolicy",
                       policy =>
                       {
-                          policy
-                          //.AllowAnyOrigin()
-                          .WithOrigins(
-                              "http://localhost:3000",
-                              "https://localhost:3000",
-                              "https://raminsolhi.ir",
-                              "http://manage.raminsolhi.ir",
-                              "https://manage.raminsolhi.ir",
-                              "http://192.168.10.125:8086",
-                              "http://192.168.10.125",
-                              "http://localhost:8084",
-                              "http://manage.storm.net",
-                              "http://storm.net",
-                              "http://www.storm.net",
-                              "https://manage.iraniansepehr.com",
-                              "http://manage.iraniansepehr.com"
-                          //    "http://*.iraniansepehr.com",
-                          //    "*.iraniansepehr.com"
-                          )
+                          policy.AllowAnyOrigin()
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                       });
+    }
+    else
+    {
+        options.AddPolicy(name: "CorsPolicy",
+                          policy =>
+                          {
+                              policy.WithOrigins(builder.Configuration.GetSection("AppSetting").Get<AppSetting>().CorsPolicies)
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                          });
+    }
 });
 
 builder.Services.AddEndpointsApiExplorer();
