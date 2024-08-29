@@ -36,6 +36,7 @@ namespace Sepehr.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
+        public virtual ICollection<Attachment> Attachments { get; set; }= new List<Attachment>();
         public virtual ICollection<RentPaymentDetail> RentPaymentDetails { get; set; }=new List<RentPaymentDetail>();
  
     }

@@ -22,6 +22,7 @@ namespace Sepehr.Domain.Entities
         public Guid? CargoAnnounceId { get; set; }
         public Guid? PaymentRequestId { get; set; }
 
+        public virtual RentPayment? RentPayment { get; set; }
         public virtual LadingExitPermit? LadingExitPermit { get; set; }
         public virtual ReceivePay? ReceivePay { get; set; }
         public virtual Order? Order { get; set; }

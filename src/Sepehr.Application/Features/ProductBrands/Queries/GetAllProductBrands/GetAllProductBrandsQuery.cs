@@ -50,7 +50,7 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
                 return new PagedResponse<IEnumerable<ProductBrandViewModel>>(
                     productBrandViewModel.OrderByDescending(p=>p.Id),
                     validFilter.PageNumber,
-                    validFilter.PageSize);
+                    validFilter.PageSize,productBrand.Count());
             }
             catch (Exception e) 
             {

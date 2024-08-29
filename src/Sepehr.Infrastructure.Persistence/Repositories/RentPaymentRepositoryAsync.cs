@@ -21,8 +21,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _rentPayments = dbContext.Set<RentPayment>();
         }
 
-        public Task CreateRentPayment(RentPayment rentPayment)
+        public async Task CreateRentPayment(RentPayment rentPayment)
         {
+            foreach(var rentDet in rentPayment.RentPaymentDetails)
+            {
+                var ladingExit=await _ladingExitPermits.FirstOrDefaultAsync(x=>x.Id==rentDet.LadingExitPermitId);
+
+                var lExitEntry = _ladingExitPermits.Entry(ladingExit);
+                lExitEntry.State = EntityState.Modified;
+                lExitEntry.CurrentValues.SetValues(ladingExit);
+                ladingExit.FareAmountStatusId = (int)EFareAmountStatus.Payed;
+            }
             throw new NotImplementedException();
         }
 
