@@ -18,7 +18,7 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
                 new Warehouse { Name = "انبار واسط",WarehouseTypeId=(int)EWarehouseType.Vaseteh },
                 new Warehouse { Name = "انبار امانی",WarehouseTypeId=(int)EWarehouseType.Amani },
                 new Warehouse { Name = "انبار بازرگانی",WarehouseTypeId=(int)EWarehouseType.Addi },
-                new Warehouse { Name = "انبار مبادی",WarehouseTypeId=(int)EWarehouseType.Mabadi },
+                //new Warehouse { Name = "انبار مبادی",WarehouseTypeId=(int)EWarehouseType.Mabadi },
                 };
 
             foreach (var item in defaultWarehouse)

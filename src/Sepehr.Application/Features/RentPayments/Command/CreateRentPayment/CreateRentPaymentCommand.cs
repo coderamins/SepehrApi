@@ -39,8 +39,8 @@ namespace Sepehr.Application.Features.RentPayments.Command.CreateRentPayment
         public string Description { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public List<RentPaymentDetailDto> RentPaymentDetails { get; set; }
-        public List<AttachmentDto> Attachments { get; set; }
+        public List<RentPaymentDetailDto>? RentPaymentDetails { get; set; }
+        public List<AttachmentDto>? Attachments { get; set; }
     }
     public class CreateRentPaymentCommandHandler : IRequestHandler<CreateRentPaymentCommand, Response<RentPayment>>
     {

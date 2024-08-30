@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.CustomerWarehouse;
@@ -6,6 +6,7 @@ using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
+using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
@@ -139,6 +140,59 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
 
             return customer;
+        }
+
+        public async Task<CustomerBalanceViewModel> GetCustomerBalance(Guid customerId)
+        {
+            // بدهکاری مشتری
+            //-----لیست سفارشات فروش به مشتری ------
+            var cust_orders = await _dbContext.Set<Order>()
+                .Where(o => o.CustomerId == customerId).ToListAsync();
+
+            //----لیست سفارشاتی که خروج داشته اند-----
+            var cust_exited_cargo = await _dbContext.Set<Order>()
+                                .Include(x => x.LadingPermits.Where(x => x.LadingExitPermit != null))
+                                    .ThenInclude(x => x.LadingExitPermit)
+                                .Include(x => x.LadingPermits)
+                                    .ThenInclude(x => x.CargoAnnounce)
+                                .Where(o => o.LadingPermits.Count() > 0)
+                                .ToListAsync();
+            // بستانکاری مشتری
+            //-----لیست سفارشات خرید از مشتری ------
+            var purchase_orders = await _dbContext.Set<PurchaseOrder>().Where(o => o.CustomerId == customerId).ToListAsync();
+
+            //-----لیست سفارشاتی که تخلیه بار شده اند------
+            var cust_unloaded_orders = await _dbContext.Set<PurchaseOrder>()
+                    .Include(x => x.TransferRemittances.Where(x => x.EntrancePermit != null && x.EntrancePermit.UnloadingPermit != null))
+                        .ThenInclude(x => x.EntrancePermit)
+                        .ThenInclude(x => x.UnloadingPermit)
+                    .ToListAsync();
+
+
+            #region مانده بستانکاری مشتری
+            //-----لیست پرداخت های بازرگانی به مشتری ------
+            var receive_payments = await _dbContext.Set<ReceivePay>()
+                .Where(r => r.PayToCustomerId == customerId && r.ReceivePayStatusId == (int)EReceivePayStatus.AccApproved).ToListAsync();
+
+            var cust_pay_requests = await _dbContext.Set<PaymentRequest>()
+                .Where(x => x.CustomerId == customerId && x.PaymentRequestStatusId == (int)EPaymentRequestStatus.Payed).ToListAsync();
+
+            #endregion
+
+            decimal cust_creditor = (purchase_orders.Sum(o => o.TotalAmount) +
+                                    receive_payments.Sum(x => x.Amount));
+            decimal dept =
+                (cust_orders.Sum(c => c.TotalAmount) +
+                cust_pay_requests.Sum(x => x.Amount));
+
+
+            //return new CustomerViewModel
+            //{
+            //    CustomerDept = dept,
+            //    CustomerCreditor = cust_creditor,
+            //    CustomerCurrentDept = dept - cust_creditor
+            //};
+            return null;
         }
 
         public async Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)

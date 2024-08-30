@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Sepehr.WebApi.Controller
 {
     [ApiController]
+    //[EnableCors("CorsPolicy")]
     //[Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     public abstract class BaseApiController : ControllerBase

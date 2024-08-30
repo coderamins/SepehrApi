@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Enums
 {
+    public enum EBalanceResult
+    {
+        debit=1,
+        credit
+    }
+
+    public enum EBalanceType
+    {
+
+    }
+
     public enum ECustomerValidity
     {
         Usual=1,

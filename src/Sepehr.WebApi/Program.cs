@@ -132,39 +132,39 @@ using (var scope = scopeFactory.CreateScope())
     db.Database.Migrate();
 
     Console.WriteLine("Migration successfuly applied!");
-#if DEBUG
-    {
-        await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
-        await DefaultFarePaymentTypes.SeedAsync(applicationDbContext);
-        await WarehouseTypes.SeedAsync(applicationDbContext);
-        await OrderSendTypes.SeedAsync(applicationDbContext);
-        await DefaultWarehouse.SeedAsync(applicationDbContext);
-        await DefaultBrands.SeedAsync(applicationDbContext);
-        await DefaultVehicleTypes.SeedAsync(applicationDbContext);
-        await DefaultReceivePaymentTypes.SeedAsync(applicationDbContext);
-        await DefaultProductTypes.SeedAsync(applicationDbContext);
-        await DefaultProductUnits.SeedAsync(applicationDbContext);
-        await DefaultStandards.SeedAsync(applicationDbContext);
-        await ProductStates.SeedAsync(applicationDbContext);
-        await DefaultCustomerValidity.SeedAsync(applicationDbContext);
-        await DefaultPurchaseOrderStatus.SeedAsync(applicationDbContext);
-        await DefaultTransferRemittanceTypes.SeedAsync(applicationDbContext);
-        await DefaultTransferRemittanceStatus.SeedAsync(applicationDbContext);
-        await DefaultReceivePayStatus.SeedAsync(applicationDbContext);
-        await DefaultBanks.SeedAsync(applicationDbContext);
-        await DefaultBasicUser.SeedAsync(applicationDbContext);
-        await DefaultOrderExitTypes.SeedAsync(applicationDbContext);
-        await DefaultPurchaseOrderSendType.SeedAsync(applicationDbContext);
-        await DefaultPurchaseOrderFarePaymentTypes.SeedAsync(applicationDbContext);
-        await DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
-        await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
-        await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
-        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);
-        await DefaultOrderStatus.SeedAsync(applicationDbContext);
-        await DefaultFareAmountStatus.SeedAsync(applicationDbContext);
+//#if !DEBUG
+//    {
+//        await DefaultInvoiceTypes.SeedAsync(applicationDbContext);
+//        await DefaultFarePaymentTypes.SeedAsync(applicationDbContext);
+//        await WarehouseTypes.SeedAsync(applicationDbContext);
+//        await OrderSendTypes.SeedAsync(applicationDbContext);
+//        await DefaultWarehouse.SeedAsync(applicationDbContext);
+//        await DefaultBrands.SeedAsync(applicationDbContext);
+//        await DefaultVehicleTypes.SeedAsync(applicationDbContext);
+//        await DefaultReceivePaymentTypes.SeedAsync(applicationDbContext);
+//        await DefaultProductTypes.SeedAsync(applicationDbContext);
+//        await DefaultProductUnits.SeedAsync(applicationDbContext);
+//        await DefaultStandards.SeedAsync(applicationDbContext);
+//        await ProductStates.SeedAsync(applicationDbContext);
+//        await DefaultCustomerValidity.SeedAsync(applicationDbContext);
+//        await DefaultPurchaseOrderStatus.SeedAsync(applicationDbContext);
+//        await DefaultTransferRemittanceTypes.SeedAsync(applicationDbContext);
+//        await DefaultTransferRemittanceStatus.SeedAsync(applicationDbContext);
+//        await DefaultReceivePayStatus.SeedAsync(applicationDbContext);
+//        await DefaultBanks.SeedAsync(applicationDbContext);
+//        await DefaultBasicUser.SeedAsync(applicationDbContext);
+//        await DefaultOrderExitTypes.SeedAsync(applicationDbContext);
+//        await DefaultPurchaseOrderSendType.SeedAsync(applicationDbContext);
+//        await DefaultPurchaseOrderFarePaymentTypes.SeedAsync(applicationDbContext);
+//        await DefaultPhoneNumberTypes.SeedAsync(applicationDbContext);
+//        await DefaultCustomerLabelTypes.SeedAsync(applicationDbContext);
+//        await DefaultPaymentRequestReasons.SeedAsync(applicationDbContext);
+//        await DefaultPaymentRequestStatus.SeedAsync(applicationDbContext);
+//        await DefaultOrderStatus.SeedAsync(applicationDbContext);
+//        await DefaultFareAmountStatus.SeedAsync(applicationDbContext);
         
-    }
-#endif
+//    }
+//#endif
 
     Log.Information("Finished Seeding Default Data");
     Log.Information("Application Starting");
@@ -184,33 +184,33 @@ using (var scope = scopeFactory.CreateScope())
     app.Run();
 }
 
-void configureLogging()
-{
-    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-    var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile(
-        $"appsetting.{environment}.json", optional: true
-    ).Build();
+//void configureLogging()
+//{
+//    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+//    var configuration = new ConfigurationBuilder()
+//    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+//    .AddJsonFile(
+//        $"appsetting.{environment}.json", optional: true
+//    ).Build();
 
-    Log.Logger = new LoggerConfiguration()
-        .Enrich.FromLogContext()
-        .Enrich.WithExceptionDetails()
-        .WriteTo.Debug()
-        .WriteTo.Console()
-        .WriteTo.Elasticsearch(ConfigurationElasticSink(configuration, environment))
-        .Enrich.WithProperty("Environment", environment)
-        .ReadFrom.Configuration(configuration)
-        .CreateLogger();
-}
+//    Log.Logger = new LoggerConfiguration()
+//        .Enrich.FromLogContext()
+//        .Enrich.WithExceptionDetails()
+//        .WriteTo.Debug()
+//        .WriteTo.Console()
+//        .WriteTo.Elasticsearch(ConfigurationElasticSink(configuration, environment))
+//        .Enrich.WithProperty("Environment", environment)
+//        .ReadFrom.Configuration(configuration)
+//        .CreateLogger();
+//}
 
-ElasticsearchSinkOptions ConfigurationElasticSink(IConfigurationRoot configuration,string environment)
-{
-    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
-    {
-        AutoRegisterTemplate = true,
-        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".","-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
-        NumberOfReplicas=1,
-        NumberOfShards=2
-    };
-}
+//ElasticsearchSinkOptions ConfigurationElasticSink(IConfigurationRoot configuration,string environment)
+//{
+//    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+//    {
+//        AutoRegisterTemplate = true,
+//        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".","-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
+//        NumberOfReplicas=1,
+//        NumberOfShards=2
+//    };
+//}

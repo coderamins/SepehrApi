@@ -110,6 +110,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
         public DbSet<TransferWarehouseInventoryDetail> TransferWarehouseInventoryDetails { get; set; }
+        public DbSet<RentPaymentDetail> RentPaymentDetails { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -212,6 +213,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<PaymentRequest>()
                 .Property(o => o.PaymentRequestCode)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<RentPayment>()
+                .Property(o => o.Id)
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
@@ -331,6 +337,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<Personnel>().Property(prop => prop.PersonnelCode)
             .UseIdentityColumn(1000, 1);
+
+            builder.Entity<RentPayment>().Property(prop => prop.Id)
+            .UseIdentityColumn(1010, 1);
 
             builder.Entity<TransferRemittanceType>()
                 .Property(p => p.Id)

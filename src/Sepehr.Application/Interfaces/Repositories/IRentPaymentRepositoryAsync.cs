@@ -6,11 +6,11 @@ namespace Sepehr.Application.Interfaces.Repositories
 {
     public interface IRentPaymentRepositoryAsync : IGenericRepositoryAsync<RentPayment>
     {
-        Task CreateRentPayment(RentPayment rentPayment);
+        Task<RentPayment> CreateRentPayment(RentPayment rentPayment);
         Task<IEnumerable<RentPayment>> GetAllRentPaymentsAsync(GetAllRentPaymentsParameter validFilter);
         Task<Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>> GetAllRentsAsync(
             GetAllRentsToPaymentParameter validParams);
         Task<RentPayment?> GetRentPaymentInfo(int RentPaymentId);
-        Task UpdateRentPayment(RentPayment rentPayment);
+        Task<RentPayment> UpdateRentPayment(RentPayment rentPayment);
     }
 }

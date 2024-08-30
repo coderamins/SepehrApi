@@ -11,6 +11,7 @@ namespace Sepehr.Domain.Entities
     public class Attachment : BaseEntity<Guid>
     {
         public required byte[] FileData { get; set; }
+        public int? RentPaymentId { get; set; }
         public Guid? ReceivePayId { get; set; }
         public Guid? OrderId { get; set; }
         public Guid? PurchaseOrderId { get; set; }

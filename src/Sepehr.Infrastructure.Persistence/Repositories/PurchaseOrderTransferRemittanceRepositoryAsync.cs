@@ -330,8 +330,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                         var _off_Inv = await _productOffInventory
                             .FirstOrDefaultAsync(i => i.ProductId == _dbContext.Set<ProductBrand>()
-                            .First(x => x.Id == (po_Details.AlternativeProductBrandId ?? po_Details.ProductBrandId)).ProductId &&
-                            i.WarehouseId == _tRemitt.TransferRemittance.DestinationWarehouseId);
+                            .First(x => x.Id == (po_Details.AlternativeProductBrandId ?? po_Details.ProductBrandId)).ProductId);
 
                         if (_off_Inv == null)
                             throw new ApiException("موجودی رسمی یافت نشد !");
