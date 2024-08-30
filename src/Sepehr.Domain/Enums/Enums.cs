@@ -13,6 +13,12 @@ namespace Sepehr.Domain.Enums
         credit
     }
 
+    public enum EBalanceReportType
+    {
+        ByApproximate=1,
+        WitoutApproximate
+    }
+
     public enum EBalanceType
     {
 
