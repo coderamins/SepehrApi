@@ -1,5 +1,6 @@
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Domain.Entities;
+using Sepehr.Domain.ViewModels;
 
 namespace Sepehr.Application.Interfaces.Repositories
 {
@@ -8,6 +9,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> AllocateCustomerWarehouses(Guid id, List<int> warehouses);
         Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels);
         Task<List<Customer>> GetAllCustomers(GetAllCustomersParameter filter);
+        Task<CustomerBalanceViewModel> GetCustomerBalance(GetCustomersBalanceParameter validFilter);
         Task<Customer> GetCustomerInfo(string nationalId);
         Task<Customer?> GetCustomerInfo(Guid Id);
         Task<Customer> UpdateCustomer(Customer customer);

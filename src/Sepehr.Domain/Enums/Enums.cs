@@ -15,7 +15,12 @@ namespace Sepehr.Domain.Enums
 
     public enum EBalanceType
     {
+    }
 
+    public enum EBalanceReportType
+    {
+        ByApproximate = 1,
+        WithoutApproximate
     }
 
     public enum ECustomerValidity

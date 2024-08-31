@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.CustomerWarehouse;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Interfaces.Repositories;
+using Sepehr.Domain;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
@@ -89,7 +90,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         ((_label_purchased_customers.Contains(c.Id) && new CustomerReportType[] { CustomerReportType.ReportByPurchaseHistory, CustomerReportType.BothOfThem }.Contains(filter.ReportType)) ||
                         (filter.CustomerLabelId != null &&
                             new CustomerReportType[] { CustomerReportType.ByLabelId, CustomerReportType.BothOfThem }.Contains(filter.ReportType) &&
-                            c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId) || filter.CustomerLabelId==null))
+                            c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId) || filter.CustomerLabelId == null))
                         )
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
@@ -119,21 +120,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.ReceivePaymentSourceFrom)
                 .Include(c => c.ReceivePaymentSourceTo)
                 .Include(c => c.Orders)
-                .Include(c => c.CustomerLabels).ThenInclude(c=>c.CustomerLabel)
+                .Include(c => c.CustomerLabels).ThenInclude(c => c.CustomerLabel)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
                 .FirstOrDefaultAsync(p => p.Id == Id);
         }
 
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
-            var cust=await _customers.FirstAsync(c=>c.Id==customer.Id);
+            var cust = await _customers.FirstAsync(c => c.Id == customer.Id);
 
             var cust_phones = _dbContext.Phonebook
                 .Where(p => p.CustomerId == customer.Id);
             if (cust_phones != null)
                 _dbContext.Phonebook.RemoveRange(cust_phones);
 
-            _customers.Entry(cust).State= EntityState.Modified;
+            _customers.Entry(cust).State = EntityState.Modified;
             _customers.Entry(cust).CurrentValues.SetValues(customer);
 
             _customers.Update(customer);
@@ -142,40 +143,84 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return customer;
         }
 
-        public async Task<CustomerBalanceViewModel> GetCustomerBalance(Guid customerId)
+        public async Task<CustomerBalanceViewModel> GetCustomerBalance(GetCustomersBalanceParameter filter)
         {
+
+            List<CustomerBalanceViewModel> customerBalances = new List<CustomerBalanceViewModel>();
             // بدهکاری مشتری
             //-----لیست سفارشات فروش به مشتری ------
             var cust_orders = await _dbContext.Set<Order>()
-                .Where(o => o.CustomerId == customerId).ToListAsync();
+                .Where(o =>
+                    o.CustomerId == filter.CustomerId &&
+                    (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
+                    (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)) 
+                ).ToListAsync();
 
+            customerBalances.Add(new CustomerBalanceViewModel
+            {
+                BalanceDate="",
+                Amount=cust_orders.Sum(o=>o.Details.Sum(d=>d.AlternativeProductBrand!=null ? d.AlternativeProductAmount:d.ProximateAmount)),
+                
+            });
             //----لیست سفارشاتی که خروج داشته اند-----
             var cust_exited_cargo = await _dbContext.Set<Order>()
                                 .Include(x => x.LadingPermits.Where(x => x.LadingExitPermit != null))
                                     .ThenInclude(x => x.LadingExitPermit)
                                 .Include(x => x.LadingPermits)
                                     .ThenInclude(x => x.CargoAnnounce)
-                                .Where(o => o.LadingPermits.Count() > 0)
+                                .Where(o => o.LadingPermits.Count() > 0 &&
+                                o.CustomerId == filter.CustomerId &&
+                                (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
+                                (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)))
                                 .ToListAsync();
+
+            //----لیست مجوز های خروج-----
+            var exitPermits = await _dbContext.Set<LadingExitPermit>()
+                                .Include(x => x.LadingExitPermitDetails
+                                        .Where(x=>x.CargoAnnounceDetail.CargoAnnounce.Order.CustomerId==filter.CustomerId))
+                                .ThenInclude(x=>x.CargoAnnounceDetail).ThenInclude(x=>x.CargoAnnounce).ThenInclude(x=>x.Order)
+                                .Where(o => 
+                                (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
+                                (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)))
+                                .ToListAsync();
+
+            foreach (var item in exitPermits)
+            {
+                customerBalances.Add(new CustomerBalanceViewModel
+                {
+                    BalanceDate = item.Created.ToShamsiDate(),
+                    Amount = cust_orders.Sum(o => o.Details.Sum(d => d.AlternativeProductBrand != null ? d.AlternativeProductAmount : d.ProximateAmount)),
+
+                });
+            }
             // بستانکاری مشتری
             //-----لیست سفارشات خرید از مشتری ------
-            var purchase_orders = await _dbContext.Set<PurchaseOrder>().Where(o => o.CustomerId == customerId).ToListAsync();
+            var purchase_orders = 
+                await _dbContext.Set<PurchaseOrder>()
+                .Where(o => 
+                       o.CustomerId == filter.CustomerId &&
+                       (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
+                       (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate))
+                ).ToListAsync();
 
             //-----لیست سفارشاتی که تخلیه بار شده اند------
             var cust_unloaded_orders = await _dbContext.Set<PurchaseOrder>()
                     .Include(x => x.TransferRemittances.Where(x => x.EntrancePermit != null && x.EntrancePermit.UnloadingPermit != null))
                         .ThenInclude(x => x.EntrancePermit)
                         .ThenInclude(x => x.UnloadingPermit)
+                    .Where(x => x.CustomerId == filter.CustomerId &&
+                           (x.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
+                           (x.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)))
                     .ToListAsync();
 
 
             #region مانده بستانکاری مشتری
             //-----لیست پرداخت های بازرگانی به مشتری ------
             var receive_payments = await _dbContext.Set<ReceivePay>()
-                .Where(r => r.PayToCustomerId == customerId && r.ReceivePayStatusId == (int)EReceivePayStatus.AccApproved).ToListAsync();
+                .Where(r => r.PayToCustomerId == filter.CustomerId && r.ReceivePayStatusId == (int)EReceivePayStatus.AccApproved).ToListAsync();
 
             var cust_pay_requests = await _dbContext.Set<PaymentRequest>()
-                .Where(x => x.CustomerId == customerId && x.PaymentRequestStatusId == (int)EPaymentRequestStatus.Payed).ToListAsync();
+                .Where(x => x.CustomerId == filter.CustomerId && x.PaymentRequestStatusId == (int)EPaymentRequestStatus.Payed).ToListAsync();
 
             #endregion
 
@@ -185,24 +230,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (cust_orders.Sum(c => c.TotalAmount) +
                 cust_pay_requests.Sum(x => x.Amount));
 
-
-            //return new CustomerViewModel
-            //{
-            //    CustomerDept = dept,
-            //    CustomerCreditor = cust_creditor,
-            //    CustomerCurrentDept = dept - cust_creditor
-            //};
+            return new CustomerBalanceViewModel
+            {
+                
+            };
             return null;
         }
 
         public async Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels)
         {
-            var customerAsignedLables = 
+            var customerAsignedLables =
                 await _customerAsignedLabel
                 .Where(x => x.CustomerId == customerLabels
                 .First().CustomerId)
                 .ToListAsync();
-            
+
             if (customerAsignedLables != null)
                 _customerAsignedLabel.RemoveRange(customerAsignedLables);
 
