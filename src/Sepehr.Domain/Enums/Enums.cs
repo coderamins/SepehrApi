@@ -23,12 +23,6 @@ namespace Sepehr.Domain.Enums
     {
     }
 
-    public enum EBalanceReportType
-    {
-        ByApproximate = 1,
-        WithoutApproximate
-    }
-
     public enum ECustomerValidity
     {
         Usual=1,

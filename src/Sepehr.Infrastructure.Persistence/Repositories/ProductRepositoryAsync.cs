@@ -191,7 +191,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             using (var connection = _dapContext.CreateConnection())
             {
                 var products = await connection.QueryAsync<DapperProduct>(query);
-                return products.OrderByDescending(p => p.ApproximateInventory).ToList();
+                return products.OrderBy(x=>x.ProductCode).ThenByDescending(p => p.ApproximateInventory).ToList();
             }
 
         }
