@@ -30,7 +30,8 @@ namespace Sepehr.WebApi.Controller
                     PhoneNumber=filter.PhoneNumber,
                     NationalCode=filter.NationalCode,
                     CustomerLabelId=filter.CustomerLabelId,
-                    ReportType=filter.ReportType
+                    ReportType=filter.ReportType,
+                    Keyword=filter.Keyword
                 }));
         }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Events
 {
-    public class ProductBrandCreatedEvent:IEvent
+    public class ProductBrandCreatedEvent//:IEvent
     {
     }
 }

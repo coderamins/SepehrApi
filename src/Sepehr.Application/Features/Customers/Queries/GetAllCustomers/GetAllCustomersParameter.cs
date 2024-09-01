@@ -13,6 +13,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
         public string CustomerName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; }=string.Empty;
         public string NationalCode { get; set; } = string.Empty;
+        public string Keyword { get; set; } = string.Empty;
 
         public int? CustomerLabelId { get; set; }
         public CustomerReportType ReportType { get; set; }

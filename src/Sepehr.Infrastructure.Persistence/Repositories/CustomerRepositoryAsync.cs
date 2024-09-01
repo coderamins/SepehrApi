@@ -55,7 +55,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return true;
         }
 
-        public async Task<List<Customer>> GetAllCustomers(GetAllCustomersParameter filter)
+        public async Task<IQueryable<Customer>> GetAllCustomers(GetAllCustomersParameter filter)
         {
             List<Guid> _label_purchased_customers = new List<Guid>();
             if (filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
@@ -72,7 +72,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     .Select(d => d.Order.CustomerId).ToListAsync();
             }
 
-            return await _customers
+            return _customers
                 .Include(c => c.CustomerValidity)
                 .Include(c => c.ApplicationUser)
                 .Include(c => c.Phonebook).ThenInclude(p => p.PhoneNumberType)
@@ -83,6 +83,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.Phonebook)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
             .Where(c =>
+                        ((c.OfficialName ?? "").Contains(filter.Keyword) ||
+                        c.NationalCode.Contains(filter.Keyword) ||
+                        c.CustomerCode.ToString().Contains(filter.Keyword) ||
+                        string.Concat(c.FirstName, " ", c.LastName).Contains(filter.Keyword) ||
+                        (c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.Keyword)))) && 
+
                         (c.NationalCode == filter.NationalCode || string.IsNullOrEmpty(filter.NationalCode)) &&
                         (c.CustomerCode == filter.CustomerCode || filter.CustomerCode == null) &&
                         (string.Concat(c.FirstName, " ", c.LastName).Contains(filter.CustomerName) || string.IsNullOrEmpty(filter.CustomerName)) &&
@@ -92,7 +98,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             new CustomerReportType[] { CustomerReportType.ByLabelId, CustomerReportType.BothOfThem }.Contains(filter.ReportType) &&
                             c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId) || filter.CustomerLabelId == null))
                         )
-                .OrderByDescending(p => p.Created).ToListAsync();
+                .OrderByDescending(p => p.Created).AsQueryable();
         }
 
         public async Task<Customer?> GetCustomerInfo(string nationalId)
@@ -143,7 +149,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return customer;
         }
 
-        public async Task<CustomerBalanceViewModel> GetCustomerBalance(GetCustomersBalanceParameter filter)
+        public async Task<List<CustomerBalanceViewModel>> GetCustomerBalance(GetCustomersBalanceParameter filter)
         {
 
             List<CustomerBalanceViewModel> customerBalances = new List<CustomerBalanceViewModel>();
@@ -230,10 +236,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (cust_orders.Sum(c => c.TotalAmount) +
                 cust_pay_requests.Sum(x => x.Amount));
 
-            return new CustomerBalanceViewModel
-            {
+            //return new CustomerBalanceViewModel
+            //{
                 
-            };
+            //};
             return null;
         }
 
