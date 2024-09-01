@@ -32,16 +32,22 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         }
         public async Task<IEnumerable<SaleRepByProductTypeViewModel>> GetSaleReportByProductType(SaleReportByProductTypeParameter filter)
         {
-            var _saleRep =await
-                _orderDetail.Include(x => x.ProductBrand).ThenInclude(x => x.Product).ThenInclude(x=>x.ProductType)
-                .GroupBy(x => new { x.ProductBrand.Product.ProductType.Desc })
+            var _saleRep = await
+                _orderDetail.Include(x => x.ProductBrand).ThenInclude(x => x.Product).ThenInclude(x => x.ProductType)
+                .GroupBy(x => new { x.ProductBrand.Product.ProductType.Desc/*,SaleAmount=x.*/ })
                 .ToListAsync();
 
-            IEnumerable
-            foreach(var item in _saleRep)
+            List<SaleRepByProductTypeViewModel> _saleReport = new List<SaleRepByProductTypeViewModel>();
+            foreach (var item in _saleRep)
             {
-
+                _saleReport.Add(new SaleRepByProductTypeViewModel
+                {
+                    ProductTypeDesc= item.Key.Desc,
+                    SaleAmount= item.Sum(x=>x.ProximateAmount),
+                });
             }
+
+            return _saleReport;
         }
     }
 }
