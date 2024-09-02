@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
@@ -36,9 +31,12 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
             try
             {
                 var validFilter = _mapper.Map<GetAllProductBrandsParameter>(request);
+                int TotalCount = 0;
+
                 var productBrand = 
-                    await _productBrandRepository
+                    _productBrandRepository
                     .LoadAllWithRelatedAsQueryableAsync<ProductBrand>(request.PageNumber, request.PageSize,
+                    out TotalCount,
                     p => p.Product,
                     p=> p.Product.ProductMainUnit,
                     p=> p.Product.ProductSubUnit,
@@ -50,7 +48,7 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
                 return new PagedResponse<IEnumerable<ProductBrandViewModel>>(
                     productBrandViewModel.OrderByDescending(p=>p.Id),
                     validFilter.PageNumber,
-                    validFilter.PageSize,productBrand.Count());
+                    validFilter.PageSize,TotalCount);
             }
             catch (Exception e) 
             {

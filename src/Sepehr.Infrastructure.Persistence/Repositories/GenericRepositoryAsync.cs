@@ -63,8 +63,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IQueryable<TEntity>> LoadAllWithRelatedAsQueryableAsync<TEntity>(
-            int pageNumber, int pageSize,
+        public IQueryable<TEntity> LoadAllWithRelatedAsQueryableAsync<TEntity>(
+            int pageNumber, int pageSize,out int TotalCount,
             params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class
         {
             var query = _dbContext.Set<TEntity>().AsQueryable();
@@ -72,6 +72,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 query = query.Include(expression);
             }
+
+            TotalCount = query.Count();
 
             return query
                 .Skip((pageNumber - 1) * pageSize)

@@ -151,6 +151,8 @@ using Sepehr.Application.Features.PersonnelPaymentRequests.Command.ProceedPerson
 using Sepehr.Application.Features.PersonnelPaymentRequests.Command.CreatePersonnelPaymentRequest;
 using Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePersonnelPaymentRequest;
 using Sepehr.Application.Features.PersonnelPaymentRequests.Queries.GetAllPersonnelPaymentRequests;
+using Sepehr.Application.Features.Reports.SaleReport;
+using Sepehr.Application.DTOs.Permission;
 
 namespace Sepehr.Application.Mapping
 {
@@ -1161,6 +1163,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<Warehouse, ProductWarehouseViewModel>();
 
             #region
+            CreateMap<PermissionDto, Permission>();
             CreateMap<AddRoleMenuDto, RoleMenu>()
                 .ForMember(m => m.ApplicationRoleId, opt => opt.MapFrom(d => d.RoleId));
 
@@ -1381,6 +1384,10 @@ namespace Sepehr.Application.Mapping
 
             #endregion
 
+
+            #region Sale Report گزارشات 
+            CreateMap<SaleReportByProductTypeQuery, SaleReportByProductTypeParameter>();
+            #endregion
 
 
         }

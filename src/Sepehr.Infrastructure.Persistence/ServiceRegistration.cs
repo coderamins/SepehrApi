@@ -13,6 +13,7 @@ using Sepehr.Infrastructure.Shared.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Stimulsoft.Base.Json;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.Infrastructure.Persistence
 {
@@ -30,10 +31,9 @@ namespace Sepehr.Infrastructure.Persistence
                 options.UseSqlServer(configuration.GetConnectionString(constr), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }
-            , ServiceLifetime.Scoped);
+            , ServiceLifetime.Singleton);
 
             #region Repositories
-
             services.AddScoped(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddScoped<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddScoped<IOrderRepositoryAsync, OrderRepositoryAsync>();
@@ -85,6 +85,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<IDriverFareAmountApproveRepositoryAsync, DriverFareAmountApproveRepositoryAsync>();
             services.AddScoped<ICustomerLabelRepositoryAsync, CustomerLabelRepositoryAsync>();
             services.AddScoped<ISaleReportRepository, SaleReportRepository>();
+            services.AddSingleton<IPermissionInitializerService, PermissionInitializerService>();
             #endregion
 
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

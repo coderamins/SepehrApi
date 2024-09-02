@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sepehr.Infrastructure.Authentication
+namespace Sepehr.Application.Helpers
 {
     public class PermissionAuthorizationPolicyProvider
         : DefaultAuthorizationPolicyProvider

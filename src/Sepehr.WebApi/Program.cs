@@ -28,11 +28,8 @@ using Microsoft.FeatureManagement;
 using Sepehr.Domain.Entities;
 using Sepehr.WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
-using Sepehr.Infrastructure.Persistence.Seeds;
-using Serilog.Exceptions;
-using Serilog.Sinks.Elasticsearch;
-using System.Reflection;
 using Sepehr.Domain.Common;
+using Sepehr.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,9 +78,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddApiVersioningExtension();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddScoped<ApplicationDbContext>();
+//builder.Services.AddSingleton<ApplicationDbContext>();
 builder.Services.AddSingleton<DapperContext>();
-builder.Services.AddScoped<IAuthenticatedUserService, Sepehr.WebApi.Services.AuthenticatedUserService>();
+builder.Services.AddSingleton<IAuthenticatedUserService, Sepehr.WebApi.Services.AuthenticatedUserService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDistributedMemoryCache();
@@ -91,6 +88,8 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => new Dictionary<string, UserChatConnection>());
 
 builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<ApplicationDbContext>();
+builder.Services.AddHostedService<PermissionDiscoveryService>();
 
 //configureLogging();
 builder.Host.UseSerilog();

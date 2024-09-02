@@ -20,14 +20,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly IPurchaseOrderRepositoryAsync _purchaseOrder;
         private readonly IMapper _mapper;
         public SaleReportRepository(
+            ApplicationDbContext dbcontext,
             IOrderRepositoryAsync order,
             IPurchaseOrderRepositoryAsync purchaseOrder,
-            DbSet<OrderDetail> orderDetail,
             IMapper mapper)
         {
             _orders = order;
             _purchaseOrder = purchaseOrder;
-            _orderDetail = orderDetail;
+            _orderDetail = dbcontext.Set<OrderDetail>(); ;
             _mapper = mapper;
         }
         public async Task<IEnumerable<SaleRepByProductTypeViewModel>> GetSaleReportByProductType(SaleReportByProductTypeParameter filter)

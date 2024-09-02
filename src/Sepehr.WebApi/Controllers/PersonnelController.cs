@@ -5,7 +5,7 @@ using Sepehr.Application.Features.Personnels.Command.DeletePersonnelById;
 using Sepehr.Application.Features.Personnels.Command.UpdatePersonnel;
 using Sepehr.Application.Features.Personnels.Queries.GetAllPersonnels;
 using Sepehr.Application.Features.Personnels.Queries.GetPersonnelById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 

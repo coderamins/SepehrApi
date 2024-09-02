@@ -6,7 +6,7 @@ using Sepehr.Application.Features.Incomes.Command.DeleteIncomeById;
 using Sepehr.Application.Features.Incomes.Command.UpdateIncome;
 using Sepehr.Application.Features.Incomes.Queries.GetAllIncomes;
 using Sepehr.Application.Features.Incomes.Queries.GetIncomeById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

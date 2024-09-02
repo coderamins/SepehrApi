@@ -15,7 +15,7 @@ using Sepehr.Application.Features.TransferRemittances.Command.TransferRemittance
 using Sepehr.Application.Features.TransferRemittances.Command.UpdateTransferRemittance;
 using Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransferRemittances;
 using Sepehr.Application.Features.TransferRemittances.Queries.GetTransferRemittanceById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sepehr.Application.Features.Reports.SaleReport;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 

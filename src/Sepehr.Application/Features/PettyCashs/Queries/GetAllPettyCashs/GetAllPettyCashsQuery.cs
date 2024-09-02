@@ -36,10 +36,11 @@ namespace Sepehr.Application.Features.PettyCashs.Queries.GetAllPettyCashs
         {
             try
             {
+                int TotalCount = 0;
                 var validFilter = _mapper.Map<GetAllPettyCashsParameter>(request);
                 var PettyCash = 
-                    await _PettyCashRepository
-                    .LoadAllWithRelatedAsQueryableAsync<PettyCash>(request.PageNumber, request.PageSize);
+                    _PettyCashRepository
+                    .LoadAllWithRelatedAsQueryableAsync<PettyCash>(request.PageNumber, request.PageSize,out TotalCount);
 
                 PettyCash = PettyCash.Where((b => b.Id == validFilter.PettyCashId || validFilter.PettyCashId == null));
 

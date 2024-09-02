@@ -6,7 +6,7 @@ using Sepehr.Application.Features.ApplicationUsers.Command.UpdateApplicationUser
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetApplicationUserById;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetLoginedUserInfo;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Serilog;
 
 namespace Sepehr.WebApi.Controller

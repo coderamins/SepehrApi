@@ -5,7 +5,7 @@ using Sepehr.Application.Features.CashDesks.Command.DeleteCashDeskById;
 using Sepehr.Application.Features.CashDesks.Command.UpdateCashDesk;
 using Sepehr.Application.Features.CashDesks.Queries.GetAllCashDesks;
 using Sepehr.Application.Features.CashDesks.Queries.GetCashDeskById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

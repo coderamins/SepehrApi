@@ -7,7 +7,7 @@ using Sepehr.Application.Features.PaymentRequests.Command.RejectPaymentRequest;
 using Sepehr.Application.Features.PaymentRequests.Command.UpdatePaymentRequest;
 using Sepehr.Application.Features.PaymentRequests.Queries.GetAllPaymentRequests;
 using Sepehr.Application.Features.PaymentRequests.Queries.GetPaymentRequestById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

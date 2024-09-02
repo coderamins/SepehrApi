@@ -5,7 +5,7 @@ using Sepehr.Application.Features.Warehouses.Command.DeleteWarehouseById;
 using Sepehr.Application.Features.Warehouses.Command.UpdateWarehouse;
 using Sepehr.Application.Features.Warehouses.Queries.GetAllWarehouses;
 using Sepehr.Application.Features.Warehouses.Queries.GetWarehouseById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller

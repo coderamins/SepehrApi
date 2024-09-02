@@ -5,7 +5,7 @@ using Sepehr.Application.Features.ShareHolders.Command.DeleteShareHolderById;
 using Sepehr.Application.Features.ShareHolders.Command.UpdateShareHolder;
 using Sepehr.Application.Features.ShareHolders.Queries.GetAllShareHolders;
 using Sepehr.Application.Features.ShareHolders.Queries.GetShareHolderById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

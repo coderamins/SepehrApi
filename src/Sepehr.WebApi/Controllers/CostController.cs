@@ -5,7 +5,7 @@ using Sepehr.Application.Features.Costs.Command.DeleteCostById;
 using Sepehr.Application.Features.Costs.Command.UpdateCost;
 using Sepehr.Application.Features.Costs.Queries.GetAllCosts;
 using Sepehr.Application.Features.Costs.Queries.GetCostById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

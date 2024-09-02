@@ -7,7 +7,7 @@ using Sepehr.Application.Features.UnloadingPermits.Command.UpdateUnloadingPermit
 using Sepehr.Application.Features.UnloadingPermits.Queries.GetAllUnloadingPermits;
 using Sepehr.Application.Features.UnloadingPermits.Queries.GetUnloadingPermitByCode;
 using Sepehr.Application.Features.UnloadingPermits.Queries.GetUnloadingPermitById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

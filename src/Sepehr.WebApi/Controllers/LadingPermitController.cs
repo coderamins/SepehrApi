@@ -6,7 +6,7 @@ using Sepehr.Application.Features.LadingPermits.Command.RevokeLadingPermit;
 using Sepehr.Application.Features.LadingPermits.Command.UpdateLadingPermit;
 using Sepehr.Application.Features.LadingPermits.Queries.GetAllLadingPermits;
 using Sepehr.Application.Features.LadingPermits.Queries.GetLadingPermitById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

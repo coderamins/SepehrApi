@@ -8,7 +8,7 @@ using Sepehr.Application.Features.EntrancePermits.Queries.GetEntrancePermitById;
 using Sepehr.Application.Features.Incomes.Queries.GetIncomeById;
 using Sepehr.Application.Features.OrganizationBanks.Command.CreateOrganizationBank;
 using Sepehr.Application.Features.TransferRemittances.Queries.GetAllTransferRemittances;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Sepehr.WebApi.Controller;
 using Swashbuckle.AspNetCore.Annotations;
 

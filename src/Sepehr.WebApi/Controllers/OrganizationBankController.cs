@@ -5,7 +5,7 @@ using Sepehr.Application.Features.OrganizationBanks.Command.DeleteOrganizationBa
 using Sepehr.Application.Features.OrganizationBanks.Command.UpdateOrganizationBank;
 using Sepehr.Application.Features.OrganizationBanks.Queries.GetAllOrganizationBanks;
 using Sepehr.Application.Features.OrganizationBanks.Queries.GetOrganizationBankById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

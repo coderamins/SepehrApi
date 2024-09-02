@@ -7,7 +7,7 @@ using Sepehr.Application.Features.ProductSuppliers.Command.UpdateProductSupplier
 using Sepehr.Application.Features.ProductSuppliers.Queries.GetAllProducts;
 using Sepehr.Application.Features.ProductSuppliers.Queries.GetAllProductSuppliers;
 using Sepehr.Application.Features.ProductSuppliers.Queries.GetProductSupplierById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

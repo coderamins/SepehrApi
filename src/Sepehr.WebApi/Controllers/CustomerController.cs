@@ -6,7 +6,7 @@ using Sepehr.Application.Features.Customers.Command.DeleteCustomerById;
 using Sepehr.Application.Features.Customers.Command.UpdateCustomer;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
 using Sepehr.Application.Features.Customers.Queries.GetCustomerById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 

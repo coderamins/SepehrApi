@@ -8,7 +8,7 @@ using Sepehr.Application.Features.ReceivePays.Command.DeleteReceivePayById;
 using Sepehr.Application.Features.ReceivePays.Command.UpdateReceivePay;
 using Sepehr.Application.Features.ReceivePays.Queries.GetAllReceivePays;
 using Sepehr.Application.Features.ReceivePays.Queries.GetReceivePayById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller

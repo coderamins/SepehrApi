@@ -5,7 +5,7 @@ using Sepehr.Application.Features.Brands.Command.DeleteBrandById;
 using Sepehr.Application.Features.Brands.Command.UpdateBrand;
 using Sepehr.Application.Features.Brands.Queries.GetAllBrands;
 using Sepehr.Application.Features.Brands.Queries.GetBrandById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

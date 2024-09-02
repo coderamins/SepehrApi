@@ -36,10 +36,11 @@ namespace Sepehr.Application.Features.CashDesks.Queries.GetAllCashDesks
         {
             try
             {
+                int TotalCount = 0;
                 var validFilter = _mapper.Map<GetAllCashDesksParameter>(request);
                 var cashDesk = 
-                    await _cashDeskRepository
-                    .LoadAllWithRelatedAsQueryableAsync<CashDesk>(request.PageNumber, request.PageSize);
+                    _cashDeskRepository
+                    .LoadAllWithRelatedAsQueryableAsync<CashDesk>(request.PageNumber, request.PageSize,out TotalCount);
 
                 cashDesk = cashDesk.Where((b => b.Id == validFilter.CashDeskId || validFilter.CashDeskId == null));
 

@@ -11,7 +11,7 @@ using Sepehr.Application.Features.Products.Command.UpdateProduct;
 using Sepehr.Application.Features.Products.Queries.GetAllProducts;
 using Sepehr.Application.Features.Products.Queries.GetProductById;
 using Serilog;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sepehr.Application.Features.ProductInventories.Command.CreateProductInventoryFromFile;
 using Sepehr.Application.Features.ProductPrices.Command.CreateProductPrice;
 using Sepehr.Application.Features.ProductPrices.Queries.GetAllProductPrices;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller

@@ -1,17 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sepehr.Application.Features.ApplicationRoles.Command.CreateApplicationRole;
 using Sepehr.Application.Features.ApplicationRoles.Command.DeleteApplicationRoleById;
 using Sepehr.Application.Features.ApplicationRoles.Command.UpdateApplicationRole;
 using Sepehr.Application.Features.ApplicationRoles.Queries.GetAllApplicationRoles;
 using Sepehr.Application.Features.ApplicationRoles.Queries.GetApplicationRoleById;
-using Sepehr.Application.Features.Products.Command.CreateProduct;
-using Sepehr.Application.Features.Products.Command.DeleteProductById;
-using Sepehr.Application.Features.Products.Command.UpdateProduct;
-using Sepehr.Application.Features.Products.Queries.GetAllProducts;
-using Sepehr.Application.Features.Products.Queries.GetProductById;
-using Sepehr.Infrastructure.Authentication;
-using Serilog;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

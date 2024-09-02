@@ -7,7 +7,7 @@ using Sepehr.Application.Features.LadingExitPermits.Command.RevokeLadingExitPerm
 using Sepehr.Application.Features.LadingExitPermits.Command.UpdateLadingExitPermit;
 using Sepehr.Application.Features.LadingExitPermits.Queries.GetAllLadingExitPermits;
 using Sepehr.Application.Features.LadingExitPermits.Queries.GetLadingExitPermitById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

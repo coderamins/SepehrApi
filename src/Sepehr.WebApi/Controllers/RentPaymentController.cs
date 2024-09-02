@@ -5,7 +5,7 @@ using Sepehr.Application.Features.RentPayments.Command.DeleteRentPaymentById;
 using Sepehr.Application.Features.RentPayments.Command.UpdateRentPayment;
 using Sepehr.Application.Features.RentPayments.Queries.GetAllRentPayments;
 using Sepehr.Application.Features.RentPayments.Queries.GetRentPaymentById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 using Serilog;
 
 namespace Sepehr.WebApi.Controller

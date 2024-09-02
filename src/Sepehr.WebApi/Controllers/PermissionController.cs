@@ -5,7 +5,7 @@ using Sepehr.Application.Features.Permissions.Command.DeletePermissionById;
 using Sepehr.Application.Features.Permissions.Command.UpdatePermission;
 using Sepehr.Application.Features.Permissions.Queries.GetAllPermissions;
 using Sepehr.Application.Features.Permissions.Queries.GetPermissionById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {

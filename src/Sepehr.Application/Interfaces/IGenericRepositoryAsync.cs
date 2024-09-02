@@ -16,7 +16,7 @@ namespace Sepehr.Application.Interfaces
         IQueryable<T> GetAllAsQueryable();
         Task<IReadOnlyList<T>> GetPagedReponseAsync(int pageNumber, int pageSize);
         Task<TEntity?> LoadSingleWithRelatedAsync<TEntity>(Guid Id,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : AuditableBaseEntity<Guid>;
-        Task<IQueryable<TEntity>> LoadAllWithRelatedAsQueryableAsync<TEntity>(int pageNumber, int pageSize,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class;
+        IQueryable<TEntity> LoadAllWithRelatedAsQueryableAsync<TEntity>(int pageNumber, int pageSize,out int TotalCount,params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class;
         Task<IEnumerable<TEntity>> LoadAllWithRelatedAsync<TEntity>(int pageNumber, int pageSize,
             params Expression<Func<TEntity, object>>[] expressionList) where TEntity : class;
         Task<IEnumerable<TEntity>> LoadAllWithRelatedAsync<TEntity>(

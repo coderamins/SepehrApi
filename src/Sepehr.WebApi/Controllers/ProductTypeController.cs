@@ -4,7 +4,7 @@ using Sepehr.Application.Features.ProductTypes.Command.DeleteProductTypeById;
 using Sepehr.Application.Features.ProductTypes.Command.UpdateProductType;
 using Sepehr.Application.Features.ProductTypes.Queries.GetAllProductTypes;
 using Sepehr.Application.Features.ProductTypes.Queries.GetProductTypeById;
-using Sepehr.Infrastructure.Authentication;
+using Sepehr.Application.Helpers;
 
 namespace Sepehr.WebApi.Controller
 {
