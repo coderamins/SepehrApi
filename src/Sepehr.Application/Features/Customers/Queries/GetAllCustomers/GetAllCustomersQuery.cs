@@ -56,7 +56,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
             return new PagedResponse<IEnumerable<CustomerViewModel>>(
                 customersViewModel, 
                 validFilter.PageNumber, 
-                validFilter.PageSize);
+                validFilter.PageSize, customers.Count());
         }
     }
 }

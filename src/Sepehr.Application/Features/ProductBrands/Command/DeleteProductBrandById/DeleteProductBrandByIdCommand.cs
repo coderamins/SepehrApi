@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.ProductBrands.Command.DeleteProductBrandBy
         : IRequestHandler<DeleteProductBrandByIdCommand, Response<bool>>
         {
             private readonly IProductBrandRepositoryAsync _productBrandRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteProductBrandByIdCommandHandler(
-                IProductBrandRepositoryAsync productBrandRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IProductBrandRepositoryAsync productBrandRepository
+                
             )
             {
-                _productBrandRepository = productBrandRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _productBrandRepository = productBrandRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +40,6 @@ namespace Sepehr.Application.Features.ProductBrands.Command.DeleteProductBrandBy
                 var productBrand = await _productBrandRepository.GetByIdAsync(command.Id);
                 if (productBrand == null)
                     new ErrorMessageFactory().MakeError("برند", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = productBrand.Id.ToString(), TableName = "productBrand" });
 
                 await _productBrandRepository.DeleteAsync(productBrand);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("برند", ErrorType.DeletedSuccess));

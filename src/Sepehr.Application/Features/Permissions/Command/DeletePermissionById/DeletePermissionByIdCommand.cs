@@ -20,15 +20,12 @@ namespace Sepehr.Application.Features.Permissions.Command.DeletePermissionById
         : IRequestHandler<DeletePermissionByIdCommand, Response<Guid>>
         {
             private readonly IPermissionRepositoryAsync _permissionRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
 
             public DeletePermissionByIdCommandHandler(
-                IPermissionRepositoryAsync permissionRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IPermissionRepositoryAsync permissionRepository
             )
             {
                 _permissionRepository = permissionRepository;
-                _tableRecordRemoval = tableRecordRemoval;
             }
 
             public async Task<Response<Guid>>
@@ -40,8 +37,6 @@ namespace Sepehr.Application.Features.Permissions.Command.DeletePermissionById
                 var permission = await _permissionRepository.GetByIdAsync(command.Id);
                 if (permission == null)
                     throw new ApiException($"دسترسی یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = permission.Id.ToString(), TableName = "permission" });
 
                 await _permissionRepository.DeleteAsync(permission);
                 return new Response<Guid>(permission.Id);

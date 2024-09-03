@@ -11,5 +11,6 @@ namespace Sepehr.Application.Interfaces.Repositories
     public interface ISaleReportRepository
     {
         Task<IEnumerable<SaleRepByProductTypeViewModel>> GetSaleReportByProductType(SaleReportByProductTypeParameter filter);
+        Task<IEnumerable<SaleStatusDiagramViewModel>> GetSaleStatusDiagram(SaleReportByProductTypeParameter validFilter);
     }
 }

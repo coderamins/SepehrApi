@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
@@ -32,7 +31,6 @@
     <ProjectReference Include="..\Sepehr.Domain\Sepehr.Domain.csproj" />
     <ProjectReference Include="..\Sepehr.Infrastructure.Persistence\Sepehr.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\Sepehr.Infrastructure\Sepehr.Infrastructure.csproj" />
-    <ProjectReference Include="..\Sepehr.Infrastructure.PersistenceLog\Sepehr.Infrastructure.PersistenceLog.csproj" />
   </ItemGroup>
 
   <ItemGroup>

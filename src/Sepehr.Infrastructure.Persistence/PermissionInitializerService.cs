@@ -1,14 +1,14 @@
 ﻿using Sepehr.Application.Interfaces;
+using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
+using Sepehr.Infrastructure.Persistence.Repositories;
 
 namespace Sepehr.Infrastructure.Persistence
 {
-    public class PermissionInitializerService: IPermissionInitializerService
+    public class PermissionInitializerService : GenericRepositoryAsync<Permission>, IPermissionInitializerService
     {
-        private readonly ApplicationDbContext _context;
-        public PermissionInitializerService(ApplicationDbContext context)
+        public PermissionInitializerService(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _context = context;
         }
     }
 }

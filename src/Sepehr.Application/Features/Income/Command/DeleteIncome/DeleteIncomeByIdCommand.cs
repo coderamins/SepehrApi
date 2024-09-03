@@ -21,15 +21,15 @@ namespace Sepehr.Application.Features.Incomes.Command.DeleteIncomeById
         : IRequestHandler<DeleteIncomeByIdCommand, Response<bool>>
         {
             private readonly IIncomeRepositoryAsync _incomeRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteIncomeByIdCommandHandler(
-                IIncomeRepositoryAsync incomeRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IIncomeRepositoryAsync incomeRepository
+                
             )
             {
                 _incomeRepository = incomeRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -42,11 +42,6 @@ namespace Sepehr.Application.Features.Incomes.Command.DeleteIncomeById
                 if (income == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درآمد", ErrorType.NotFound));
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo
-                {
-                    RemovedRecordId = income.Id.ToString(),
-                    TableName = "order"
-                });
                 await _incomeRepository.DeleteAsync(income);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("درآمد", ErrorType.DeletedSuccess));
             }

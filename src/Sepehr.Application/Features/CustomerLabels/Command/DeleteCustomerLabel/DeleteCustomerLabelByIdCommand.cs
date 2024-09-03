@@ -21,15 +21,15 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.DeleteCustomerLabel
         : IRequestHandler<DeleteCustomerLabelByIdCommand, Response<bool>>
         {
             private readonly ICustomerLabelRepositoryAsync _customerLabelRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteCustomerLabelByIdCommandHandler(
-                ICustomerLabelRepositoryAsync customerLabelRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ICustomerLabelRepositoryAsync customerLabelRepository
+                
             )
             {
                 _customerLabelRepository = customerLabelRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -42,11 +42,6 @@ namespace Sepehr.Application.Features.CustomerLabels.Command.DeleteCustomerLabel
                 if (customerLabel == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.NotFound));
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo
-                {
-                    RemovedRecordId = customerLabel.Id.ToString(),
-                    TableName = "order"
-                });
                 await _customerLabelRepository.DeleteAsync(customerLabel);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("برچسب مشتری", ErrorType.DeletedSuccess));
             }

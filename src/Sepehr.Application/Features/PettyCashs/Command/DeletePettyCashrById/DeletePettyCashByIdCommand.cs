@@ -21,15 +21,13 @@ namespace Sepehr.Application.Features.PettyCashs.Command.DeletePettyCashById
         : IRequestHandler<DeletePettyCashByIdCommand, Response<bool>>
         {
             private readonly IPettyCashRepositoryAsync _PettyCashRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeletePettyCashByIdCommandHandler(
-                IPettyCashRepositoryAsync PettyCashRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IPettyCashRepositoryAsync PettyCashRepository                
             )
             {
-                _PettyCashRepository = PettyCashRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _PettyCashRepository = PettyCashRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +39,6 @@ namespace Sepehr.Application.Features.PettyCashs.Command.DeletePettyCashById
                 var PettyCash = await _PettyCashRepository.GetByIdAsync(command.Id);
                 if (PettyCash == null)
                     new ErrorMessageFactory().MakeError("تنخواه گردان", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = PettyCash.Id.ToString(), TableName = "PettyCash" });
 
                 await _PettyCashRepository.DeleteAsync(PettyCash);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("تنخواه گردان", ErrorType.DeletedSuccess));

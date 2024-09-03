@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.DeletePer
         : IRequestHandler<DeletePersonnelPaymentRequestByIdCommand, Response<bool>>
         {
             private readonly IPersonnelPaymentRequestRepositoryAsync _personnelPaymentRequestRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
 
             public DeletePersonnelPaymentRequestByIdCommandHandler(
-                IPersonnelPaymentRequestRepositoryAsync personnelPaymentRequestRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IPersonnelPaymentRequestRepositoryAsync personnelPaymentRequestRepository
+                
             )
             {
                 _personnelPaymentRequestRepository = personnelPaymentRequestRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +40,6 @@ namespace Sepehr.Application.Features.PersonnelPaymentRequests.Command.DeletePer
                 var personnelPaymentRequest = await _personnelPaymentRequestRepository.GetByIdAsync(command.Id);
                 if (personnelPaymentRequest == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.NotFound));
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = personnelPaymentRequest.Id.ToString(), TableName = "personnelPaymentRequest" });
 
                 await _personnelPaymentRequestRepository.DeleteAsync(personnelPaymentRequest);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("درخواست پرداخت", ErrorType.DeletedSuccess));

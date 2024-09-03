@@ -6,6 +6,7 @@ using Sepehr.Application.Features.Costs.Command.UpdateCost;
 using Sepehr.Application.Features.Costs.Queries.GetAllCosts;
 using Sepehr.Application.Features.Costs.Queries.GetCostById;
 using Sepehr.Application.Helpers;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sepehr.WebApi.Controller
 {
@@ -14,6 +15,7 @@ namespace Sepehr.WebApi.Controller
     {
 
         [HasPermission("GetAllCosts")]
+        [SwaggerOperation("لیست هزینه ها")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {

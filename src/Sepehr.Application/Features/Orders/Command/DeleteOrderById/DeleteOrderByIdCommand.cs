@@ -20,18 +20,18 @@ namespace Sepehr.Application.Features.Orders.Command.DeleteOrderById
         : IRequestHandler<DeleteOrderByIdCommand, Response<long>>
         {
             private readonly IOrderRepositoryAsync _OrderRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
             private readonly IProductInventoryRepositoryAsync _productInventory;
 
             public DeleteOrderByIdCommandHandler(
                 IOrderRepositoryAsync OrderRepository,
-                IProductInventoryRepositoryAsync productInventory,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IProductInventoryRepositoryAsync productInventory
+                
             )
             {
                 _OrderRepository = OrderRepository;
                 _productInventory = productInventory;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<long>>
@@ -47,7 +47,6 @@ namespace Sepehr.Application.Features.Orders.Command.DeleteOrderById
                 if (order == null)
                     throw new ApiException($"سفارش یافت نشد !");
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = order.Id.ToString(), TableName = "order" });
                 await _OrderRepository.DeleteAsync(order);
                 return new Response<long>("سفارش با موفقیت حذف شد .");
             }

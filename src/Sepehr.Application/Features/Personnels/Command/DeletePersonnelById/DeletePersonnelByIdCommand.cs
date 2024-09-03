@@ -20,15 +20,13 @@ namespace Sepehr.Application.Features.Personnels.Command.DeletePersonnelById
         : IRequestHandler<DeletePersonnelByIdCommand, Response<Guid>>
         {
             private readonly IPersonnelRepositoryAsync _personnelRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeletePersonnelByIdCommandHandler(
-                IPersonnelRepositoryAsync personnelRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IPersonnelRepositoryAsync personnelRepository                
             )
             {
-                _personnelRepository = personnelRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _personnelRepository = personnelRepository;                
             }
 
             public async Task<Response<Guid>>
@@ -40,8 +38,6 @@ namespace Sepehr.Application.Features.Personnels.Command.DeletePersonnelById
                 var personnel = await _personnelRepository.GetByIdAsync(command.Id);
                 if (personnel == null)
                     throw new ApiException($"مشتری یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = personnel.Id.ToString(), TableName = "personnel" });
 
                 await _personnelRepository.DeleteAsync(personnel);
                 return new Response<Guid>(personnel.Id);

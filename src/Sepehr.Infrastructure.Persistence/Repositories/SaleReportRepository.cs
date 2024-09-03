@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Features.Reports.SaleReport;
 using Sepehr.Application.Interfaces.Repositories;
+using Sepehr.Domain;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
@@ -34,20 +35,29 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             var _saleRep = await
                 _orderDetail.Include(x => x.ProductBrand).ThenInclude(x => x.Product).ThenInclude(x => x.ProductType)
-                .GroupBy(x => new { x.ProductBrand.Product.ProductType.Desc/*,SaleAmount=x.*/ })
+                .Where(o =>
+                    (o.Order.Created.Date >= filter.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.FromDate) &&
+                    (o.Order.Created.Date <= filter.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.ToDate))
+                 ))
+                //.GroupBy(x => new { x.ProductBrand.Product.ProductType.Desc/*,SaleAmount=x.*/ })
                 .ToListAsync();
 
             List<SaleRepByProductTypeViewModel> _saleReport = new List<SaleRepByProductTypeViewModel>();
-            foreach (var item in _saleRep)
-            {
-                _saleReport.Add(new SaleRepByProductTypeViewModel
-                {
-                    ProductTypeDesc= item.Key.Desc,
-                    SaleAmount= item.Sum(x=>x.ProximateAmount),
-                });
-            }
+            //foreach (var item in _saleRep)
+            //{
+            //    _saleReport.Add(new SaleRepByProductTypeViewModel
+            //    {
+            //        ProductTypeDesc = item.Key.Desc,
+            //        SaleAmount = item.Sum(x => x.ProximateAmount),
+            //    });
+            //}
 
             return _saleReport;
+        }
+
+        public async Task<IEnumerable<SaleStatusDiagramViewModel>> GetSaleStatusDiagram(SaleReportByProductTypeParameter validFilter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

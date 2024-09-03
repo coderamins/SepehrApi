@@ -19,15 +19,13 @@ namespace Sepehr.Application.Features.EntrancePermits.Command.DeleteEntrancePerm
         : IRequestHandler<DeleteEntrancePermitByIdCommand, Response<bool>>
         {
             private readonly IEntrancePermitRepositoryAsync _EntrancePermitRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteEntrancePermitByIdCommandHandler(
-                IEntrancePermitRepositoryAsync EntrancePermitRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IEntrancePermitRepositoryAsync EntrancePermitRepository                
             )
             {
-                _EntrancePermitRepository = EntrancePermitRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _EntrancePermitRepository = EntrancePermitRepository;                
             }
 
             public async Task<Response<bool>>

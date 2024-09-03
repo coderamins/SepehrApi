@@ -21,15 +21,13 @@ namespace Sepehr.Application.Features.Warehouses.Command.DeleteWarehouseById
         : IRequestHandler<DeleteWarehouseByIdCommand, Response<bool>>
         {
             private readonly IWarehouseRepositoryAsync _WarehouseRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteWarehouseByIdCommandHandler(
-                IWarehouseRepositoryAsync WarehouseRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IWarehouseRepositoryAsync WarehouseRepository                
             )
             {
-                _WarehouseRepository = WarehouseRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _WarehouseRepository = WarehouseRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +39,6 @@ namespace Sepehr.Application.Features.Warehouses.Command.DeleteWarehouseById
                 var Warehouse = await _WarehouseRepository.GetByIdAsync(command.Id);
                 if (Warehouse == null)
                     new ErrorMessageFactory().MakeError("انبار", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = Warehouse.Id.ToString(), TableName = "Warehouse" });
 
                 await _WarehouseRepository.DeleteAsync(Warehouse);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("انبار", ErrorType.DeletedSuccess));

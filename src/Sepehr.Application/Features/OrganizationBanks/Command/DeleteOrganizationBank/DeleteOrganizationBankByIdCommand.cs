@@ -21,15 +21,15 @@ namespace Sepehr.Application.Features.OrganizationBanks.Command.DeleteOrganizati
         : IRequestHandler<DeleteOrganizationBankByIdCommand, Response<bool>>
         {
             private readonly IOrganizationBankRepositoryAsync _organizationBankRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteOrganizationBankByIdCommandHandler(
-                IOrganizationBankRepositoryAsync organizationBankRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IOrganizationBankRepositoryAsync organizationBankRepository
+                
             )
             {
                 _organizationBankRepository = organizationBankRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -42,11 +42,6 @@ namespace Sepehr.Application.Features.OrganizationBanks.Command.DeleteOrganizati
                 if (organizationBank == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("بانک", ErrorType.NotFound));
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo
-                {
-                    RemovedRecordId = organizationBank.Id.ToString(),
-                    TableName = "order"
-                });
                 await _organizationBankRepository.DeleteAsync(organizationBank);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("بانک", ErrorType.DeletedSuccess));
             }
