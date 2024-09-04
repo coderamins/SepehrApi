@@ -1,19 +1,18 @@
-//__________________  __________                                                                                                                       ____________
-//__________________ |    ____  \  \                  /  /\ \                      //////     __________________              o   o o  o            |               \\
-//     |     |       |  |        |  |                /  /  \ \                  ///           __________________         o                  o       |   |            \\ 
-//     |     |       |  |        /  /               /  /    \ \              ///                    |    |             o                       o    |   |            \\ 
-//     |     |       |  |       /  /               /  /      \ \           ///                      |    |            o                         o   |   |            \\
-//     |     |       |  |      /  /               /  /        \ \         ///                       |    |           o                           o  |   |           \\
-//     |     |       |  |      \  \              /  / =======  \ \       ///                        |    |           o                            o |   |           \\ 
-//     |     |       |  |       \  \            /  / ========== \ \      ///                        |    |           o                            o |   |            \\
-//     |     |       |  |        \  \          /  /              \ \      ///                       |    |           o                            o |   |             \\
-//     |     |       |  |         \  \        /  /                \ \      ///                      |    |            o                          o  |   |              \\
-//     |     |       |  |          \  \      /  /                  \ \       ///                    |    |             o                        o   |   |               \\
-//     |     |       |  |           \  \    /  /                    \ \         ///                 |    |               o                     o    |   |                 \\
-//     |     |       |  |            \  \  /  /                      \ \           /////            |    |                 o                  o     |   |                  \\
-//     |     |       |  |             \  \/  /                        \ \                           |    |                      o    o   o          |   |                   \\
-//                                   ____________________________  _____________________________   _____________________________   
-//                                   ____________________________  _____________________________   _____________________________   
+//  __________________  __________                                                                                                                       ____________
+//  __________________ |    ____  \  \                  /  /\ \                      //////     __________________              o   o o  o            |               \\
+//       |     |       |  |        |  |                /  /  \ \                  ///           __________________         o                  o       |   |            \\ 
+//       |     |       |  |        /  /               /  /    \ \              ///                    |    |             o                       o    |   |            \\ 
+//       |     |       |  |       /  /               /  /      \ \           ///                      |    |            o                         o   |   |            \\
+//       |     |       |  |      /  /               /  /        \ \         ///                       |    |           o                           o  |   |           \\
+//       |     |       |  |      \  \              /  / =======  \ \       ///                        |    |           o                            o |   |           \\ 
+//       |     |       |  |       \  \            /  / ========== \ \      ///                        |    |           o                            o |   |            \\
+//       |     |       |  |        \  \          /  /              \ \      ///                       |    |           o                            o |   |             \\
+//       |     |       |  |         \  \        /  /                \ \      ///                      |    |            o                          o  |   |              \\
+//       |     |       |  |          \  \      /  /                  \ \       ///                    |    |             o                        o   |   |               \\
+//       |     |       |  |           \  \    /  /                    \ \         ///                 |    |               o                     o    |   |                 \\
+//       |     |       |  |            \  \  /  /                      \ \           /////            |    |                 o                  o     |   |                  \\
+//       |     |       |  |             \  \/  /                        \ \                           |    |                      o    o   o          |   |                   \\
+
 using Sepehr.Application;
 using Sepehr.Infrastructure;
 using Sepehr.Application.Interfaces;
@@ -78,9 +77,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddApiVersioningExtension();
 builder.Services.AddHealthChecks();
 
-//builder.Services.AddSingleton<ApplicationDbContext>();
+builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddSingleton<DapperContext>();
-builder.Services.AddSingleton<IAuthenticatedUserService, Sepehr.WebApi.Services.AuthenticatedUserService>();
+builder.Services.AddTransient<IAuthenticatedUserService, AuthenticatedUserService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDistributedMemoryCache();
@@ -89,7 +88,7 @@ builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => n
 
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<ApplicationDbContext>();
-builder.Services.AddHostedService<PermissionDiscoveryService>();
+//builder.Services.AddHostedService<PermissionDiscoveryService>();
 
 //configureLogging();
 builder.Host.UseSerilog();

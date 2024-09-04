@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.WebApi", "src\Sepehr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2E8553C6-1175-4ADA-80BC-F336635AF7EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sepehr.TestApi", "test\Sepehr.TestApi\Sepehr.TestApi.csproj", "{23D21F09-FBEB-44E9-A203-8A408D067C4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.TestApi", "test\Sepehr.TestApi\Sepehr.TestApi.csproj", "{23D21F09-FBEB-44E9-A203-8A408D067C4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
