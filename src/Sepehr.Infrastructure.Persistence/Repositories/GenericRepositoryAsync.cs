@@ -76,8 +76,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             TotalCount = query.Count();
 
             return query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                //.Skip((pageNumber - 1) * pageSize)
+                //.Take(pageSize)
                 .AsNoTracking()
                 .AsQueryable();
         }

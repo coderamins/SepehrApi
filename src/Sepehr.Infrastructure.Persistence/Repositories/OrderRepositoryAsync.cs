@@ -534,9 +534,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (inv != null)
                 {
                     inv.ApproximateInventory -= item.AlternativeProductAmount == 0 ? (double)item.ProximateAmount : (double)item.AlternativeProductAmount;
-                }
-
-                _officialWarehosesInv.Update(inv);
+                    _officialWarehosesInv.Update(inv);
+                }                
             }
             _orders.Update(order);
             await _dbContext.SaveChangesAsync();

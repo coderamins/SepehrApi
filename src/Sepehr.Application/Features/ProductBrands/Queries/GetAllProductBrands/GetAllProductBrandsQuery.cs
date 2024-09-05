@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
@@ -26,53 +27,64 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
         }
 
         public async Task<PagedResponse<IEnumerable<ProductBrandViewModel>>> Handle(
-            GetAllProductBrandsQuery request, 
+            GetAllProductBrandsQuery request,
             CancellationToken cancellationToken)
         {
             try
             {
+                List<ProductBrandViewModel> result = new List<ProductBrandViewModel>();
+
                 var validFilter = _mapper.Map<GetAllProductBrandsParameter>(request);
                 int TotalCount = 0;
 
-                var productBrands = 
+                var productBrands =
                     _productBrandRepository
                     .LoadAllWithRelatedAsQueryableAsync<ProductBrand>(request.PageNumber, request.PageSize,
                     out TotalCount,
                     p => p.Product,
                     p => p.Product.ProductType,
                     p => p.Product.ProductMainUnit,
-                    p=> p.Product.ProductSubUnit,
+                    p => p.Product.ProductSubUnit,
                     p => p.Brand);
 
-                var whereClause = "";
-                foreach (var keyword in validFilter.Keyword)
-                {
-                    whereClause += $" AND ProductName LIKE '%{keyword}%'";
-                }
-
+                var queryResult = new List<ProductBrand>();
+                var query = productBrands;
                 foreach (var item in validFilter.Keyword.Split(' '))
                 {
-                    productBrands = productBrands.Where(
+                    query = query.Where(
                         (b =>
                             b.Product.ProductCode.ToString().Contains(item) ||
                             b.Product.ProductName.Contains(item) ||
                             b.Brand.Name.Contains(item) ||
                             b.Product.ProductType.Desc.Contains(item) ||
-                            string.IsNullOrEmpty(item));
+                            string.IsNullOrEmpty(item)));
+
+                    queryResult.AddRange(query);
                 }
 
-                productBrands = productBrands.Where(b => b.ProductId == validFilter.ProductId || validFilter.ProductId == null);
+                queryResult.AddRange(productBrands.Where(b => b.ProductId == validFilter.ProductId || validFilter.ProductId == null));
 
-                var productBrandsViewModel = _mapper.Map<IEnumerable<ProductBrandViewModel>>(
-                             productBrands.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                             .Take(validFilter.PageSize).OrderByDescending(x=>x.Id));
+                var unique_result = queryResult.DistinctBy(x => x.Id);
+                TotalCount = unique_result.Count();
+
+                unique_result = validFilter.PageSize > 0 ? unique_result.Skip((validFilter.PageNumber - 1) * validFilter.PageSize).Take(validFilter.PageSize) :
+                    unique_result;
+
+                result = _mapper.Map<List<ProductBrandViewModel>>(
+                        unique_result.OrderByDescending(x => x.Id));
+
+                foreach (var item in validFilter.Keyword.Split(' '))
+                {
+                    result = result
+                    .OrderByDescending(x => x.ProductName.Contains(item) ? 1 : 0).ToList();
+                }
 
                 return new PagedResponse<IEnumerable<ProductBrandViewModel>>(
-                    productBrandsViewModel,
+                    result,
                     validFilter.PageNumber,
-                    validFilter.PageSize,TotalCount);
+                    validFilter.PageSize, TotalCount);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
 
                 throw;

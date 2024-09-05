@@ -49,8 +49,8 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
             var validFilter = _mapper.Map<GetAllCustomersParameter>(request);
             var customers = await _customerRepository.GetAllCustomers(validFilter);
               
-            var customersViewModel = _mapper.Map<IEnumerable<CustomerViewModel>>(
-                    customers.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+            var customersViewModel = _mapper.Map<IEnumerable<CustomerViewModel>>(validFilter.PageSize<=0 ? customers:
+                customers.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                     .Take(validFilter.PageSize).ToList());
 
             return new PagedResponse<IEnumerable<CustomerViewModel>>(

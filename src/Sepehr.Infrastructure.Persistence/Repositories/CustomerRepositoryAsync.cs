@@ -57,6 +57,24 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<IQueryable<Customer>> GetAllCustomers(GetAllCustomersParameter filter)
         {
+            filter.Keyword = filter.Keyword.Replace("ﮎ", "ک")
+                  .Replace("ﮏ", "ک")
+                  .Replace("ﮐ", "ک")
+                  .Replace("ﮑ", "ک")
+                  .Replace("ك", "ک")
+                  .Replace("ي", "ی")
+                  .Replace("ئ", "ی")
+                  .Replace("ى", "ی")
+                  .Replace(" ", " ")
+                  .Replace("‌", " ")
+                  .Replace("ٔ", "")
+                  .Replace("ھ", "ه")
+                  .Replace("دِ", "د")
+                  .Replace("بِ", "ب")
+                  .Replace("زِ", "ز")
+                  .Replace("شِ", "ش")
+                  .Replace("سِ", "س");
+
             List<Guid> _label_purchased_customers = new List<Guid>();
             if (filter.ReportType == CustomerReportType.ReportByPurchaseHistory ||
                 filter.ReportType == CustomerReportType.BothOfThem)
@@ -72,7 +90,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     .Select(d => d.Order.CustomerId).ToListAsync();
             }
 
-            return _customers
+            var queryResult = new List<Customer>();
+
+            var customers = _customers
                 .Include(c => c.CustomerValidity)
                 .Include(c => c.ApplicationUser)
                 .Include(c => c.Phonebook).ThenInclude(p => p.PhoneNumberType)
@@ -83,12 +103,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(c => c.Phonebook)
                 .Include(c => c.CustomerWarehouses).ThenInclude(w => w.Warehouse).ThenInclude(w => w.WarehouseType)
             .Where(c =>
-                        ((c.OfficialName ?? "").Contains(filter.Keyword) ||
-                        c.NationalCode.Contains(filter.Keyword) ||
-                        c.CustomerCode.ToString().Contains(filter.Keyword) ||
-                        string.Concat(c.FirstName, " ", c.LastName).Contains(filter.Keyword) ||
-                        (c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(filter.Keyword)))) && 
-
                         (c.NationalCode == filter.NationalCode || string.IsNullOrEmpty(filter.NationalCode)) &&
                         (c.CustomerCode == filter.CustomerCode || filter.CustomerCode == null) &&
                         (string.Concat(c.FirstName, " ", c.LastName).Contains(filter.CustomerName) || string.IsNullOrEmpty(filter.CustomerName)) &&
@@ -99,6 +113,34 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             c.CustomerLabels.Select(l => l.CustomerLabelId).Contains((int)filter.CustomerLabelId) || filter.CustomerLabelId == null))
                         )
                 .OrderByDescending(p => p.Created).AsQueryable();
+
+            if (string.IsNullOrEmpty(filter.Keyword))
+                queryResult.AddRange(customers);
+
+            var query = customers;
+            foreach (var item in filter.Keyword.Split(' '))
+            {
+                query = query.Where(c =>
+                        ((c.OfficialName ?? "").Contains(item) ||
+                        c.NationalCode.Contains(item) ||
+                        c.CustomerCode.ToString().Contains(item) ||
+                        c.FirstName.Contains(item) ||
+                        c.LastName.Contains(item) ||
+                        (c.Phonebook != null && c.Phonebook.Any(p => p.PhoneNumber.Contains(item)))));
+
+                queryResult.AddRange(query);
+            }
+
+            
+            foreach (var item in filter.Keyword.Split(' '))
+            {
+                queryResult.OrderByDescending(x => string.Concat(x.FirstName,' ',x.LastName).Contains(item) ? 1 : 0)
+                    .ThenByDescending(x => x.NationalCode.Contains(item) ? 1 : 0)
+                    .ThenByDescending(x => x.CustomerCode.ToString().Contains(item) ? 1 : 0)
+                    .ToList();
+            }
+            
+            return queryResult.DistinctBy(x => x.Id).AsQueryable();
         }
 
         public async Task<Customer?> GetCustomerInfo(string nationalId)
@@ -159,14 +201,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Where(o =>
                     o.CustomerId == filter.CustomerId &&
                     (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
-                    (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)) 
+                    (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate))
                 ).ToListAsync();
 
             customerBalances.Add(new CustomerBalanceViewModel
             {
-                BalanceDate="",
-                Amount=cust_orders.Sum(o=>o.Details.Sum(d=>d.AlternativeProductBrand!=null ? d.AlternativeProductAmount:d.ProximateAmount)),
-                
+                BalanceDate = "",
+                Amount = cust_orders.Sum(o => o.Details.Sum(d => d.AlternativeProductBrand != null ? d.AlternativeProductAmount : d.ProximateAmount)),
+
             });
             //----لیست سفارشاتی که خروج داشته اند-----
             var cust_exited_cargo = await _dbContext.Set<Order>()
@@ -183,9 +225,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             //----لیست مجوز های خروج-----
             var exitPermits = await _dbContext.Set<LadingExitPermit>()
                                 .Include(x => x.LadingExitPermitDetails
-                                        .Where(x=>x.CargoAnnounceDetail.CargoAnnounce.Order.CustomerId==filter.CustomerId))
-                                .ThenInclude(x=>x.CargoAnnounceDetail).ThenInclude(x=>x.CargoAnnounce).ThenInclude(x=>x.Order)
-                                .Where(o => 
+                                        .Where(x => x.CargoAnnounceDetail.CargoAnnounce.Order.CustomerId == filter.CustomerId))
+                                .ThenInclude(x => x.CargoAnnounceDetail).ThenInclude(x => x.CargoAnnounce).ThenInclude(x => x.Order)
+                                .Where(o =>
                                 (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
                                 (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate)))
                                 .ToListAsync();
@@ -201,9 +243,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
             // بستانکاری مشتری
             //-----لیست سفارشات خرید از مشتری ------
-            var purchase_orders = 
+            var purchase_orders =
                 await _dbContext.Set<PurchaseOrder>()
-                .Where(o => 
+                .Where(o =>
                        o.CustomerId == filter.CustomerId &&
                        (o.Created.Date >= filter.BalanceFromDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceFromDate)) &&
                        (o.Created.Date <= filter.BalanceToDate.ToDateTime("00:00") || string.IsNullOrEmpty(filter.BalanceToDate))
@@ -238,7 +280,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             //return new CustomerBalanceViewModel
             //{
-                
+
             //};
             return null;
         }

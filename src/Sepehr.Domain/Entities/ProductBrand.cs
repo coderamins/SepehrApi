@@ -11,6 +11,7 @@ namespace Sepehr.Domain.Entities
     {
         public Guid ProductId { get; set; }
         public int BrandId { get; set;}
+        public string FullTextSearch { get; set; } = string.Empty;
 
 
         public required virtual Brand Brand { get; set; }
