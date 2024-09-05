@@ -22,6 +22,8 @@ namespace Sepehr.WebApi.Controller
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
                     ProductId=filter.ProductId,
+                    Keyword=filter.Keyword,
+
                 }));
         }
 

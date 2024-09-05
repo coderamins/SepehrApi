@@ -9,5 +9,6 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
     public class GetAllProductBrandsParameter :RequestParameter
     {
         public Guid? ProductId { get; set; }
+        public string Keyword { get; set; } = string.Empty;
     }
 }

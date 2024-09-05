@@ -85,7 +85,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<IDriverFareAmountApproveRepositoryAsync, DriverFareAmountApproveRepositoryAsync>();
             services.AddScoped<ICustomerLabelRepositoryAsync, CustomerLabelRepositoryAsync>();
             services.AddScoped<ISaleReportRepository, SaleReportRepository>();
-            services.AddSingleton<IPermissionInitializerService, PermissionInitializerService>();
+            services.AddScoped<IPermissionInitializerService, PermissionInitializerService>();
             #endregion
 
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

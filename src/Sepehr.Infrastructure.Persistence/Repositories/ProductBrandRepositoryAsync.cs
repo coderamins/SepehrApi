@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
 using Sepehr.Infrastructure.Persistence.Context;
@@ -12,6 +13,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public ProductBrandRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _productProductBrands = dbContext.Set<ProductBrand>();
+        }
+
+        public async Task<IEnumerable<ProductBrand>> GetAllProductBrands(GetAllProductBrandsParameter validFilter)
+        {
+            return _productProductBrands;
         }
 
         public async Task<List<ProductBrand>> GetAllProductProductBrands()

@@ -76,7 +76,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddApiVersioningExtension();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddTransient<ApplicationDbContext>();
+builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddTransient<IAuthenticatedUserService, AuthenticatedUserService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -86,7 +86,6 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => new Dictionary<string, UserChatConnection>());
 
 builder.Services.AddHealthChecks();
-builder.Services.AddSingleton<ApplicationDbContext>();
 //builder.Services.AddHostedService<PermissionDiscoveryService>();
 
 //configureLogging();
