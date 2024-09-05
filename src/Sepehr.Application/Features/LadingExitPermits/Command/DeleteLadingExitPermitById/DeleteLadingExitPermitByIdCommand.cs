@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.LadingExitPermits.Command.DeleteLadingExit
         : IRequestHandler<DeleteLadingExitPermitByIdCommand, Response<bool>>
         {
             private readonly ILadingExitPermitRepositoryAsync _ladingExitPermitRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteLadingExitPermitByIdCommandHandler(
-                ILadingExitPermitRepositoryAsync ladingExitPermitRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ILadingExitPermitRepositoryAsync ladingExitPermitRepository
+                
             )
             {
-                _ladingExitPermitRepository = ladingExitPermitRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _ladingExitPermitRepository = ladingExitPermitRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +40,6 @@ namespace Sepehr.Application.Features.LadingExitPermits.Command.DeleteLadingExit
                 var ladingExitPermit = await _ladingExitPermitRepository.GetByIdAsync(command.Id);
                 if (ladingExitPermit == null)
                     new ErrorMessageFactory().MakeError("مجوز خروج", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = ladingExitPermit.Id.ToString(), TableName = "ladingExitPermit" });
 
                 await _ladingExitPermitRepository.DeleteAsync(ladingExitPermit);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("مجوز خروج", ErrorType.DeletedSuccess));

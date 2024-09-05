@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.ShareHolders.Command.DeleteShareHolderById
         : IRequestHandler<DeleteShareHolderByIdCommand, Response<bool>>
         {
             private readonly IShareHolderRepositoryAsync _shareHolderRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteShareHolderByIdCommandHandler(
-                IShareHolderRepositoryAsync shareHolderRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IShareHolderRepositoryAsync shareHolderRepository                
             )
             {
                 _shareHolderRepository = shareHolderRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +40,6 @@ namespace Sepehr.Application.Features.ShareHolders.Command.DeleteShareHolderById
                 var shareHolder = await _shareHolderRepository.GetByIdAsync(command.Id);
                 if (shareHolder == null)
                     new ErrorMessageFactory().MakeError("سهامدار", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = shareHolder.Id.ToString(), TableName = "shareHolder" });
 
                 await _shareHolderRepository.DeleteAsync(shareHolder);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("سهامدار", ErrorType.DeletedSuccess));

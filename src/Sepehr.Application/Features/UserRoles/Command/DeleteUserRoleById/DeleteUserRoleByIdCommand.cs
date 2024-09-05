@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.UserRoles.Command.DeleteUserRoleById
         : IRequestHandler<DeleteUserRoleByIdCommand, Response<bool>>
         {
             private readonly IUserRoleRepositoryAsync _userRoleRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteUserRoleByIdCommandHandler(
-                IUserRoleRepositoryAsync userRoleRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IUserRoleRepositoryAsync userRoleRepository
+                
             )
             {
-                _userRoleRepository = userRoleRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _userRoleRepository = userRoleRepository;                
             }
 
             public async Task<Response<bool>>

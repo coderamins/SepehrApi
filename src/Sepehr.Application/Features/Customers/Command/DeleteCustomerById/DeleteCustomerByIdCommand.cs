@@ -20,15 +20,13 @@ namespace Sepehr.Application.Features.Customers.Command.DeleteCustomerById
         : IRequestHandler<DeleteCustomerByIdCommand, Response<Guid>>
         {
             private readonly ICustomerRepositoryAsync _customerRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
-
             public DeleteCustomerByIdCommandHandler(
-                ICustomerRepositoryAsync customerRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ICustomerRepositoryAsync customerRepository
+                
             )
             {
                 _customerRepository = customerRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<Guid>>
@@ -40,8 +38,6 @@ namespace Sepehr.Application.Features.Customers.Command.DeleteCustomerById
                 var customer = await _customerRepository.GetByIdAsync(command.Id);
                 if (customer == null)
                     throw new ApiException($"مشتری یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = customer.Id.ToString(), TableName = "customer" });
 
                 await _customerRepository.DeleteAsync(customer);
                 return new Response<Guid>(customer.Id);

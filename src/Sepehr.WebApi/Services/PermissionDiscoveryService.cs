@@ -1,48 +1,67 @@
-﻿using Sepehr.Application.DTOs.Permission;
+﻿using AutoMapper;
+using Sepehr.Application.DTOs.Permission;
 using Sepehr.Application.Helpers;
 using Sepehr.Application.Interfaces;
+using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.WebApi.Controller;
 using System.Reflection;
+using Swashbuckle.AspNetCore.Annotations;
+using Azure;
 
 namespace Sepehr.WebApi.Services
 {
     public class PermissionDiscoveryService : IHostedService
     {
         private readonly IPermissionInitializerService _permissionInitializerService;
+        private readonly IMapper _mapper;
 
-        public PermissionDiscoveryService(IPermissionInitializerService permissionInitializerService)
+        public PermissionDiscoveryService(IPermissionInitializerService permissionInitializerService, IMapper mapper)
         {
             _permissionInitializerService = permissionInitializerService;
+            _mapper = mapper;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
+            try
             {
-                var types = assembly.GetTypes()
-                    .Where(t => typeof(BaseApiController).IsAssignableFrom(t));
-
-                foreach (var type in types)
+                List<PermissionDto> permissions = new List<PermissionDto>();
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
                 {
-                    var methods = type.GetMethods();
-                    foreach (var method in methods)
-                    {
-                        var attribute = method.GetCustomAttribute<HasPermissionAttribute>();
+                    var types = assembly.GetTypes()
+                        .Where(t => typeof(BaseApiController).IsAssignableFrom(t));
 
-                        if (attribute != null)
+                    foreach (var type in types)
+                    {
+                        var methods = type.GetMethods();
+                        foreach (var method in methods)
                         {
-                            //var permission = new Permission
-                            //{
-                            //    Name = attribute.Policy
-                            //}; 
-                            //_dbContext.Permissions.Add(permission);
+                            var attribute = method.GetCustomAttribute<HasPermissionAttribute>();
+                            //var swagger_opt = method.GetCustomAttribute<ApiOperationAttribute>();
+
+                            if (attribute != null)
+                            {
+                                if (!string.IsNullOrEmpty(attribute.Policy))
+                                {
+                                    permissions.Add(new PermissionDto
+                                    {
+                                        Name = attribute.Policy
+                                    });
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-           // await _dbContext.SaveChangesAsync(cancellationToken);
+                var newPermissions = _mapper.Map<List<Permission>>(permissions);
+                await _permissionInitializerService.AddAsync(newPermissions);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

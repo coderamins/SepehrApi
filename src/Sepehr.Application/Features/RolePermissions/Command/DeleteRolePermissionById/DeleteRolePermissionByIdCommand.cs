@@ -20,15 +20,13 @@ namespace Sepehr.Application.Features.RolePermissions.Command.DeleteRolePermissi
         : IRequestHandler<DeleteRolePermissionByIdCommand, Response<Guid>>
         {
             private readonly IRolePermissionRepositoryAsync _rolePermissionRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteRolePermissionByIdCommandHandler(
-                IRolePermissionRepositoryAsync rolePermissionRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IRolePermissionRepositoryAsync rolePermissionRepository                
             )
             {
-                _rolePermissionRepository = rolePermissionRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _rolePermissionRepository = rolePermissionRepository;                
             }
 
             public async Task<Response<Guid>>
@@ -40,8 +38,6 @@ namespace Sepehr.Application.Features.RolePermissions.Command.DeleteRolePermissi
                 var rolePermission = await _rolePermissionRepository.GetByIdAsync(command.Id);
                 if (rolePermission == null)
                     throw new ApiException($"نقش دسترسی یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = rolePermission.Id.ToString(), TableName = "rolePermission" });
 
                 await _rolePermissionRepository.DeleteAsync(rolePermission);
                 return new Response<Guid>(rolePermission.Id);

@@ -20,15 +20,12 @@ namespace Sepehr.Application.Features.ApplicationRoles.Command.DeleteApplication
         : IRequestHandler<DeleteApplicationRoleByIdCommand, Response<bool>>
         {
             private readonly IApplicationRoleRepositoryAsync _applicationRoleRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
 
             public DeleteApplicationRoleByIdCommandHandler(
-                IApplicationRoleRepositoryAsync applicationRoleRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IApplicationRoleRepositoryAsync applicationRoleRepository
             )
             {
                 _applicationRoleRepository = applicationRoleRepository;
-                _tableRecordRemoval = tableRecordRemoval;
             }
 
             public async Task<Response<bool>>
@@ -40,8 +37,6 @@ namespace Sepehr.Application.Features.ApplicationRoles.Command.DeleteApplication
                 var applicationRole = await _applicationRoleRepository.GetByIdAsync(command.Id);
                 if (applicationRole == null)
                     throw new ApiException($"نقش یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = applicationRole.Id.ToString(), TableName = "applicationRole" });
 
                 await _applicationRoleRepository.DeleteAsync(applicationRole);
                 return new Response<bool>(true,"نقش با موفقیت حذف شد .");

@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.CashDesks.Command.DeleteCashDeskById
         : IRequestHandler<DeleteCashDeskByIdCommand, Response<bool>>
         {
             private readonly ICashDeskRepositoryAsync _cashDeskRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
 
             public DeleteCashDeskByIdCommandHandler(
-                ICashDeskRepositoryAsync cashDeskRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ICashDeskRepositoryAsync cashDeskRepository
+                
             )
             {
                 _cashDeskRepository = cashDeskRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -41,8 +40,6 @@ namespace Sepehr.Application.Features.CashDesks.Command.DeleteCashDeskById
                 var cashDesk = await _cashDeskRepository.GetByIdAsync(command.Id);
                 if (cashDesk == null)
                     new ErrorMessageFactory().MakeError("صندوق", ErrorType.NotFound);
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo { RemovedRecordId = cashDesk.Id.ToString(), TableName = "cashDesk" });
 
                 await _cashDeskRepository.DeleteAsync(cashDesk);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("صندوق", ErrorType.DeletedSuccess));

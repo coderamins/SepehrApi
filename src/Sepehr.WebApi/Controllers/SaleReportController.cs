@@ -25,6 +25,21 @@ namespace Sepehr.WebApi.Controller
                 }));
         }
 
+        [HasPermission("GetSaleStatusDiagram")]
+        [SwaggerOperation("نمودار وضعیت فروش")]
+        [HttpGet("GetSaleStatusDiagram")]
+        public async Task<IActionResult> GetSaleStatusDiagram([FromQuery] SaleReportByProductTypeParameter filter)
+        {
+            return Ok(await Mediator
+                .Send(new SaleReportByProductTypeQuery()
+                {
+                    FromDate = filter.FromDate,
+                    ToDate = filter.ToDate,
+                    OrderAmount = filter.OrderAmount,
+                    ProductTypeId = filter.ProductTypeId,
+                }));
+        }
+
 
     }
 }

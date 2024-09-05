@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\NewFolder\**" />
+    <EmbeddedResource Remove="Repositories\NewFolder\**" />
+    <None Remove="Repositories\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\AccountService.cs" />
     <Compile Remove="Services\PermissionScannerService.cs" />
     <Compile Remove="Services\UserRoleService.cs" />
@@ -19,10 +25,10 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.1" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.4" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
@@ -37,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Repositories\NewFolder\" />
   </ItemGroup>
 
 </Project>

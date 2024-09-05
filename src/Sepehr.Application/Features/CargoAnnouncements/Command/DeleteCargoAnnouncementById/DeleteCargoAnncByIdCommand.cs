@@ -20,16 +20,13 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.DeleteCargoAnno
         : IRequestHandler<DeleteCargoAnncByIdCommand, Response<bool>>
         {
             private readonly ICargoAnnouncementRepositoryAsync _cargoAnncRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
-
 
             public DeleteCargoAnncByIdCommandHandler(
-                ICargoAnnouncementRepositoryAsync CargoAnncRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ICargoAnnouncementRepositoryAsync CargoAnncRepository                
             )
             {
                 _cargoAnncRepository = CargoAnncRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>
@@ -40,13 +37,7 @@ namespace Sepehr.Application.Features.CargoAnnouncements.Command.DeleteCargoAnno
             {
                 var cargoAnnc = await _cargoAnncRepository.GetByIdAsync(command.Id);
                 if (cargoAnnc == null)
-                    throw new ApiException($"اعلام بار یافت نشد !");
-
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo
-                {
-                    RemovedRecordId = cargoAnnc.Id.ToString(),
-                    TableName = "order"
-                });
+                    throw new ApiException($"اعلام بار یافت نشد !");                
 
                 await _cargoAnncRepository.DeleteAsync(cargoAnnc);
                 return new Response<bool>("اعلام بار با موفقیت حذف شد .");

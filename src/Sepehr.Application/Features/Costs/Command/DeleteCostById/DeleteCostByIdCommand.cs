@@ -20,15 +20,13 @@ namespace Sepehr.Application.Features.Costs.Command.DeleteCostById
         : IRequestHandler<DeleteCostByIdCommand, Response<bool>>
         {
             private readonly ICostRepositoryAsync _costRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteCostByIdCommandHandler(
-                ICostRepositoryAsync costRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                ICostRepositoryAsync costRepository                
             )
             {
-                _costRepository = costRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _costRepository = costRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,11 +39,6 @@ namespace Sepehr.Application.Features.Costs.Command.DeleteCostById
                 if (cost == null)
                     throw new ApiException(new ErrorMessageFactory().MakeError("هزینه", ErrorType.NotFound));
 
-                await _tableRecordRemoval.AddAsync(new TableRecordRemovalInfo
-                {
-                    RemovedRecordId = cost.Id.ToString(),
-                    TableName = "order"
-                });
                 await _costRepository.DeleteAsync(cost);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("هزینه", ErrorType.DeletedSuccess));
             }

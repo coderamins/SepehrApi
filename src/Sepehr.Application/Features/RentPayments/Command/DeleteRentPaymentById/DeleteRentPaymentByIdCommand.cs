@@ -21,15 +21,14 @@ namespace Sepehr.Application.Features.RentPayments.Command.DeleteRentPaymentById
         : IRequestHandler<DeleteRentPaymentByIdCommand, Response<bool>>
         {
             private readonly IRentPaymentRepositoryAsync _rentPaymentRepository;
-            ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            
 
             public DeleteRentPaymentByIdCommandHandler(
-                IRentPaymentRepositoryAsync rentPaymentRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IRentPaymentRepositoryAsync rentPaymentRepository
+                
             )
             {
-                _rentPaymentRepository = rentPaymentRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                _rentPaymentRepository = rentPaymentRepository;                
             }
 
             public async Task<Response<bool>>
@@ -41,13 +40,6 @@ namespace Sepehr.Application.Features.RentPayments.Command.DeleteRentPaymentById
                 var rentPayment = await _rentPaymentRepository.GetByIdAsync(command.Id);
                 if (rentPayment == null)
                     new ErrorMessageFactory().MakeError("کرایه", ErrorType.NotFound);
-
-                await _tableRecordRemoval
-                    .AddAsync(new TableRecordRemovalInfo
-                    {
-                        RemovedRecordId = rentPayment.Id.ToString(),
-                        TableName = "rentPayment"
-                    });
 
                 await _rentPaymentRepository.DeleteAsync(rentPayment);
                 return new Response<bool>(true, new ErrorMessageFactory().MakeError("کرایه", ErrorType.DeletedSuccess));

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.10.35122.118
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.Infrastructure", "src\Sepehr.Infrastructure\Sepehr.Infrastructure.csproj", "{E3A90983-51A3-4678-92AF-8BCB781F9C30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.Infrastructure.Persistence", "src\Sepehr.Infrastructure.Persistence\Sepehr.Infrastructure.Persistence.csproj", "{5893EA84-017C-401A-9A9D-E7EC18B42D15}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.Infrastructure.PersistenceLog", "src\Sepehr.Infrastructure.PersistenceLog\Sepehr.Infrastructure.PersistenceLog.csproj", "{A4556254-65CC-4F55-A521-031CDF1D2F1A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.Infrastructure.Shared", "src\Sepehr.Infrastructure.Shared\Sepehr.Infrastructure.Shared.csproj", "{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5}"
 EndProject
@@ -45,10 +43,6 @@ Global
 		{5893EA84-017C-401A-9A9D-E7EC18B42D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5893EA84-017C-401A-9A9D-E7EC18B42D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5893EA84-017C-401A-9A9D-E7EC18B42D15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4556254-65CC-4F55-A521-031CDF1D2F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4556254-65CC-4F55-A521-031CDF1D2F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4556254-65CC-4F55-A521-031CDF1D2F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4556254-65CC-4F55-A521-031CDF1D2F1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,7 +64,6 @@ Global
 		{B86C1A5F-D3C4-4634-B532-DD72D0A4B832} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{E3A90983-51A3-4678-92AF-8BCB781F9C30} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{5893EA84-017C-401A-9A9D-E7EC18B42D15} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
-		{A4556254-65CC-4F55-A521-031CDF1D2F1A} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{B7456067-4D0A-451B-B1FB-6895DF976475} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{23D21F09-FBEB-44E9-A203-8A408D067C4A} = {2E8553C6-1175-4ADA-80BC-F336635AF7EE}

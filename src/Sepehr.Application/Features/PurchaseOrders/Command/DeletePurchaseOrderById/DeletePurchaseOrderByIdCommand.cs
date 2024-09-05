@@ -18,16 +18,15 @@ namespace Sepehr.Application.Features.PurchaseOrders.Command.DeletePurchaseOrder
         DeletePurchaseOrderByIdCommandHandler
         : IRequestHandler<DeletePurchaseOrderByIdCommand, Response<bool>>
         {
-            private readonly IPurchaseOrderRepositoryAsync _PurchaseOrderRepository;
-            private readonly ITableRecordRemovalRepositoryAsync _tableRecordRemoval;
+            private readonly IPurchaseOrderRepositoryAsync _PurchaseOrderRepository;            
 
             public DeletePurchaseOrderByIdCommandHandler(
-                IPurchaseOrderRepositoryAsync PurchaseOrderRepository,
-                ITableRecordRemovalRepositoryAsync tableRecordRemoval
+                IPurchaseOrderRepositoryAsync PurchaseOrderRepository
+                
             )
             {
                 _PurchaseOrderRepository = PurchaseOrderRepository;
-                _tableRecordRemoval = tableRecordRemoval;
+                
             }
 
             public async Task<Response<bool>>

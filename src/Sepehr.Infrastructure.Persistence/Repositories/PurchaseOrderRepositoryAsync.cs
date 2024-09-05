@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Sepehr.Application.DTOs.Email;
-using Sepehr.Application.DTOs.Sms;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Features.PurchaseOrders.Command.TransferPurchaseOrder;
 using Sepehr.Application.Features.PurchaseOrders.Queries.GetAllPurchaseOrders;
@@ -11,11 +8,8 @@ using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
-using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
 using System.Data;
-using System.Drawing.Printing;
-using System.Linq;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
