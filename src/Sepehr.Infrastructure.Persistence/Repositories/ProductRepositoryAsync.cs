@@ -139,7 +139,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
                                   (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1) 
-                                  {(filter.HasPurchaseInventory == true ? " and 1=-1" : "")} /*اگر محصولات دارای موجودی خرید درخواست شود از قسمت اول یونیون چشم پوشی می شود*/ ";
+                                  {(filter.HasPurchaseInventory == true ? " and 1=-1" : "")} ";
 
             var whereClauses = new List<string>();
             foreach (var word in words)
