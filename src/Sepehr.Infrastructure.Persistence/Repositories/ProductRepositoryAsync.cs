@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MailKit.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
 using Stimulsoft.System.Data.Sql;
+using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
@@ -90,7 +92,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             var words = Regex.Split(filter.Keyword ?? "", @"\W+").Where(w => !string.IsNullOrEmpty(w));
 
-
             var query = $@"select t1.Id as ProductId,
 	                            ProductCode,
                                 ProductName,
@@ -126,31 +127,31 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                 t5.WarehouseTypeId,
                                 0 as PurchaseInventory
                             from sepdb.Products as t1
-                            left join sepdb.OfficialWarehoseInventories as t3 on t3.ProductId=t1.Id
-							left join sepdb.Warehouses as t5 on t3.WarehouseId=t5.Id 
+                            join sepdb.OfficialWarehoseInventories as t3 on t3.ProductId=t1.Id
+							join sepdb.Warehouses as t5 on t3.WarehouseId=t5.Id 
 							left join sepdb.ProductStates as t6 on t6.Id=t1.ProductStateId
 							left join sepdb.ProductStandards as t7 on t7.Id=t1.ProductStandardId
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
-							where t1.IsActive=1 and t5.WarehouseTypeId={(int)EWarehouseType.Rasmi} and
+							where t1.IsActive=1 and  
+                                  ({filter.WarehouseTypeId ?? -1}={(int)EWarehouseType.Rasmi} or {filter.WarehouseTypeId ?? -1}=-1) and
                                   (t1.ProductName like N'%{filter.ProductName}%' or {(string.IsNullOrEmpty(filter.ProductName) ? '1' : '0')}=1) and
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
-                                  (t5.WarehouseTypeId={filter.WarehouseTypeId ?? -1} or {filter.WarehouseTypeId ?? -1}=-1) and
                                   (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1) 
                                   {(filter.HasPurchaseInventory == true ? " and 1=-1" : "")} /*اگر محصولات دارای موجودی خرید درخواست شود از قسمت اول یونیون چشم پوشی می شود*/ ";
 
             var whereClauses = new List<string>();
             foreach (var word in words)
             {
-                whereClauses.Add($" t1.ProductName LIKE N'%{word}%'");
+                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t5.Name LIKE N'%{word}%'");
             }
 
             string finalWhereClause = "";
             if (!string.IsNullOrEmpty(filter.Keyword))
             {
                 finalWhereClause = string.Join(" OR ", whereClauses);
-                query = string.Concat(query, " OR ", finalWhereClause);
+                query = string.Concat(query, " AND ", "(", finalWhereClause,")");
             }
 
             query = string.Concat(query, " union ");
@@ -183,10 +184,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                     t3.MinInventory,
                                     t3.OrderPoint,
                                     t4.Name as ProductBrandName,
-				                                t5.Name as WarehouseName,
-				                                t6.[Desc] as ProductStateDesc,
-				                                t7.[Desc] as ProductStandardDesc,
-				                                t8.Price as ProductPrice,
+				                    t5.Name as WarehouseName,
+				                    t6.[Desc] as ProductStateDesc,
+				                    t7.[Desc] as ProductStandardDesc,
+				                    t8.Price as ProductPrice,
                                     t5.WarehouseTypeId,
                                     t3.PurchaseInventory
                             from sepdb.Products as t1
@@ -213,32 +214,36 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             whereClauses = new List<string>();
             foreach (var word in words)
             {
-                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t4.Name LIKE N'%{word}%' OR t11.[Desc] LIKE N'%{word}%'");
+                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t4.Name LIKE N'%{word}%' OR t11.[Desc] LIKE N'%{word}%' OR t5.Name LIKE N'%{word}%'");
             }
-
 
             finalWhereClause = "";
             if (!string.IsNullOrEmpty(filter.Keyword))
             {
                 finalWhereClause = string.Join(" OR ", whereClauses);
-                query = string.Concat(query, " OR ", finalWhereClause);
+                query = string.Concat(query, " AND ", "(", finalWhereClause,")" );
             }
+
+            int offset = (filter.PageNumber - 1) * filter.PageSize;
 
             using (var connection = _dapContext.CreateConnection())
             {
-                //var products = await connection.QueryAsync<DapperProduct>(query);
-                //return products.OrderBy(x=>x.ProductName).OrderBy(p => p.ProductBrandName).OrderBy(x=>x.ProductTypeDesc).ToList();
+                var totalRecords = connection.ExecuteScalar<int>(string.Concat(@"select count(*) from (", query,") as t"));
 
-                var products = await connection.QueryAsync<DapperProduct>(query);
+                query = string.Concat(query, filter.PageSize == 0 ? "" :
+                             " order by ProductName,ProductBrandName,WarehouseName" +
+                             " OFFSET @offset ROWS " +
+                             " FETCH NEXT @pageSize ROWS ONLY ");
+
+                var products = await connection.QueryAsync<DapperProduct>(query, new { offset, filter.PageSize });
                 var results = products.Select(r => new
                 {
                     Result = r,
                     Score = words.Count(w => r.ProductName.Contains(w) || r.ProductBrandName.Contains(w) || r.ProductTypeDesc.Contains(w))
-                });
+                });                
 
                 // مرتب‌سازی نتایج بر اساس امتیاز
                 return results.OrderByDescending(r => r.Score).Select(r => r.Result);
-
             }
 
         }

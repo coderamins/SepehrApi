@@ -57,7 +57,6 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
                 IEnumerable<ProductViewModel> productViewModel = new List<ProductViewModel>();
                 var validFilter = _mapper.Map<GetAllProductsParameter>(request);
 
-                var product = await _productRepository.GetAllProducts(validFilter);
                 if (request.ByBrand == true)
                 {
                     var dapperProducts = await _productRepository.GetAllProductsByInventory(validFilter);
@@ -68,6 +67,8 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
                         validFilter.PageNumber,
                         validFilter.PageSize);
                 }
+
+                var product = await _productRepository.GetAllProducts(validFilter);
 
                 productViewModel = _mapper.Map<IEnumerable<ProductViewModel>>(product);
                 return new PagedResponse<IEnumerable<ProductViewModel>>(

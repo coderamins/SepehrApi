@@ -390,8 +390,17 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .HasForeignKey(d => d.PayToCustomerId);
 
             builder.Entity<Phonebook>()
-                .HasIndex(p => new { p.CustomerId,p.PhoneNumber, p.PhoneNumberTypeId })
+                .HasIndex(p => new { p.CustomerId, p.PhoneNumber, p.PhoneNumberTypeId })
                 .IsUnique();
+
+            builder.Entity<Product>()
+                .HasIndex(p => new { p.ProductName, p.ProductCode });
+
+            builder.Entity<Brand>()
+                .HasIndex(b => new { b.Name });
+
+            builder.Entity<Warehouse>()
+                .HasIndex(w => new { w.Name });
 
             builder.Entity<OrderDetail>()
             .HasOne(od => od.Order)
