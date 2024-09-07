@@ -12,15 +12,21 @@ namespace Sepehr.Infrastructure.Persistence.Seeds
             //Seed Default User
             var brands =
                 new List<InvoiceType> {
-                    new InvoiceType{Id=1,TypeDesc="رسمی"},
-                    new InvoiceType{Id=2,TypeDesc="غیر رسمی"}
+                    new InvoiceType{Id=1,TypeDesc="فاکتور مهفام"},
+                    new InvoiceType{Id=2,TypeDesc="بازرگانی"},
+                    new InvoiceType{Id=3,TypeDesc="فاکتور سپهر"}
                 };
 
             foreach (var item in brands)
             {
-                if (!applicationDbContext.InvoiceTypes.Where(b=>b.Id.Equals(item.Id)).Any())
+                var inv =await applicationDbContext.InvoiceTypes.FirstOrDefaultAsync(b => b.Id.Equals(item.Id));
+                if (inv==null)
                 {
                     applicationDbContext.InvoiceTypes.Add(item);
+                }else
+                {
+                    inv.TypeDesc=item.TypeDesc;
+                    applicationDbContext.InvoiceTypes.Update(inv);
                 }
                                 
                 await applicationDbContext.SaveChangesAsync();

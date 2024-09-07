@@ -10,6 +10,7 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels);
         Task<IQueryable<Customer>> GetAllCustomers(GetAllCustomersParameter filter);
         Task<List<CustomerBalanceViewModel>> GetCustomerBalance(GetCustomersBalanceParameter validFilter);
+        Task<IEnumerable<GetCustomerBillingViewModel>> GetCustomerBillingReport(GetCustomerBillingParameter validFilter);
         Task<Customer> GetCustomerInfo(string nationalId);
         Task<Customer?> GetCustomerInfo(Guid Id);
         Task<Customer> UpdateCustomer(Customer customer);

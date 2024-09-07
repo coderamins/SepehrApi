@@ -153,6 +153,7 @@ using Sepehr.Application.Features.PersonnelPaymentRequests.Command.UpdatePersonn
 using Sepehr.Application.Features.PersonnelPaymentRequests.Queries.GetAllPersonnelPaymentRequests;
 using Sepehr.Application.Features.Reports.SaleReport;
 using Sepehr.Application.DTOs.Permission;
+using Sepehr.Application.Features.Customers.Queries.GetCustomerBilling;
 
 namespace Sepehr.Application.Mapping
 {
@@ -583,6 +584,7 @@ namespace Sepehr.Application.Mapping
             #endregion
 
             #region Customers
+            CreateMap<GetCustomerBillingQuery, GetCustomerBillingParameter>();
             CreateMap<CustomerWarehouseDto, CustomerWarehouse>();
             CreateMap<CustomerDto, Customer>();
             
@@ -1387,6 +1389,7 @@ namespace Sepehr.Application.Mapping
 
             #region Sale Report گزارشات 
             CreateMap<SaleReportByProductTypeQuery, SaleReportByProductTypeParameter>();
+            CreateMap<SaleStatusDiagramQuery, SaleReportByProductTypeParameter>();
             #endregion
 
 

@@ -12,15 +12,14 @@ namespace Sepehr.WebApi.Controller
     {
         [HasPermission("GetSaleReportByProductType")]
         [SwaggerOperation("گزارش آمار فروش براساس نوع کالا")]
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] SaleReportByProductTypeParameter filter)
+        [HttpGet("GetSaleReportByProductType")]
+        public async Task<IActionResult> GetSaleReportByProductType([FromQuery] SaleReportByProductTypeParameter filter)
         {
             return Ok(await Mediator
                 .Send(new SaleReportByProductTypeQuery()
                 {
                     FromDate = filter.FromDate,
                     ToDate = filter.ToDate,
-                    OrderAmount = filter.OrderAmount,
                     ProductTypeId = filter.ProductTypeId,
                 }));
         }
@@ -31,11 +30,10 @@ namespace Sepehr.WebApi.Controller
         public async Task<IActionResult> GetSaleStatusDiagram([FromQuery] SaleReportByProductTypeParameter filter)
         {
             return Ok(await Mediator
-                .Send(new SaleReportByProductTypeQuery()
+                .Send(new SaleStatusDiagramQuery()
                 {
                     FromDate = filter.FromDate,
                     ToDate = filter.ToDate,
-                    OrderAmount = filter.OrderAmount,
                     ProductTypeId = filter.ProductTypeId,
                 }));
         }

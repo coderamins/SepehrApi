@@ -21,6 +21,7 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
         public bool? ByBrand { get; set; }
         public int? WarehouseId { get; set; }
         public long? OrderCode { get; set; }
+        public string? Keyword { get; set; } = string.Empty;
     }
     public class GetAllProductsByTypeQueryHandler :
          IRequestHandler<GetAllProductsByTypeQuery, Response<IEnumerable<ProductTypeViewModel>>>

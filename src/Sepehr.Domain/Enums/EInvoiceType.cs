@@ -8,7 +8,9 @@ namespace Sepehr.Domain.Enums
 {
     public enum EInvoiceType
     {
-        Formal=1,
-        InFormal = 2
+        Mahfam=1,
+        Bazargani = 2,
+        Sepehr=3
+
     }
 }

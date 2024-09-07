@@ -31,7 +31,7 @@ namespace Sepehr.Application.Features.Orders.Command.ApproveInvoiceType
                 try
                 {
                     var order = await _orderRepository.GetOrderForUpdateInvoiceType(command.OrderId);
-                    if (order.InvoiceTypeId != (int)EInvoiceType.Formal)
+                    if (order.InvoiceTypeId == (int)EInvoiceType.Bazargani)
                         throw new ApiException("فاکتور سفارش رسمی نمی باشد !");
 
                     if (order.OrderStatusId != (int)OrderStatusEnum.AccApproved)

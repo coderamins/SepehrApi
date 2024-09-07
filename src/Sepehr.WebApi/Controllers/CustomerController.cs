@@ -5,6 +5,7 @@ using Sepehr.Application.Features.Customers.Command.CreateCustomer;
 using Sepehr.Application.Features.Customers.Command.DeleteCustomerById;
 using Sepehr.Application.Features.Customers.Command.UpdateCustomer;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
+using Sepehr.Application.Features.Customers.Queries.GetCustomerBilling;
 using Sepehr.Application.Features.Customers.Queries.GetCustomerById;
 using Sepehr.Application.Helpers;
 using Serilog;
@@ -41,6 +42,20 @@ namespace Sepehr.WebApi.Controller
         public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await Mediator.Send(new GetCustomerByIdQuery { Id = id }));
+        }
+
+        // GET api/<controller>/5
+        [HasPermission("GetCustomerBillingReport")]
+        [HttpGet("GetCustomerBillingReport")]
+        public async Task<IActionResult> GetCustomerBillingReport([FromQuery] GetCustomerBillingParameter filter)
+        {
+            return Ok(await Mediator.Send(new GetCustomerBillingQuery 
+            { 
+                CustomerId = filter.CustomerId,
+                FromDate = filter.FromDate,
+                ToDate = filter.ToDate, 
+                BillingReportType=filter.BillingReportType,
+            }));
         }
 
         // POST api/<controller>

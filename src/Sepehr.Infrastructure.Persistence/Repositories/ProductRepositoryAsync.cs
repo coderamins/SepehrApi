@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using MailKit.Search;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.Order;
 using Sepehr.Application.Exceptions;
@@ -8,6 +10,8 @@ using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
+using Stimulsoft.System.Data.Sql;
+using System.Text.RegularExpressions;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
@@ -84,6 +88,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<DapperProduct>> GetAllProductsByInventory(GetAllProductsParameter filter)
         {
+            var words = Regex.Split(filter.Keyword ?? "", @"\W+").Where(w => !string.IsNullOrEmpty(w));
+
+
             var query = $@"select t1.Id as ProductId,
 	                            ProductCode,
                                 ProductName,
@@ -131,9 +138,24 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
                                   (t5.WarehouseTypeId={filter.WarehouseTypeId ?? -1} or {filter.WarehouseTypeId ?? -1}=-1) and
                                   (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1) 
-                                  {(filter.HasPurchaseInventory==true ? " and 1=-1":"")} /*اگر محصولات دارای موجودی خرید درخواست شود از قسمت اول یونیون چشم پوشی می شود*/
-                            union
-                            select  t1.Id as ProductId,
+                                  {(filter.HasPurchaseInventory == true ? " and 1=-1" : "")} /*اگر محصولات دارای موجودی خرید درخواست شود از قسمت اول یونیون چشم پوشی می شود*/ ";
+
+            var whereClauses = new List<string>();
+            foreach (var word in words)
+            {
+                whereClauses.Add($" t1.ProductName LIKE N'%{word}%'");
+            }
+
+            string finalWhereClause = "";
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                finalWhereClause = string.Join(" OR ", whereClauses);
+                query = string.Concat(query, " OR ", finalWhereClause);
+            }
+
+            query = string.Concat(query, " union ");
+
+            query += $@" select  t1.Id as ProductId,
                                     t1.ProductCode,
                                     ProductName,
                                     ProductTypeId,
@@ -178,7 +200,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 							left join sepdb.ProductUnits as t9 on t9.Id=t1.ProductMainUnitId 
 							left join sepdb.ProductUnits as t10 on t10.Id=t1.ProductSubUnitId 
                             left join sepdb.ProductTypes as t11 on t11.Id=t1.ProductTypeId
-                            {(filter.OrderCode==null ? "":
+                            {(filter.OrderCode == null ? "" :
                             $@"join sepdb.PurchaseOrderDetails as t12 on t12.ProductBrandId=t2.Id
                               join sepdb.PurchaseOrder as t13 on t13.Id=t12.OrderId and OrderCode={filter.OrderCode ?? -1}")}
 							where t1.IsActive=1 and
@@ -186,12 +208,37 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                   (t5.Id={filter.WarehouseId ?? -1} or {filter.WarehouseId ?? -1}=-1) and
                                   (t5.WarehouseTypeId={filter.WarehouseTypeId ?? -1} or {filter.WarehouseTypeId ?? -1}=-1) and
                                   (t1.ProductTypeId={filter.ProductTypeId ?? -1} or {filter.ProductTypeId ?? -1}=-1)                                   
-                                  {(filter.HasPurchaseInventory==true ? " and t3.PurchaseInventory>0":"")}";
-                
+                                  {(filter.HasPurchaseInventory == true ? " and t3.PurchaseInventory>0" : "")}";
+
+            whereClauses = new List<string>();
+            foreach (var word in words)
+            {
+                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t4.Name LIKE N'%{word}%' OR t11.[Desc] LIKE N'%{word}%'");
+            }
+
+
+            finalWhereClause = "";
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                finalWhereClause = string.Join(" OR ", whereClauses);
+                query = string.Concat(query, " OR ", finalWhereClause);
+            }
+
             using (var connection = _dapContext.CreateConnection())
             {
+                //var products = await connection.QueryAsync<DapperProduct>(query);
+                //return products.OrderBy(x=>x.ProductName).OrderBy(p => p.ProductBrandName).OrderBy(x=>x.ProductTypeDesc).ToList();
+
                 var products = await connection.QueryAsync<DapperProduct>(query);
-                return products.OrderBy(x=>x.ProductCode).ThenByDescending(p => p.ApproximateInventory).ToList();
+                var results = products.Select(r => new
+                {
+                    Result = r,
+                    Score = words.Count(w => r.ProductName.Contains(w) || r.ProductBrandName.Contains(w) || r.ProductTypeDesc.Contains(w))
+                });
+
+                // مرتب‌سازی نتایج بر اساس امتیاز
+                return results.OrderByDescending(r => r.Score).Select(r => r.Result);
+
             }
 
         }
@@ -241,7 +288,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public Task<List<ProductBrand>> GetProductBrands(List<OrderDetailRequest> details)
         {
             return _productBrands
-                .Include(b=>b.ProductInventories).ThenInclude(i=>i.Warehouse)
+                .Include(b => b.ProductInventories).ThenInclude(i => i.Warehouse)
                 .Where(p => details.Select(d => d.ProductBrandId).Contains(p.Id))
                 .ToListAsync();
         }

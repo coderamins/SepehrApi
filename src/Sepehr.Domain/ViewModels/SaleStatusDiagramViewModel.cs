@@ -10,6 +10,7 @@ namespace Sepehr.Domain.ViewModels
     {
         public string SaleDate { get; set; } = string.Empty;
         public decimal OrderAmount { get; set; }
-        public decimal Price { get; set; }
+        public string ProductTypeDesc { get; set; } = string.Empty;
+        public decimal Price { get; set; } 
     }
 }

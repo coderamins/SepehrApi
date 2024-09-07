@@ -9,6 +9,7 @@ namespace Sepehr.Domain.ViewModels
     public class SaleRepByProductTypeViewModel
     {
         public string ProductTypeDesc { get; set; } = string.Empty;
+        public string OrderDate { get; set; } = string.Empty;
         public decimal SaleAmount { get; set; }
     }
 }

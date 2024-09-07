@@ -25,6 +25,7 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
         public string ProductName { get; set; } = string.Empty;
         public bool? HasPurchaseInventory { get; set; }
         public long? OrderCode { get; set; }
+        public string? Keyword { get; set; } = string.Empty;
     }
     public class GetAllProductsQueryHandler :
          IRequestHandler<GetAllProductsQuery, PagedResponse<IEnumerable<ProductViewModel>>>

@@ -10,7 +10,6 @@ namespace Sepehr.Application.Features.Reports.SaleReport
     {
         public string FromDate { get; set; } = string.Empty;
         public string ToDate { get; set; } = string.Empty;
-        public decimal? OrderAmount { get; set; }
         public int? ProductTypeId { get; set; }
     }
     public class SaleReportByProductTypeQueryHandler :

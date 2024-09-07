@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Confluent.Kafka;
+using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.DTOs.CustomerWarehouse;
 using Sepehr.Application.Features.Customers.Queries.GetAllCustomers;
@@ -9,11 +11,13 @@ using Sepehr.Domain.Entities;
 using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
+using System.Data;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
     public class CustomerRepositoryAsync : GenericRepositoryAsync<Customer>, ICustomerRepositoryAsync
     {
+        private readonly DapperContext _dapContext;
         private readonly DbSet<Customer> _customers;
         private readonly DbSet<CustomerAssignedLabel> _customerAsignedLabel;
         private readonly DbSet<CustomerWarehouse> _customerWarehouses;
@@ -22,7 +26,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public CustomerRepositoryAsync(ApplicationDbContext dbContext, IMapper mapper) : base(dbContext)
+        public CustomerRepositoryAsync(ApplicationDbContext dbContext, IMapper mapper, DapperContext dapContext) : base(dbContext)
         {
             _customers = dbContext.Set<Customer>();
             _customerWarehouses = dbContext.Set<CustomerWarehouse>();
@@ -31,6 +35,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _customerLabel = dbContext.Set<CustomerLabel>();
             _dbContext = dbContext;
             _mapper = mapper;
+            _dapContext = dapContext;
         }
 
         public async Task<bool> AllocateCustomerWarehouses(Guid CustomerId, List<int> warehouses)
@@ -131,15 +136,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 queryResult.AddRange(query);
             }
 
-            
+
             foreach (var item in filter.Keyword.Split(' '))
             {
-                queryResult.OrderByDescending(x => string.Concat(x.FirstName,' ',x.LastName).Contains(item) ? 1 : 0)
+                queryResult.OrderByDescending(x => string.Concat(x.FirstName, ' ', x.LastName).Contains(item) ? 1 : 0)
                     .ThenByDescending(x => x.NationalCode.Contains(item) ? 1 : 0)
                     .ThenByDescending(x => x.CustomerCode.ToString().Contains(item) ? 1 : 0)
                     .ToList();
             }
-            
+
             return queryResult.DistinctBy(x => x.Id).AsQueryable();
         }
 
@@ -300,6 +305,51 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<GetCustomerBillingViewModel>> GetCustomerBillingReport(GetCustomerBillingParameter validFilter)
+        {
+            List<GetCustomerBillingViewModel> customerMovedInAdvanceBillingReport = new List<GetCustomerBillingViewModel>();
+            var proc_params = new DynamicParameters();
+
+            proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
+            proc_params.Add("@CustomerId", validFilter.CustomerId);
+            proc_params.Add("@ReportType", validFilter.BillingReportType);
+
+            using (var connection = _dapContext.CreateConnection())
+            {
+                customerMovedInAdvanceBillingReport = connection
+                    .Query<GetCustomerBillingViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+
+                foreach (var item in customerMovedInAdvanceBillingReport)
+                {
+                    item.WeightingDate_Shamsi = "";
+                    item.Created_Shamsi = item.Created.ToShamsiDate();
+                }
+            }
+
+
+            proc_params = new DynamicParameters();
+
+            proc_params.Add("@FromDate", validFilter.FromDate.ToDateTime("00:00"));
+            proc_params.Add("@ToDate", validFilter.ToDate.ToDateTime("00:00"));
+            proc_params.Add("@CustomerId", validFilter.CustomerId);
+            proc_params.Add("@ReportType", validFilter.BillingReportType);
+
+            DateTime defaultDate = new DateTime(1900, 1, 1);
+            using (var connection = _dapContext.CreateConnection())
+            {
+                var customebillingReport = connection
+                .Query<GetCustomerBillingViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+
+                foreach (var item in customebillingReport)
+                {
+                    item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate():"";
+                    item.Created_Shamsi = item.Created.ToShamsiDate();
+                }
+                return customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x=>x.Created);
+            }
+
         }
     }
 }

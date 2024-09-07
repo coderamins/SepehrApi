@@ -32,6 +32,7 @@ namespace Sepehr.WebApi.Controller
                     ProductName =filter.ProductName,
                     HasPurchaseInventory=filter.HasPurchaseInventory,
                     OrderCode=filter.OrderCode,
+                    Keyword = filter.Keyword,
                 }));
         }
 
@@ -46,6 +47,7 @@ namespace Sepehr.WebApi.Controller
                     WarehouseId = filter.WarehouseId,
                     OrderCode=filter.OrderCode,
                     ByBrand=filter.ByBrand,
+                    Keyword=filter.Keyword,
                 }));
         }
 

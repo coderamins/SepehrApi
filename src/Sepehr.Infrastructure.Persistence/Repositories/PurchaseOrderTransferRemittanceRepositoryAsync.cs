@@ -320,7 +320,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
 
                     //---------اگر فاکتور رسمی باشد باید موجودی انبار رسمی بروزرسانی شود------
-                    if (_tRemitt.TransferRemittance.PurchaseOrder.InvoiceTypeId == (int)EInvoiceType.Formal)
+                    if (_tRemitt.TransferRemittance.PurchaseOrder.InvoiceTypeId != (int)EInvoiceType.Bazargani)
                     {
                         #region در این قسمت از سفارش خرید مربوطه جزئیات کالا واکشی شده و به موجودی انبار رسمی باید اضافه شود
                         var po_Details = await _dbContext.Set<PurchaseOrderDetail>()
