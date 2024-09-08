@@ -473,7 +473,6 @@ namespace Sepehr.Infrastructure.Persistence.Context
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());
         }
-
     }
 
 

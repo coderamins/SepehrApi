@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sepehr.Domain.Settings;
 using Sepehr.Application.Interfaces;
 using Sepehr.Infrastructure.Shared.Services;
+using RestSharp;
 
 namespace Sepehr.Infrastructure.Shared
 {
@@ -16,6 +17,7 @@ namespace Sepehr.Infrastructure.Shared
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ISmsService, SmsService>();
+            services.AddTransient<IRestClient, RestClient>();
         }
     }
 }

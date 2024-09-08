@@ -8,7 +8,8 @@ namespace Sepehr.Application.DTOs.Sms
 {
     public class SmsRequest
     {
-        public required string Mobile { get; set; }
-        public required string Message { get; set; }
+        public required IEnumerable<string> mobiles { get; set; }
+        public required IEnumerable<string> messageTexts { get; set; }
+        public string LineNumber { get; set; } = "30004505000017";
     }
 }

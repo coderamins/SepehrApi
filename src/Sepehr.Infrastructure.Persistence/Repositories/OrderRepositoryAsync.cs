@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
+using Sepehr.Application.DTOs.Sms;
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Features.CargoAnnouncements.Queries.GetAllNotSendedOrders;
 using Sepehr.Application.Features.Orders.Queries.GetAllOrders;
@@ -70,9 +72,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     {
                         var prodEnvEntry = _productInventory.Entry(prodInventory);
                         prodEnvEntry.State = EntityState.Modified;
-                        
+
                         //-----اگر نوع انبار واسط باشد چون یک سفارش خرید براش ثبت شده باید ابتدا به موجودی تقریبی انبار اضافه شود-------
-                        if (_warehouses.Any(x=>x.Id== prodBrand.WarehouseId && x.WarehouseTypeId==(int)EWarehouseType.Vaseteh))
+                        if (_warehouses.Any(x => x.Id == prodBrand.WarehouseId && x.WarehouseTypeId == (int)EWarehouseType.Vaseteh))
                             prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
 
                         prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
@@ -85,14 +87,22 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             var newOrder = await _orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
-            //if (order.Customer != null)
-            //{
-            //    await _smsService.SendAsync(new SmsRequest
-            //    {
-            //        Mobile = order.Customer.Mobile,
-            //        Message = $"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
-            //    });
-            //}
+            
+            var customerPrimaryMobiles = _dbContext.Phonebook.Where(p => p.CustomerId == order.CustomerId &&
+                        p.PhoneNumberTypeId == (int)EPhoneNoType.Mobile && p.IsPrimary).ToList();
+
+
+            List<string> messages = new List<string>();
+            messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
+                , "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید"
+                , $"https://storm.net/order?id={order.Id}"));
+
+            messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
+            await _smsService.SendAsync(new SmsRequest
+            {
+                mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
+                messageTexts = messages
+            });
 
             return newOrder.Entity;
 
@@ -369,16 +379,17 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         _dbContext.PurchaseOrder.Remove(_dbContext.PurchaseOrder.First(p => p.Id == item.PurchaseOrderId));
 
 
-                        if (order.OrderTypeId == OrderType.Urgant || order.OrderTypeId == OrderType.PreSaleConverted) 
+                        if (order.OrderTypeId == OrderType.Urgant || order.OrderTypeId == OrderType.PreSaleConverted)
                         {
                             var prodInv = await _dbContext.ProductInventories
-                                .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.WarehouseId==item.WarehouseId);
-                            if (prodInv != null) {
+                                .FirstOrDefaultAsync(x => x.ProductBrandId == item.ProductBrandId && x.WarehouseId == item.WarehouseId);
+                            if (prodInv != null)
+                            {
                                 var prodInvEntry = _productInventory.Entry(prodInv);
 
                                 prodInv.ApproximateInventory -= item.ProximateAmount;
 
-                                prodInvEntry.State=EntityState.Modified;
+                                prodInvEntry.State = EntityState.Modified;
                                 prodInvEntry.CurrentValues.SetValues(prodInv);
                             }
                         }
@@ -535,7 +546,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 {
                     inv.ApproximateInventory -= item.AlternativeProductAmount == 0 ? (double)item.ProximateAmount : (double)item.AlternativeProductAmount;
                     _officialWarehosesInv.Update(inv);
-                }                
+                }
             }
             _orders.Update(order);
             await _dbContext.SaveChangesAsync();
@@ -599,9 +610,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task RevertOrderInvoiceType(Order order)
         {
-            var o = await _orders.FirstAsync(o => o.Id== order.Id);
-            var oEntry=_orders.Entry(o);
-            oEntry.State= EntityState.Modified;
+            var o = await _orders.FirstAsync(o => o.Id == order.Id);
+            var oEntry = _orders.Entry(o);
+            oEntry.State = EntityState.Modified;
 
             oEntry.CurrentValues.SetValues(order);
 

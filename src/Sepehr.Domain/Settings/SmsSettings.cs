@@ -8,10 +8,10 @@ namespace Sepehr.Domain.Settings
 {
     public class SmsSettings
     {
+        public string apiUrl { get; set; } = string.Empty;
         public required string sender { get; set; }
         public required string receptor { get; set; }
         public required string apikey { get; set; }
-        public required string amootToken { get; set; }
-        public required string amootLineNumber { get; set; }
+        public required string Sender { get; set; }
     }
 }

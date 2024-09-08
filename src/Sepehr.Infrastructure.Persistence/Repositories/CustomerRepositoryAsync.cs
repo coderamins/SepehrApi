@@ -340,14 +340,23 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             using (var connection = _dapContext.CreateConnection())
             {
                 var customebillingReport = connection
-                .Query<GetCustomerBillingViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                    .Query<GetCustomerBillingViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
                 foreach (var item in customebillingReport)
                 {
                     item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate():"";
                     item.Created_Shamsi = item.Created.ToShamsiDate();
                 }
-                return customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x=>x.Created);
+                
+                var result= customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x=>x.Created).ToList();
+                for(int i=1;i<=result.Count();i++)
+                {
+                    var prevBill = result[i-1];
+                    var currentBill = result[i];
+
+                    result[i]=res
+
+                }
             }
 
         }

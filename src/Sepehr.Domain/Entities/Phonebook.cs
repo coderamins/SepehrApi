@@ -14,6 +14,7 @@ namespace Sepehr.Domain.Entities
         public Guid? CustomerId { get; set; }
         public Guid? PersonnelId { get; set; }
         public int PhoneNumberTypeId { get; set; }
+        public bool IsPrimary { get; set; }
 
         public virtual required PhoneNumberType PhoneNumberType { get; set; }
         public virtual ICollection<InternalPhoneNumber> InternalPhones  { get; set; }  =new List<InternalPhoneNumber>();

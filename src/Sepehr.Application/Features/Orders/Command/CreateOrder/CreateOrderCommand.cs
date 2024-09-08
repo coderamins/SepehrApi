@@ -79,40 +79,8 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
         {
             try
             {
-                //#region در صورتی که تعدادی از کالاها از انبار واسط باشند یک سفارش خرید هم ثبت می شود
-                //List<ProductInventory> productTypes =
-                //    await _productInventory.GetProductInventory(request.Details);
-
-                //List<PurchaseOrder> _lstPurchaseOrder = new List<PurchaseOrder>();
-                //if (productTypes.Count() > 0)
-                //{
-                //    foreach (var item in request.Details
-                //                        .Where(t => productTypes.Select(p => p.ProductBrandId)
-                //                        .Contains(t.ProductBrandId)))
-                //    {
-                //        var purOrderDetail = _mapper.Map<CreatePurchaseOrderDetailRequest>(item);
-
-                //        var newPurOrder = _mapper.Map<CreatePurchaseOrderCommand>(request);
-                //        newPurOrder.Details.Clear();
-
-                //        newPurOrder.Details.Add(purOrderDetail);
-                //        item.PurchaseOrder = newPurOrder;
-                //        //item.PurchaseOrder.CustomerId = (Guid)item.PurchaserCustomerId;
-                //        //item.PurchaseOrder.TotalAmount = item.Price * item.ProximateAmount;
-                //    }
-
-                //}
-                //#endregion
-
                 var order = _mapper.Map<Order>(request);
-
                 Order newOrder = await _orderRepository.CreateOrder(order);
-
-                //await _smsService.SendAsync(new SmsRequest
-                //{
-                //    Mobile = order.Customer.Mobile,
-                //    Message = $"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
-                //});
 
                 return new Response<Order>(newOrder, $"سفارش جدید با شناسه {newOrder.OrderCode} موفقیت ثبت شد .");
             }
