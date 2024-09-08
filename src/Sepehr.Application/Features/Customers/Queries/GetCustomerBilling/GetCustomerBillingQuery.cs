@@ -7,7 +7,7 @@ using Sepehr.Domain.ViewModels;
 
 namespace Sepehr.Application.Features.Customers.Queries.GetCustomerBilling
 {
-    public class GetCustomerBillingQuery : IRequest<Response<IEnumerable<GetCustomerBillingViewModel>>>
+    public class GetCustomerBillingQuery : IRequest<Response<CustomerBillingViewModel>>
     {
         public Guid CustomerId { get; set; }
         public string FromDate { get; set; } = string.Empty;
@@ -15,7 +15,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetCustomerBilling
         public int BillingReportType { get; set; }
     }
     public class GetCustomerBillingQueryHandler :
-         IRequestHandler<GetCustomerBillingQuery, Response<IEnumerable<GetCustomerBillingViewModel>>>
+         IRequestHandler<GetCustomerBillingQuery, Response<CustomerBillingViewModel>>
     {
         private readonly ICustomerRepositoryAsync _customerRepository;
         private readonly IMapper _mapper;
@@ -27,14 +27,14 @@ namespace Sepehr.Application.Features.Customers.Queries.GetCustomerBilling
             _mapper = mapper;
         }
 
-        public async Task<Response<IEnumerable<GetCustomerBillingViewModel>>> Handle(
+        public async Task<Response<CustomerBillingViewModel>> Handle(
             GetCustomerBillingQuery request,
             CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetCustomerBillingParameter>(request);
             var customerBillingRep = await _customerRepository.GetCustomerBillingReport(validFilter);
 
-            return new Response<IEnumerable<GetCustomerBillingViewModel>>(customerBillingRep);
+            return new Response<CustomerBillingViewModel>(customerBillingRep);
         }
     }
 }

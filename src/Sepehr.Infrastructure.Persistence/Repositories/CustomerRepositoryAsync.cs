@@ -307,9 +307,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<GetCustomerBillingViewModel>> GetCustomerBillingReport(GetCustomerBillingParameter validFilter)
+        public async Task<CustomerBillingViewModel> GetCustomerBillingReport(GetCustomerBillingParameter validFilter)
         {
-            List<GetCustomerBillingViewModel> customerMovedInAdvanceBillingReport = new List<GetCustomerBillingViewModel>();
+            List<CustomerBillingDetailViewModel> customerMovedInAdvanceBillingReport = new List<CustomerBillingDetailViewModel>();
             var proc_params = new DynamicParameters();
 
             proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
@@ -319,7 +319,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             using (var connection = _dapContext.CreateConnection())
             {
                 customerMovedInAdvanceBillingReport = connection
-                    .Query<GetCustomerBillingViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                    .Query<CustomerBillingDetailViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
                 foreach (var item in customerMovedInAdvanceBillingReport)
                 {
@@ -340,23 +340,38 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             using (var connection = _dapContext.CreateConnection())
             {
                 var customebillingReport = connection
-                    .Query<GetCustomerBillingViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                    .Query<CustomerBillingDetailViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
                 foreach (var item in customebillingReport)
                 {
-                    item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate():"";
+                    item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate() : "";
                     item.Created_Shamsi = item.Created.ToShamsiDate();
                 }
-                
-                var result= customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x=>x.Created).ToList();
-                for(int i=1;i<=result.Count();i++)
+
+                var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
+                for (int i = 1; i <= result.Count(); i++)
                 {
-                    var prevBill = result[i-1];
+                    var prevBill = result[i - 1];
                     var currentBill = result[i];
 
-                    result[i]=res
+                    //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
+                    result[i].RemainingAmoount = currentBill.DebitAmount - currentBill.CreditAmount + prevBill.DebitAmount;
 
+                    //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
+                    result[i].DueRemainingAmount += prevBill.DueRemainingAmount - currentBill.CreditAmount ;
+
+                    result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
+                                           result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
                 }
+
+                return new CustomerBillingViewModel
+                {
+                    CustomerId = validFilter.CustomerId,
+                    RemainingAmount = result.Last().RemainingAmoount,
+                    Recognize = result.Last().RemainingAmoount > 0 ? "بد" : "بس",
+                    TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
+                    Details = result
+                };
             }
 
         }
