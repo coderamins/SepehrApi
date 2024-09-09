@@ -362,6 +362,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                     result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
                                            result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
+
                 }
 
                 return new CustomerBillingViewModel

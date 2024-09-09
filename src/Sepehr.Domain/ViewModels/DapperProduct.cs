@@ -53,6 +53,7 @@ namespace Sepehr.Domain.ViewModels
 
         //Product Standard
         public string ProductStandardDesc { get; set; }
+        public int TotalCount { get; set; }
 
     }
 }

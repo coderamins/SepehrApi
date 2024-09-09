@@ -144,14 +144,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             var whereClauses = new List<string>();
             foreach (var word in words)
             {
-                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t5.Name LIKE N'%{word}%'");
+                whereClauses.Add(
+                       $" concat(t1.ProductName,' ',t5.Name) LIKE N'%{word}%'");
             }
 
             string finalWhereClause = "";
             if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                finalWhereClause = string.Join(" OR ", whereClauses);
-                query = string.Concat(query, " AND ", "(", finalWhereClause,")");
+                finalWhereClause = string.Join(" AND ", whereClauses);
+                query = string.Concat(query, " AND ", "(", finalWhereClause, ")");
             }
 
             query = string.Concat(query, " union ");
@@ -214,21 +215,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             whereClauses = new List<string>();
             foreach (var word in words)
             {
-                whereClauses.Add($" t1.ProductName LIKE N'%{word}%' OR t4.Name LIKE N'%{word}%' OR t11.[Desc] LIKE N'%{word}%' OR t5.Name LIKE N'%{word}%'");
+                whereClauses.Add($" concat(t1.ProductName,' ',t4.Name,' ',t5.Name ,' ',t11.[Desc]) LIKE N'%{word}%' ");
             }
 
             finalWhereClause = "";
             if (!string.IsNullOrEmpty(filter.Keyword))
             {
-                finalWhereClause = string.Join(" OR ", whereClauses);
-                query = string.Concat(query, " AND ", "(", finalWhereClause,")" );
+                finalWhereClause = string.Join(" AND ", whereClauses);
+                query = string.Concat(query, " AND ", "(", finalWhereClause, ")");
             }
 
             int offset = (filter.PageNumber - 1) * filter.PageSize;
 
             using (var connection = _dapContext.CreateConnection())
             {
-                var totalRecords = connection.ExecuteScalar<int>(string.Concat(@"select count(*) from (", query,") as t"));
+                var totalRecords = connection.ExecuteScalar<int>(string.Concat(@"select count(*) from (", query, ") as t"));
 
                 query = string.Concat(query, filter.PageSize == 0 ? "" :
                              " order by ProductName,ProductBrandName,WarehouseName" +
@@ -236,11 +237,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                              " FETCH NEXT @pageSize ROWS ONLY ");
 
                 var products = await connection.QueryAsync<DapperProduct>(query, new { offset, filter.PageSize });
+                if (products.Count() > 0)
+                    products.First().TotalCount = totalRecords;
+
                 var results = products.Select(r => new
                 {
                     Result = r,
                     Score = words.Count(w => r.ProductName.Contains(w) || r.ProductBrandName.Contains(w) || r.ProductTypeDesc.Contains(w))
-                });                
+                });
 
                 // مرتب‌سازی نتایج بر اساس امتیاز
                 return results.OrderByDescending(r => r.Score).Select(r => r.Result);
