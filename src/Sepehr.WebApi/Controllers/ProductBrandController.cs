@@ -4,6 +4,7 @@ using Sepehr.Application.Features.ProductBrands.Command.CreateProductBrand;
 using Sepehr.Application.Features.ProductBrands.Command.DeleteProductBrandById;
 using Sepehr.Application.Features.ProductBrands.Command.UpdateProductBrand;
 using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands;
+using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductPricesByProductType;
 using Sepehr.Application.Features.ProductBrands.Queries.GetProductBrandById;
 using Sepehr.Application.Helpers;
 
@@ -23,7 +24,6 @@ namespace Sepehr.WebApi.Controller
                     PageNumber = filter.PageNumber,
                     ProductId=filter.ProductId,
                     Keyword=filter.Keyword,
-
                 }));
         }
 
@@ -63,6 +63,20 @@ namespace Sepehr.WebApi.Controller
             return Ok(await Mediator
                 .Send(new DeleteProductBrandByIdCommand { Id = id }));
         }
+
+
+        [HasPermission("GetProductPricesByProductType")]
+        [HttpGet("GetProductPricesByProductType")]
+        public async Task<IActionResult> GetProductPricesByProductType([FromQuery] GetAllProductPricesByProductTypeParameter filter)
+        {
+            return Ok(await Mediator
+                .Send(new GetAllProductPricesByProductTypeQuery()
+                {
+                    Keyword = filter.Keyword,
+                    ProductTypeId = filter.ProductTypeId,
+                }));
+        }
+
 
 
     }

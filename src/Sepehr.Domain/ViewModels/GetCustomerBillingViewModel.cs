@@ -37,7 +37,7 @@ namespace Sepehr.Domain.ViewModels
         public decimal Price { get; set; }
         public decimal DebitAmount { get; set; }
         public decimal CreditAmount { get; set; }
-        public decimal RemainingAmoount { get; set; }
+        public decimal RemainingAmount { get; set; }
         public decimal DueRemainingAmount { get; set; }
         public string Recognizing { get; set; }=string.Empty;
     }

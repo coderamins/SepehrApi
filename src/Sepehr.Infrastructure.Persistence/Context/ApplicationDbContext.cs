@@ -111,6 +111,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
         public DbSet<TransferWarehouseInventoryDetail> TransferWarehouseInventoryDetails { get; set; }
         public DbSet<RentPaymentDetail> RentPaymentDetails { get; set; }
+        public DbSet<DraftOrder> DraftOrders { get; set; }
+        public DbSet<OrderReturn> OrderReturn { get; set; }
+        public DbSet<OrderDetailReturn> OrderDetailReturn { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -164,7 +167,6 @@ namespace Sepehr.Infrastructure.Persistence.Context
             {
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
 
             //All Decimals will have 18,6 Range
             foreach (var property in builder.Model.GetEntityTypes()
@@ -405,6 +407,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<OrderDetail>()
             .HasOne(od => od.Order)
             .WithMany(o => o.Details)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Attachment>()
+            .HasOne(o => o.DraftOrder)
+            .WithMany(o => o.Attachments)
             .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<CargoAnnounceDetail>()

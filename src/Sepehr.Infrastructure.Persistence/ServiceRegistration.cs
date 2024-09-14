@@ -42,6 +42,7 @@ namespace Sepehr.Infrastructure.Persistence
             services.AddScoped<IProductSupplierRepositoryAsync, ProductSupplierRepositoryAsync>();
             services.AddScoped<ICargoAnnouncementRepositoryAsync, CargoAnnouncementRepositoryAsync>();
             services.AddScoped<IReceivePayRepositoryAsync, ReceivePayRepositoryAsync>();
+            services.AddScoped<IDraftOrderRepositoryAsync, DraftOrderRepositoryAsync>();
             services.AddScoped<IProductPriceRepositoryAsync, ProductPriceRepositoryAsync>();
             services.AddScoped<IProductTypeRepositoryAsync, ProductTypeRepositoryAsync>();
             services.AddScoped<IBrandRepositoryAsync, BrandRepositoryAsync>();

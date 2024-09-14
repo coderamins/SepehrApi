@@ -65,7 +65,7 @@ namespace Sepehr.Application.Features.Products.Queries.GetAllProducts
                     return new PagedResponse<IEnumerable<ProductViewModel>>(
                         productViewModel,
                         validFilter.PageNumber,
-                        validFilter.PageSize, productViewModel.First().TotalCount);
+                        validFilter.PageSize, productViewModel.Count()>0 ? productViewModel.First().TotalCount:0);
                 }
 
                 var product = await _productRepository.GetAllProducts(validFilter);

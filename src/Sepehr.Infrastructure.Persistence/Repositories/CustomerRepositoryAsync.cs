@@ -348,17 +348,20 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     item.Created_Shamsi = item.Created.ToShamsiDate();
                 }
 
+                if (customerMovedInAdvanceBillingReport.Count() > 0 && customebillingReport.Count() > 0)
+                    customebillingReport[0].DueRemainingAmount += customerMovedInAdvanceBillingReport[0].RemainingAmount;
+
                 var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
-                for (int i = 1; i <= result.Count(); i++)
+                for (int i = 0; i <= result.Count() - 1; i++)
                 {
-                    var prevBill = result[i - 1];
+                    var prevBill =i==0 ? null: result[i - 1];
                     var currentBill = result[i];
 
                     //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
-                    result[i].RemainingAmoount = currentBill.DebitAmount - currentBill.CreditAmount + prevBill.DebitAmount;
+                    result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill==null ? 0 :prevBill.DebitAmount);
 
                     //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
-                    result[i].DueRemainingAmount += prevBill.DueRemainingAmount - currentBill.CreditAmount ;
+                    result[i].DueRemainingAmount += (prevBill==null ? 0:prevBill.DueRemainingAmount) - currentBill.CreditAmount;
 
                     result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
                                            result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
@@ -368,8 +371,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 return new CustomerBillingViewModel
                 {
                     CustomerId = validFilter.CustomerId,
-                    RemainingAmount = result.Last().RemainingAmoount,
-                    Recognize = result.Last().RemainingAmoount > 0 ? "بد" : "بس",
+                    RemainingAmount = result.Count() <= 0 ? 0: result.Last().RemainingAmount,
+                    Recognize =result.Count()<=0 ? "": result.Last().RemainingAmount > 0 ? "بد" : "بس",
                     TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
                     Details = result
                 };

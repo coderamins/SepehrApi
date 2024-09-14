@@ -1,3 +1,4 @@
+using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductPricesByProductType;
 using Sepehr.Application.Features.ProductPrices.Queries.GetAllProductPrices;
 using Sepehr.Domain.Entities;
 

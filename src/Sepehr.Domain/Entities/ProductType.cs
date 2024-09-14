@@ -12,5 +12,8 @@ namespace Sepehr.Domain.Entities
         public string? TypeColor { get; set; }
         public int ProductCodeSeedStart { get; set; }
         public byte[]? Image { get; set; }
+
+        public virtual Product Product { get; set; }
+        //public virtual ICollection<ProductBrand> ProductBrands { get; set; } = new List<ProductBrand>();
     }
 }

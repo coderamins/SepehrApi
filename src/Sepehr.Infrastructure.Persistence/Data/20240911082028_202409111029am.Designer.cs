@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911082028_202409111029am")]
+    partial class _202409111029am
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<Guid?>("CargoAnnounceId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("DraftOrderId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("FileData")
                         .IsRequired()
@@ -81,8 +81,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasKey("Id");
 
                     b.HasIndex("CargoAnnounceId");
-
-                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("LadingExitPermitId");
 
@@ -782,48 +780,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
-            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Converted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.ToTable("DraftOrders", "sepdb", t =>
-                        {
-                            t.HasTrigger("DraftOrdersTrigger");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
             modelBuilder.Entity("Sepehr.Domain.Entities.DriverFareAmountApprove", b =>
                 {
                     b.Property<int>("Id")
@@ -1493,9 +1449,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DraftOrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("FarePaymentTypeId")
                         .HasColumnType("int");
 
@@ -1547,8 +1500,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("CustomerOfficialCompanyId");
-
-                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("FarePaymentTypeId");
 
@@ -2338,6 +2289,52 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.ToTable("Phonebook", "sepdb", t =>
                         {
                             t.HasTrigger("PhonebookTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PrimaryOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Converted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("FileData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("PrimaryOrders", "sepdb", t =>
+                        {
+                            t.HasTrigger("PrimaryOrdersTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -4464,11 +4461,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany("Attachments")
                         .HasForeignKey("CargoAnnounceId");
 
-                    b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
-                        .WithMany("Attachments")
-                        .HasForeignKey("DraftOrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Sepehr.Domain.Entities.LadingExitPermit", "LadingExitPermit")
                         .WithMany("Attachments")
                         .HasForeignKey("LadingExitPermitId");
@@ -4512,8 +4504,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasOne("Sepehr.Domain.Entities.RentPayment", "RentPayment")
                         .WithMany("Attachments")
                         .HasForeignKey("RentPaymentId");
-
-                    b.Navigation("DraftOrder");
 
                     b.Navigation("LadingExitPermit");
 
@@ -4706,15 +4696,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Customer");
 
                     b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
-                {
-                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.DriverFareAmountApprove", b =>
@@ -4963,10 +4944,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CustomerOfficialCompanyId");
 
-                    b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
-                        .WithMany()
-                        .HasForeignKey("DraftOrderId");
-
                     b.HasOne("Sepehr.Domain.Entities.FarePaymentType", "FarePaymentType")
                         .WithMany()
                         .HasForeignKey("FarePaymentTypeId")
@@ -5002,8 +4979,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Customer");
 
                     b.Navigation("CustomerOfficialCompany");
-
-                    b.Navigation("DraftOrder");
 
                     b.Navigation("FarePaymentType");
 
@@ -5316,6 +5291,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Personnel");
 
                     b.Navigation("PhoneNumberType");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.PrimaryOrder", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.Product", b =>
@@ -6152,11 +6136,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("ReceivePaymentSourceFrom");
 
                     b.Navigation("ReceivePaymentSourceTo");
-                });
-
-            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
-                {
-                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.EntrancePermit", b =>

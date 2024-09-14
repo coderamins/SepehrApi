@@ -86,23 +86,33 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
 
             var newOrder = await _orders.AddAsync(order);
+
+            //--------تبدیل وضعیت پیش نویس به سفارش شده------
+            var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
+            if (draftOrder != null)
+                draftOrder.Converted = true;
+            //-----------------------------------------------
+
             await _dbContext.SaveChangesAsync();
             
             var customerPrimaryMobiles = _dbContext.Phonebook.Where(p => p.CustomerId == order.CustomerId &&
                         p.PhoneNumberTypeId == (int)EPhoneNoType.Mobile && p.IsPrimary).ToList();
 
 
-            List<string> messages = new List<string>();
-            messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
-                , "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید"
-                , $"https://storm.net/order?id={order.Id}"));
-
-            messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
-            await _smsService.SendAsync(new SmsRequest
+            if (customerPrimaryMobiles.Count() > 0)
             {
-                mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
-                messageTexts = messages
-            });
+                List<string> messages = new List<string>();
+                messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
+                    , "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید"
+                    , $"https://storm.net/order?id={order.Id}"));
+
+                messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
+                await _smsService.SendAsync(new SmsRequest
+                {
+                    mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
+                    messageTexts = messages
+                });
+            }
 
             return newOrder.Entity;
 

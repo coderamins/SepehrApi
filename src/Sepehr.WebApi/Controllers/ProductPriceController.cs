@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sepehr.Application.Features.ProductPrices.Command.CreateProductPrice;
 using Sepehr.Application.Features.ProductPrices.Command.CreateProductPriceFromFile;
 using Sepehr.Application.Features.ProductPrices.Command.DeleteProductPriceById;
 using Sepehr.Application.Features.ProductPrices.Command.UpdateProductPrice;
 using Sepehr.Application.Features.ProductPrices.Queries.GetAllProductPrices;
 using Sepehr.Application.Features.ProductPrices.Queries.GetProductPriceById;
-using Sepehr.Application.Interfaces;
-using Sepehr.Application.Interfaces.Repositories;
-using Sepehr.Domain.Entities;
 using Sepehr.Application.Helpers;
-using Sepehr.Infrastructure.Persistence.Repositories;
 
 namespace Sepehr.WebApi.Controller
 {
@@ -26,8 +21,8 @@ namespace Sepehr.WebApi.Controller
                 {
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
-                    IsActive=filter.IsActive,
-                    ProductId=filter.ProductId,
+                    IsActive = filter.IsActive,
+                    ProductId = filter.ProductId,
                 }));
         }
 

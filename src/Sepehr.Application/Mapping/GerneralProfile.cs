@@ -154,6 +154,10 @@ using Sepehr.Application.Features.PersonnelPaymentRequests.Queries.GetAllPersonn
 using Sepehr.Application.Features.Reports.SaleReport;
 using Sepehr.Application.DTOs.Permission;
 using Sepehr.Application.Features.Customers.Queries.GetCustomerBilling;
+using Sepehr.Application.Features.DraftOrders.Command.CreateDraftOrder;
+using Sepehr.Application.Features.DraftOrders.Command.UpdateDraftOrder;
+using Sepehr.Application.Features.DraftOrders.Queries.GetAllDraftOrders;
+using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductPricesByProductType;
 
 namespace Sepehr.Application.Mapping
 {
@@ -290,6 +294,21 @@ namespace Sepehr.Application.Mapping
 
             #endregion
 
+            #region DraftOrders
+
+            CreateMap<DraftOrder, DraftOrderViewModel>()
+                .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
+                .ForMember(p => p.CreatedDate, opt => opt.MapFrom(b => b.Created.ToShamsiDate()));
+
+            CreateMap<CreateDraftOrderCommand, DraftOrder>();
+
+            CreateMap<UpdateDraftOrderCommand, DraftOrder>();
+
+            CreateMap<GetAllDraftOrdersQuery, GetAllDraftOrdersParameter>();
+            CreateMap<GetAllCustomersQuery, GetAllCustomersParameter>();
+
+            #endregion
+
             #region CustomerOfficialCompany
             CreateMap<CustomerOfficialCompany, CustomerOfficialCompanyViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => d.ApplicationUser == null ? "" : (string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName))))
@@ -346,6 +365,11 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.Id, opt => opt.Ignore())
                 .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
+
+            CreateMap<ProductType, ProductBrandByProdTypeViewModel>()
+                .ForMember(x => x.ProductBrands, opt => opt.MapFrom(d => d.Product.ProductBrands));
+            CreateMap<GetAllProductPricesByProductTypeQuery, GetAllProductPricesByProductTypeParameter>();
+            
 
             #endregion
 

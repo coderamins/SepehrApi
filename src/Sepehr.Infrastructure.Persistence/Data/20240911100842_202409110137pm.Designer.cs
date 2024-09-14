@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911100842_202409110137pm")]
+    partial class _202409110137pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1493,7 +1496,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DraftOrderId")
+                    b.Property<int?>("DraftOrderCode")
                         .HasColumnType("int");
 
                     b.Property<int>("FarePaymentTypeId")
@@ -1547,8 +1550,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("CustomerOfficialCompanyId");
-
-                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("FarePaymentTypeId");
 
@@ -4963,10 +4964,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CustomerOfficialCompanyId");
 
-                    b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
-                        .WithMany()
-                        .HasForeignKey("DraftOrderId");
-
                     b.HasOne("Sepehr.Domain.Entities.FarePaymentType", "FarePaymentType")
                         .WithMany()
                         .HasForeignKey("FarePaymentTypeId")
@@ -5002,8 +4999,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Customer");
 
                     b.Navigation("CustomerOfficialCompany");
-
-                    b.Navigation("DraftOrder");
 
                     b.Navigation("FarePaymentType");
 

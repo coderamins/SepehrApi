@@ -13,6 +13,7 @@ namespace Sepehr.Domain.Entities
 {
     public class Order : AuditableBaseEntity<Guid>
     {
+        public int? DraftOrderId { get; set; }
         public long OrderCode { get; set; }
         public string BusinessCode { get; set; }
         public Order()
@@ -52,6 +53,7 @@ namespace Sepehr.Domain.Entities
         public DateTime DeliverDate { get; set; }
         public int OrderExitTypeId { get; set; }
 
+        public virtual DraftOrder? DraftOrder { get; set; }
         public virtual CustomerOfficialCompany? CustomerOfficialCompany { get; set; }
         public required virtual OrderExitType OrderExitType { get; set; }
         public required virtual OrderSendType OrderSendType { get; set; }

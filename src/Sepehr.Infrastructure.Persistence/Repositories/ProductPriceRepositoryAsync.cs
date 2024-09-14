@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sepehr.Application.Features.ProductBrands.Queries.GetAllProductPricesByProductType;
 using Sepehr.Application.Features.ProductPrices.Queries.GetAllProductPrices;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities;
@@ -24,6 +25,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 //.Include(i => i.ProductBrand)
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
+
 
     }
 }

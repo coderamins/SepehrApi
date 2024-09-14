@@ -22,6 +22,7 @@ namespace Sepehr.Application.Features.Orders.Command.CreateOrder
 {
     public partial class CreateOrderCommand : IRequest<Response<Order>>
     {
+        public int? DraftOrderId { get; set; }
         public required Guid CustomerId { get; set; }
         public decimal TotalAmount { get; set; }
         public string? Description { get; set; }
