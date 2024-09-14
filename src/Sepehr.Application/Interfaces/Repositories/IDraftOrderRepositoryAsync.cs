@@ -6,6 +6,6 @@ namespace Sepehr.Application.Interfaces.Repositories
     public interface IDraftOrderRepositoryAsync : IGenericRepositoryAsync<DraftOrder>
     {
         Task<List<DraftOrder>> GetAllDraftOrders(GetAllDraftOrdersParameter filter);
-        Task<DraftOrder?> GetDraftOrderById(int id);
+        Task<DraftOrder?> GetDraftOrderById(Guid id);
     }
 }

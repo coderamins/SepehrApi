@@ -28,7 +28,7 @@ namespace Sepehr.WebApi.Controller
         // GET api/<controller>/5
         [HasPermission("GetDraftOrderById")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
             return Ok(await Mediator.Send(new GetDraftOrderByIdQuery { Id = id }));
         }
@@ -44,7 +44,7 @@ namespace Sepehr.WebApi.Controller
         // PUT api/<controller>/5
         [HasPermission("UpdateDraftOrder")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, UpdateDraftOrderCommand command)
+        public async Task<IActionResult> Put(Guid id, UpdateDraftOrderCommand command)
         {
             if (id != command.Id)
             {
@@ -56,7 +56,7 @@ namespace Sepehr.WebApi.Controller
         // DELETE api/<controller>/5
         [HasPermission("DeleteDraftOrder")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             return Ok(await Mediator
                 .Send(new DeleteDraftOrderByIdCommand { Id = id }));

@@ -27,6 +27,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             _dateTime = dateTime;
             _authenticatedUser = authenticatedUser;
         }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
@@ -112,8 +113,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<TransferWarehouseInventoryDetail> TransferWarehouseInventoryDetails { get; set; }
         public DbSet<RentPaymentDetail> RentPaymentDetails { get; set; }
         public DbSet<DraftOrder> DraftOrders { get; set; }
-        public DbSet<OrderReturn> OrderReturn { get; set; }
-        public DbSet<OrderDetailReturn> OrderDetailReturn { get; set; }
+        //public DbSet<OrderReturn> OrderReturn { get; set; }
+        //public DbSet<OrderDetailReturn> OrderDetailReturn { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -217,9 +218,14 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(o => o.PaymentRequestCode)
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
-
+            
             builder.Entity<RentPayment>()
                 .Property(o => o.Id)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<DraftOrder>()
+                .Property(o => o.DraftOrderCode)
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
@@ -342,6 +348,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<RentPayment>().Property(prop => prop.Id)
             .UseIdentityColumn(1010, 1);
+
+            builder.Entity<RentPayment>().Property(prop => prop.Id)
+            .UseIdentityColumn(100, 1);
 
             builder.Entity<TransferRemittanceType>()
                 .Property(p => p.Id)

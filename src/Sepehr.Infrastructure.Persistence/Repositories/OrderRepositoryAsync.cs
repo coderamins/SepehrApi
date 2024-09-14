@@ -88,9 +88,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             var newOrder = await _orders.AddAsync(order);
 
             //--------تبدیل وضعیت پیش نویس به سفارش شده------
-            var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
-            if (draftOrder != null)
-                draftOrder.Converted = true;
+            //var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
+            //if (draftOrder != null)
+            //    draftOrder.Converted = true;
             //-----------------------------------------------
 
             await _dbContext.SaveChangesAsync();

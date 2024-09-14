@@ -9,7 +9,7 @@ namespace Sepehr.Application.Features.DraftOrders.Command.UpdateDraftOrder
 {
     public class UpdateDraftOrderCommand : IRequest<Response<string>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
 

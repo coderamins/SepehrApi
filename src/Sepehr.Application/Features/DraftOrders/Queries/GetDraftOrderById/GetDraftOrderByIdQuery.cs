@@ -14,7 +14,7 @@ namespace Sepehr.Application.Features.DraftOrders.Queries.GetDraftOrderById
 {
     public class GetDraftOrderByIdQuery : IRequest<Response<DraftOrderViewModel>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public class GetDraftOrderByIdQueryHandler : IRequestHandler<GetDraftOrderByIdQuery, Response<DraftOrderViewModel>>
         {
