@@ -366,8 +366,7 @@ namespace Sepehr.Application.Mapping
                 .ForMember(m => m.ProductBrandId, opt => opt.MapFrom(d => d.Id))
                 .ForMember(m => m.IsActive, opt => opt.MapFrom(d => true));
 
-            CreateMap<ProductType, ProductBrandByProdTypeViewModel>()
-                .ForMember(x => x.ProductBrands, opt => opt.MapFrom(d => d.Product.ProductBrands));
+            CreateMap<ProductType, ProductBrandByProdTypeViewModel>();
             CreateMap<GetAllProductPricesByProductTypeQuery, GetAllProductPricesByProductTypeParameter>();
             
 

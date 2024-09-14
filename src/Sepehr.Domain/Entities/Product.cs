@@ -13,7 +13,8 @@ namespace Sepehr.Domain.Entities
         public int ProductCode { get; set; }
         public string? Barcode { get; set; }
         public required string ProductName { get; set; }
-        public int? ProductTypeId { get; set; }
+        [ForeignKey("ProductType")]
+        public int ProductTypeId { get; set; }
         public required string ProductSize { get; set; }
         public string ProductThickness { get; set; } = string.Empty;
         public decimal ApproximateWeight { get; set; }
