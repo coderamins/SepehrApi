@@ -22,7 +22,7 @@ namespace Sepehr.Domain.Entities
         public AttachmentType? AttachmentType { get; set; } = 0;
         public Guid? CargoAnnounceId { get; set; }
         public Guid? PaymentRequestId { get; set; }
-        public int? DraftOrderId { get; set; }
+        public Guid? DraftOrderId { get; set; }
 
         public virtual DraftOrder? DraftOrder { get; set; }
         public virtual RentPayment? RentPayment { get; set; }
