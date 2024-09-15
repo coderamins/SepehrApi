@@ -23,7 +23,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
-        public async Task<DraftOrder?> GetDraftOrderById(int id)
+        public async Task<DraftOrder?> GetDraftOrderById(Guid id)
         {
             return await _draftOrders
                 .Include(c => c.ApplicationUser)

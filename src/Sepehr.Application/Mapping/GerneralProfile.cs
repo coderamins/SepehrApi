@@ -1192,12 +1192,15 @@ namespace Sepehr.Application.Mapping
             CreateMap<AddRoleMenuDto, RoleMenu>()
                 .ForMember(m => m.ApplicationRoleId, opt => opt.MapFrom(d => d.RoleId));
 
-            CreateMap<ApplicationUser, ApplicationUserViewModel>();
+            CreateMap<ApplicationUser, ApplicationUserViewModel>()
+                .ForMember(m=>m.UserRoles,opt=>opt.MapFrom(d=>d.Roles));
+
             CreateMap<GetAllApplicationUsersQuery, GetAllApplicationUsersParameter>();
             CreateMap<CreateApplicationUserCommand, ApplicationUser>();
             CreateMap<UpdateApplicationUserCommand, ApplicationUser>();
 
-            CreateMap<ApplicationRole, ApplicationRoleViewModel>();
+            CreateMap<ApplicationRole, ApplicationRoleViewModel>()
+                .ForMember(m=>m.RolePermissions,opt=>opt.MapFrom(d=>d.RolePermissions));
             CreateMap<GetAllApplicationRolesQuery, GetAllApplicationRolesParameter>();
             CreateMap<CreateApplicationRoleCommand, ApplicationRole>();
             CreateMap<UpdateApplicationRoleCommand, ApplicationRole>();

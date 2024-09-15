@@ -21,6 +21,7 @@ namespace Sepehr.Application.Features.Orders.Queries.GetAllOrders
         public int? OrderStatusId { get; set; }
         public long? OrderCode { get; set; }
         public OrderType? OrderType { get; set; }
+        public bool? IsTemporary { get; set; }
     }
     public class GetAllOrdersQueryHandler :
          IRequestHandler<GetAllOrdersQuery, PagedResponse<IEnumerable<OrderViewModel>>>

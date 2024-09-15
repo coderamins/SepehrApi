@@ -223,6 +223,11 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .IsUnicode()
                 .ValueGeneratedOnAdd();
 
+            builder.Entity<DraftOrder>()
+                .Property(o => o.DraftOrderCode)
+                .IsUnicode()
+                .ValueGeneratedOnAdd();
+
             builder.Entity<LadingExitPermit>().Property(prop => prop.LadingExitPermitCode)
                 .UseIdentityColumn(100, 1);
 
@@ -342,6 +347,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<RentPayment>().Property(prop => prop.Id)
             .UseIdentityColumn(1010, 1);
+
+            builder.Entity<DraftOrder>().Property(prop => prop.DraftOrderCode)
+            .UseIdentityColumn(100, 1);
 
             builder.Entity<TransferRemittanceType>()
                 .Property(p => p.Id)

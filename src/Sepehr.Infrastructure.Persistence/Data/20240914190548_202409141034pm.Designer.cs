@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914190548_202409141034pm")]
+    partial class _202409141034pm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +40,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<int?>("DraftOrderId")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("DraftOrderId1")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("FileData")
                         .IsRequired()
@@ -85,7 +85,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CargoAnnounceId");
 
-                    b.HasIndex("DraftOrderId1");
+                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("LadingExitPermitId");
 
@@ -787,9 +787,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
             modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Converted")
                         .HasColumnType("bit");
@@ -804,13 +806,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DraftOrderCode")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(true)
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DraftOrderCode"), 100L);
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -824,9 +819,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("DraftOrders", "sepdb", t =>
+                    b.ToTable("DraftOrder", "sepdb", t =>
                         {
-                            t.HasTrigger("DraftOrdersTrigger");
+                            t.HasTrigger("DraftOrderTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -1504,9 +1499,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<int?>("DraftOrderId")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("DraftOrderId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("FarePaymentTypeId")
                         .HasColumnType("int");
 
@@ -1559,7 +1551,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CustomerOfficialCompanyId");
 
-                    b.HasIndex("DraftOrderId1");
+                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("FarePaymentTypeId");
 
@@ -4578,7 +4570,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
                         .WithMany("Attachments")
-                        .HasForeignKey("DraftOrderId1")
+                        .HasForeignKey("DraftOrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sepehr.Domain.Entities.LadingExitPermit", "LadingExitPermit")
@@ -5077,7 +5069,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
                         .WithMany()
-                        .HasForeignKey("DraftOrderId1");
+                        .HasForeignKey("DraftOrderId");
 
                     b.HasOne("Sepehr.Domain.Entities.FarePaymentType", "FarePaymentType")
                         .WithMany()

@@ -11,7 +11,7 @@ namespace Sepehr.Application.Features.DraftOrders.Command.DeleteDraftOrderById
 {
     public class DeleteDraftOrderByIdCommand : IRequest<Response<bool>>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public class
         DeleteDraftOrderByIdCommandHandler

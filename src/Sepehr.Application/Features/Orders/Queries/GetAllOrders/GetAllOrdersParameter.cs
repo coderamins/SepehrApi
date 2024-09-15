@@ -12,6 +12,7 @@ namespace Sepehr.Application.Features.Orders.Queries.GetAllOrders
         public IEnumerable<int>? InvoiceTypeId { get; set; }
         public int? OrderStatusId { get; set; }
         public long? OrderCode { get; set; }
-        public OrderType? OrderType { get; set; }    
+        public OrderType? OrderType { get; set; }
+        public bool? IsTemporary { get; set; }
     }
 }

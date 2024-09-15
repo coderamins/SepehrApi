@@ -88,9 +88,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             var newOrder = await _orders.AddAsync(order);
 
             //--------تبدیل وضعیت پیش نویس به سفارش شده------
-            var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
-            if (draftOrder != null)
-                draftOrder.Converted = true;
+            //var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
+            //if (draftOrder != null)
+            //    draftOrder.Converted = true;
             //-----------------------------------------------
 
             await _dbContext.SaveChangesAsync();
@@ -245,6 +245,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (o.OrderTypeId == param.OrderType || param.OrderType == null) &&
                 (o.OrderCode == param.OrderCode || param.OrderCode == null) &&
                 (o.OrderStatusId == param.OrderStatusId || param.OrderStatusId == null) &&
+                (o.IsTemporary == param.IsTemporary || param.IsTemporary == null) &&
                 (param.InvoiceTypeId.Count() == 0 || param.InvoiceTypeId.Contains(o.InvoiceTypeId)))
                 .OrderByDescending(o => o.Created);
             //.Skip((param.PageNumber - 1) * param.PageSize)
