@@ -13,7 +13,7 @@ namespace Sepehr.Domain.Entities
 {
     public class Order : AuditableBaseEntity<Guid>
     {
-        public int? DraftOrderId { get; set; }
+        public Guid? DraftOrderId { get; set; }
         public long OrderCode { get; set; }
         public string BusinessCode { get; set; }
         public Order()

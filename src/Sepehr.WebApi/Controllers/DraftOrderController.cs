@@ -21,7 +21,10 @@ namespace Sepehr.WebApi.Controller
                     PageSize = filter.PageSize,
                     PageNumber = filter.PageNumber,
                     Converted=filter.Converted,
-                    CreatorId=filter.CreatorId
+                    CreatorId=filter.CreatorId,
+                    FromDate=filter.FromDate,
+                    ToDate = filter.ToDate,
+
                 }));
         }
 

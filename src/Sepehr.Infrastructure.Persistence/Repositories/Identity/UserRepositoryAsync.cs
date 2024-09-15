@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Exceptions;
+using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
@@ -31,9 +32,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return reftoken.Entity;
         }
 
-        public async Task<List<ApplicationUser>> GetAllApplicationUsers()
+        public async Task<List<ApplicationUser>> GetAllApplicationUsers(GetAllApplicationUsersParameter filter)
         {
             return await _applicationUsers
+                .Where(u => filter.UserRoles==null || filter.UserRoles.Count()<=0 || u.Roles.Any(r=> filter.UserRoles.Contains(r.Role.Id.ToString())))
                 .OrderByDescending(p => p.Created)
                 .ToListAsync();
         }

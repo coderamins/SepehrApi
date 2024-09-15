@@ -44,10 +44,13 @@ namespace Sepehr.WebApi.Services
                             {
                                 if (!string.IsNullOrEmpty(attribute.Policy))
                                 {
-                                    permissions.Add(new PermissionDto
+                                    if (!await _permissionInitializerService.CheckPermissionExists(attribute.Policy))
                                     {
-                                        Name = attribute.Policy
-                                    });
+                                        permissions.Add(new PermissionDto
+                                        {
+                                            Name = attribute.Policy
+                                        });
+                                    }
                                 }
                             }
                         }

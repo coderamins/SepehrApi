@@ -8,6 +8,6 @@ namespace Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplication
 {
     public class GetAllApplicationUsersParameter : RequestParameter
     {
-        
+        public IEnumerable<string>? UserRoles { get; set; }
     }
 }

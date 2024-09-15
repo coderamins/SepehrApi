@@ -30,7 +30,8 @@ namespace Sepehr.WebApi.Controller
                     OrderStatusId=filter.OrderStatusId,
                     OrderCode=filter.OrderCode,
                     OrderType=filter.OrderType,
-                    IsTemporary=filter.IsTemporary
+                    IsTemporary=filter.IsTemporary,
+                    SaleManagerId=filter.SaleManagerId,
                 }));
         }
 

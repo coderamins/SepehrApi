@@ -9,11 +9,11 @@ using Sepehr.Infrastructure.Persistence.Context;
 
 #nullable disable
 
-namespace Sepehr.Infrastructure.Persistence.Data
+namespace Sepehr.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240826215414_202408270111am")]
-    partial class _202408270111am
+    [Migration("20240915145125_202409150620pm")]
+    partial class _202409150620pm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasColumnType("int");
 
                     b.Property<Guid?>("CargoAnnounceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DraftOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("FileData")
@@ -75,9 +78,14 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<Guid?>("ReceivePayId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("RentPaymentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CargoAnnounceId");
+
+                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("LadingExitPermitId");
 
@@ -98,6 +106,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("PurchaseOrderId");
 
                     b.HasIndex("ReceivePayId");
+
+                    b.HasIndex("RentPaymentId");
 
                     b.ToTable("Attachment", "sepdb", t =>
                         {
@@ -202,12 +212,14 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("Name")
                         .IsRequired()
                         .IsUnicode(true)
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
 
                     b.ToTable("Brands", "sepdb", t =>
                         {
@@ -467,6 +479,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullTextSearch")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -515,6 +531,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("CustomerValidityId");
 
                     b.ToTable("Customers", "sepdb", t =>
                         {
@@ -710,6 +728,32 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.CustomerValidity", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ColorCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ValidityDesc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomerValidities", "sepdb", t =>
+                        {
+                            t.HasTrigger("CustomerValiditiesTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerWarehouse", b =>
                 {
                     b.Property<int>("Id")
@@ -736,6 +780,53 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.ToTable("CustomerWarehouses", "sepdb", t =>
                         {
                             t.HasTrigger("CustomerWarehousesTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Converted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DraftOrderCode")
+                        .ValueGeneratedOnAdd()
+                        .IsUnicode(true)
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DraftOrderCode"), 100L);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("DraftOrders", "sepdb", t =>
+                        {
+                            t.HasTrigger("DraftOrdersTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -1410,6 +1501,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("DraftOrderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("FarePaymentTypeId")
                         .HasColumnType("int");
 
@@ -1461,6 +1555,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("CustomerOfficialCompanyId");
+
+                    b.HasIndex("DraftOrderId");
 
                     b.HasIndex("FarePaymentTypeId");
 
@@ -1582,6 +1678,54 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetailReturn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderReturnId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ReturnedAmount")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("OrderDetailId");
+
+                    b.HasIndex("OrderReturnId");
+
+                    b.ToTable("OrderDetailReturn", "sepdb", t =>
+                        {
+                            t.HasTrigger("OrderDetailReturnTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderExitType", b =>
                 {
                     b.Property<int>("Id")
@@ -1635,6 +1779,59 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.ToTable("OrderPayments", "sepdb", t =>
                         {
                             t.HasTrigger("OrderPaymentsTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.OrderReturn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReturnStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ReturnedAmount")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderReturn", "sepdb", t =>
+                        {
+                            t.HasTrigger("OrderReturnTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -2216,6 +2413,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -2296,7 +2496,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductSize")
                         .IsRequired()
@@ -2319,7 +2519,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductTypeId")
+                    b.Property<int>("ProductTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("WarehouseId")
@@ -2344,6 +2544,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("WarehouseId");
 
+                    b.HasIndex("ProductName", "ProductCode");
+
                     b.ToTable("Products", "sepdb", t =>
                         {
                             t.HasTrigger("ProductsTrigger");
@@ -2362,6 +2564,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("FullTextSearch")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -3383,9 +3589,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .IsUnicode(true)
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1010L);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -3402,9 +3609,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<Guid?>("LadingExitPermitId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -3446,8 +3650,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("LadingExitPermitId");
-
                     b.HasIndex("PaymentFromCashDeskId");
 
                     b.HasIndex("PaymentFromCostId");
@@ -3469,6 +3671,42 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.ToTable("RentPayments", "sepdb", t =>
                         {
                             t.HasTrigger("RentPaymentsTrigger");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.RentPaymentDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("LadingExitPermitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RentPaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UnloadingPermitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LadingExitPermitId");
+
+                    b.HasIndex("RentPaymentId");
+
+                    b.HasIndex("UnloadingPermitId");
+
+                    b.ToTable("RentPaymentDetails", "sepdb", t =>
+                        {
+                            t.HasTrigger("RentPaymentDetailsTrigger");
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
@@ -4287,12 +4525,14 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WarehouseTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
 
                     b.HasIndex("WarehouseTypeId");
 
@@ -4332,6 +4572,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.HasOne("Sepehr.Domain.Entities.CargoAnnounce", null)
                         .WithMany("Attachments")
                         .HasForeignKey("CargoAnnounceId");
+
+                    b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
+                        .WithMany("Attachments")
+                        .HasForeignKey("DraftOrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Sepehr.Domain.Entities.LadingExitPermit", "LadingExitPermit")
                         .WithMany("Attachments")
@@ -4373,6 +4618,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany("Attachments")
                         .HasForeignKey("ReceivePayId");
 
+                    b.HasOne("Sepehr.Domain.Entities.RentPayment", "RentPayment")
+                        .WithMany("Attachments")
+                        .HasForeignKey("RentPaymentId");
+
+                    b.Navigation("DraftOrder");
+
                     b.Navigation("LadingExitPermit");
 
                     b.Navigation("LadingPermit");
@@ -4386,6 +4637,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("PurOrderTransRemittanceUnloadingPermit");
 
                     b.Navigation("ReceivePay");
+
+                    b.Navigation("RentPayment");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.AuditLog", b =>
@@ -4457,7 +4710,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
+                    b.HasOne("Sepehr.Domain.Entities.CustomerValidity", "CustomerValidity")
+                        .WithMany()
+                        .HasForeignKey("CustomerValidityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("CustomerValidity");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.CustomerAssignedLabel", b =>
@@ -4554,6 +4815,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Customer");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.DriverFareAmountApprove", b =>
@@ -4802,6 +5072,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CustomerOfficialCompanyId");
 
+                    b.HasOne("Sepehr.Domain.Entities.DraftOrder", "DraftOrder")
+                        .WithMany()
+                        .HasForeignKey("DraftOrderId");
+
                     b.HasOne("Sepehr.Domain.Entities.FarePaymentType", "FarePaymentType")
                         .WithMany()
                         .HasForeignKey("FarePaymentTypeId")
@@ -4837,6 +5111,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Customer");
 
                     b.Navigation("CustomerOfficialCompany");
+
+                    b.Navigation("DraftOrder");
 
                     b.Navigation("FarePaymentType");
 
@@ -4914,6 +5190,31 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetailReturn", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Sepehr.Domain.Entities.OrderDetail", "OrderDetail")
+                        .WithMany()
+                        .HasForeignKey("OrderDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sepehr.Domain.Entities.OrderReturn", "OrderReturn")
+                        .WithMany("OrderDetailReturns")
+                        .HasForeignKey("OrderReturnId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("OrderDetail");
+
+                    b.Navigation("OrderReturn");
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderPayment", b =>
                 {
                     b.HasOne("Sepehr.Domain.Entities.Order", "Order")
@@ -4921,6 +5222,23 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.OrderReturn", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.UserEntities.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Sepehr.Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Order");
                 });
@@ -5128,11 +5446,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("Sepehr.Domain.Entities.Customer", null)
+                    b.HasOne("Sepehr.Domain.Entities.Customer", "Customer")
                         .WithMany("Phonebook")
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("Sepehr.Domain.Entities.Personnel", null)
+                    b.HasOne("Sepehr.Domain.Entities.Personnel", "Personnel")
                         .WithMany("Phonebook")
                         .HasForeignKey("PersonnelId");
 
@@ -5143,6 +5461,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Personnel");
 
                     b.Navigation("PhoneNumberType");
                 });
@@ -5173,7 +5495,9 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
                     b.HasOne("Sepehr.Domain.Entities.ProductType", "ProductType")
                         .WithMany()
-                        .HasForeignKey("ProductTypeId");
+                        .HasForeignKey("ProductTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Sepehr.Domain.Entities.Warehouse", null)
                         .WithMany("Products")
@@ -5619,10 +5943,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("Sepehr.Domain.Entities.LadingExitPermit", "LadingExitPermit")
-                        .WithMany()
-                        .HasForeignKey("LadingExitPermitId");
-
                     b.HasOne("Sepehr.Domain.Entities.CashDesk", "PaymentFromCashDesk")
                         .WithMany()
                         .HasForeignKey("PaymentFromCashDeskId");
@@ -5655,13 +5975,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .WithMany()
                         .HasForeignKey("PaymentOriginTypeId");
 
-                    b.HasOne("Sepehr.Domain.Entities.UnloadingPermit", "UnloadingPermit")
+                    b.HasOne("Sepehr.Domain.Entities.UnloadingPermit", null)
                         .WithMany("RentPayments")
                         .HasForeignKey("UnloadingPermitId");
 
                     b.Navigation("ApplicationUser");
-
-                    b.Navigation("LadingExitPermit");
 
                     b.Navigation("PaymentFromCashDesk");
 
@@ -5678,6 +5996,27 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("PaymentFromShareHolder");
 
                     b.Navigation("PaymentOriginType");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.RentPaymentDetail", b =>
+                {
+                    b.HasOne("Sepehr.Domain.Entities.LadingExitPermit", "LadingExitPermit")
+                        .WithMany()
+                        .HasForeignKey("LadingExitPermitId");
+
+                    b.HasOne("Sepehr.Domain.Entities.RentPayment", "RentPayment")
+                        .WithMany("RentPaymentDetails")
+                        .HasForeignKey("RentPaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sepehr.Domain.Entities.UnloadingPermit", "UnloadingPermit")
+                        .WithMany()
+                        .HasForeignKey("UnloadingPermitId");
+
+                    b.Navigation("LadingExitPermit");
+
+                    b.Navigation("RentPayment");
 
                     b.Navigation("UnloadingPermit");
                 });
@@ -5968,6 +6307,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     b.Navigation("ReceivePaymentSourceTo");
                 });
 
+            modelBuilder.Entity("Sepehr.Domain.Entities.DraftOrder", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
             modelBuilder.Entity("Sepehr.Domain.Entities.EntrancePermit", b =>
                 {
                     b.Navigation("Attachments");
@@ -6016,6 +6360,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
             modelBuilder.Entity("Sepehr.Domain.Entities.OrderDetail", b =>
                 {
                     b.Navigation("CargoAnnounces");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.OrderReturn", b =>
+                {
+                    b.Navigation("OrderDetailReturns");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.PaymentRequest", b =>
@@ -6084,6 +6433,13 @@ namespace Sepehr.Infrastructure.Persistence.Data
             modelBuilder.Entity("Sepehr.Domain.Entities.ReceivePay", b =>
                 {
                     b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("Sepehr.Domain.Entities.RentPayment", b =>
+                {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("RentPaymentDetails");
                 });
 
             modelBuilder.Entity("Sepehr.Domain.Entities.TransferRemittance", b =>

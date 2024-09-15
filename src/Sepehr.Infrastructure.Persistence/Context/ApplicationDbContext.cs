@@ -389,6 +389,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<ShareHolder>().Property(u => u.ShareHolderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<LadingExitPermit>().Property(u => u.LadingExitPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<UnloadingPermit>().Property(u => u.UnloadingPermitCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder.Entity<DraftOrder>().Property(u => u.DraftOrderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<PersonnelPaymentRequest>().Property(u => u.PaymentRequestCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
             builder.Entity<Customer>().HasMany(p => p.ReceivePaymentSourceFrom)

@@ -15,6 +15,7 @@ namespace Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplication
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public IEnumerable<string>? UserRoles { get; set; }
     }
     public class GetAllApplicationUserQueryHandler :
          IRequestHandler<GetAllApplicationUsersQuery, PagedResponse<IEnumerable<ApplicationUserViewModel>>>
@@ -32,7 +33,7 @@ namespace Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplication
             CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllApplicationUsersParameter>(request);
-            var applicationUser = await _applicationUserRepository.GetAllApplicationUsers();
+            var applicationUser = await _applicationUserRepository.GetAllApplicationUsers(validFilter);
               
             var applicationUserViewModel = _mapper.Map<IEnumerable<ApplicationUserViewModel>>(applicationUser);
             return new PagedResponse<IEnumerable<ApplicationUserViewModel>>(

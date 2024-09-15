@@ -3,7 +3,8 @@ namespace Sepehr.Domain.ViewModels
 {
     public class DraftOrderViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public int DraftOrderCode { get; set; }
         public string CreatorName { get; set; } = string.Empty;
         public string CreatedDate { get; set; } = string.Empty;
         public bool Converted { get; set; }

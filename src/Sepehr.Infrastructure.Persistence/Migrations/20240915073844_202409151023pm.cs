@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Sepehr.Infrastructure.Persistence.Data
+namespace Sepehr.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class _202407251030pm : Migration
+    public partial class _202409151023pm : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -75,12 +75,25 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerLabelTypes",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    LabelTypeDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerLabelTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CustomerValidities",
                 schema: "sepdb",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     ValidityDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ColorCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
@@ -88,6 +101,20 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustomerValidities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FareAmountStatus",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    StatusDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FareAmountStatus", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,14 +180,55 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     StatusDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentOriginTypes",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Desc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentOriginTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentRequestReasons",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ReasonDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRequestReasons", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentRequestStatus",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    StatusDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRequestStatus", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,21 +340,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "PurchaseInvoiceTypes",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Desc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PurchaseInvoiceTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PurchaseOrderFarePaymentTypes",
                 schema: "sepdb",
                 columns: table => new
@@ -326,20 +379,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PurchaseOrderStatus", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReceivePaymentTypes",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Desc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReceivePaymentTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -456,8 +495,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -501,7 +539,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MenuIcon = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ApplicationMenuId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrderNo = table.Column<int>(type: "int", nullable: false),
+                    OrderNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -562,14 +600,14 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerCode = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "100, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FatherName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfficialName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsSupplier = table.Column<bool>(type: "bit", nullable: false),
                     Address1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -582,6 +620,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     SettlementType = table.Column<int>(type: "int", nullable: false),
                     SettlementDay = table.Column<int>(type: "int", nullable: false),
                     CustomerCharacteristics = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullTextSearch = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -600,6 +639,68 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Customers_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DraftOrders",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DraftOrderCode = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "100, 1"),
+                    Converted = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DraftOrders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DraftOrders_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Personnels",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PersonnelCode = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1000, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FatherName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfficialName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NationalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Personnels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Personnels_Users_CreatedBy",
                         column: x => x.CreatedBy,
                         principalSchema: "sepdb",
                         principalTable: "Users",
@@ -694,6 +795,31 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
+                name: "TransferWarehouseInventories",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OriginWarehouseId = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransferWarehouseInventories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransferWarehouseInventories_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 schema: "sepdb",
                 columns: table => new
@@ -730,7 +856,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     WarehouseTypeId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -847,9 +973,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PersonnelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PhoneNumberTypeId = table.Column<int>(type: "int", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -866,6 +994,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Customers",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_Phonebook_Personnels_PersonnelId",
+                        column: x => x.PersonnelId,
+                        principalSchema: "sepdb",
+                        principalTable: "Personnels",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Phonebook_PhoneNumberTypes_PhoneNumberTypeId",
                         column: x => x.PhoneNumberTypeId,
                         principalSchema: "sepdb",
@@ -874,6 +1008,228 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Phonebook_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentRequests",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentRequestCode = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "100, 1"),
+                    PaymentRequestTypeId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    BankAccountOrShabaNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentRequestReasonDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountOwnerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApproverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentRequestStatusId = table.Column<int>(type: "int", nullable: false),
+                    PaymentRequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RejectReasonDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentOriginTypeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentFromOrganizationBankId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCashDeskId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromIncomeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromPettyCashId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCostId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromShareHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_CashDesks_PaymentFromCashDeskId",
+                        column: x => x.PaymentFromCashDeskId,
+                        principalSchema: "sepdb",
+                        principalTable: "CashDesks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Costs_PaymentFromCostId",
+                        column: x => x.PaymentFromCostId,
+                        principalSchema: "sepdb",
+                        principalTable: "Costs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalSchema: "sepdb",
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Customers_PaymentFromCustomerId",
+                        column: x => x.PaymentFromCustomerId,
+                        principalSchema: "sepdb",
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Incomes_PaymentFromIncomeId",
+                        column: x => x.PaymentFromIncomeId,
+                        principalSchema: "sepdb",
+                        principalTable: "Incomes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_OrganizationBanks_PaymentFromOrganizationBankId",
+                        column: x => x.PaymentFromOrganizationBankId,
+                        principalSchema: "sepdb",
+                        principalTable: "OrganizationBanks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_PaymentOriginTypes_PaymentOriginTypeId",
+                        column: x => x.PaymentOriginTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentOriginTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_PaymentRequestStatus_PaymentRequestStatusId",
+                        column: x => x.PaymentRequestStatusId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentRequestStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_PettyCashs_PaymentFromPettyCashId",
+                        column: x => x.PaymentFromPettyCashId,
+                        principalSchema: "sepdb",
+                        principalTable: "PettyCashs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_ShareHolders_PaymentFromShareHolderId",
+                        column: x => x.PaymentFromShareHolderId,
+                        principalSchema: "sepdb",
+                        principalTable: "ShareHolders",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Users_ApproverId",
+                        column: x => x.ApproverId,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonnelPaymentRequests",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PersonnelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentRequestCode = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1000, 1"),
+                    PaymentRequestTypeId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    BankAccountOrShabaNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentRequestReasonDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountOwnerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApproverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentRequestStatusId = table.Column<int>(type: "int", nullable: false),
+                    PaymentRequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RejectReasonDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentOriginTypeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentFromOrganizationBankId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCashDeskId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromIncomeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromPettyCashId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCostId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromShareHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonnelPaymentRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_CashDesks_PaymentFromCashDeskId",
+                        column: x => x.PaymentFromCashDeskId,
+                        principalSchema: "sepdb",
+                        principalTable: "CashDesks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Costs_PaymentFromCostId",
+                        column: x => x.PaymentFromCostId,
+                        principalSchema: "sepdb",
+                        principalTable: "Costs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Customers_PaymentFromCustomerId",
+                        column: x => x.PaymentFromCustomerId,
+                        principalSchema: "sepdb",
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Incomes_PaymentFromIncomeId",
+                        column: x => x.PaymentFromIncomeId,
+                        principalSchema: "sepdb",
+                        principalTable: "Incomes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_OrganizationBanks_PaymentFromOrganizationBankId",
+                        column: x => x.PaymentFromOrganizationBankId,
+                        principalSchema: "sepdb",
+                        principalTable: "OrganizationBanks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_PaymentOriginTypes_PaymentOriginTypeId",
+                        column: x => x.PaymentOriginTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentOriginTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_PaymentRequestStatus_PaymentRequestStatusId",
+                        column: x => x.PaymentRequestStatusId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentRequestStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Personnels_PersonnelId",
+                        column: x => x.PersonnelId,
+                        principalSchema: "sepdb",
+                        principalTable: "Personnels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_PettyCashs_PaymentFromPettyCashId",
+                        column: x => x.PaymentFromPettyCashId,
+                        principalSchema: "sepdb",
+                        principalTable: "PettyCashs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_ShareHolders_PaymentFromShareHolderId",
+                        column: x => x.PaymentFromShareHolderId,
+                        principalSchema: "sepdb",
+                        principalTable: "ShareHolders",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Users_ApproverId",
+                        column: x => x.ApproverId,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PersonnelPaymentRequests_Users_CreatedBy",
                         column: x => x.CreatedBy,
                         principalSchema: "sepdb",
                         principalTable: "Users",
@@ -918,8 +1274,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductCode = table.Column<int>(type: "int", nullable: false),
                     Barcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductTypeId = table.Column<int>(type: "int", nullable: true),
+                    ProductName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductTypeId = table.Column<int>(type: "int", nullable: false),
                     ProductSize = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductThickness = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ApproximateWeight = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
@@ -957,7 +1313,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         column: x => x.ProductTypeId,
                         principalSchema: "sepdb",
                         principalTable: "ProductTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_ProductUnits_ProductMainUnitId",
                         column: x => x.ProductMainUnitId,
@@ -983,81 +1340,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalSchema: "sepdb",
                         principalTable: "Warehouses",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransferRemittances",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OriginWarehouseId = table.Column<int>(type: "int", nullable: false),
-                    DestinationWarehouseId = table.Column<int>(type: "int", nullable: false),
-                    TransferRemittanceTypeId = table.Column<int>(type: "int", nullable: false),
-                    DriverName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShippingName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Plaque = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VehicleTypeId = table.Column<int>(type: "int", nullable: true),
-                    DriverMobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DriverAccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DriverCreditCardNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliverDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    FareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
-                    FareAmountApproved = table.Column<bool>(type: "bit", nullable: false),
-                    OtherCosts = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
-                    TransferRemittanceStatusId = table.Column<int>(type: "int", nullable: false),
-                    UnloadingPlaceAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransferRemittances", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_TransferRemittanceStatus_TransferRemittanceStatusId",
-                        column: x => x.TransferRemittanceStatusId,
-                        principalSchema: "sepdb",
-                        principalTable: "TransferRemittanceStatus",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_TransferRemittanceTypes_TransferRemittanceTypeId",
-                        column: x => x.TransferRemittanceTypeId,
-                        principalSchema: "sepdb",
-                        principalTable: "TransferRemittanceTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_Users_CreatedBy",
-                        column: x => x.CreatedBy,
-                        principalSchema: "sepdb",
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_VehicleTypes_VehicleTypeId",
-                        column: x => x.VehicleTypeId,
-                        principalSchema: "sepdb",
-                        principalTable: "VehicleTypes",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_Warehouses_DestinationWarehouseId",
-                        column: x => x.DestinationWarehouseId,
-                        principalSchema: "sepdb",
-                        principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TransferRemittances_Warehouses_OriginWarehouseId",
-                        column: x => x.OriginWarehouseId,
-                        principalSchema: "sepdb",
-                        principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1095,8 +1377,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DraftOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OrderCode = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "10000, 2"),
+                    BusinessCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
                     OrderSendTypeId = table.Column<int>(type: "int", nullable: false),
@@ -1134,6 +1418,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_DraftOrders_DraftOrderId",
+                        column: x => x.DraftOrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "DraftOrders",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_InvoiceTypes_InvoiceTypeId",
                         column: x => x.InvoiceTypeId,
@@ -1194,7 +1484,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     OrderCode = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:Identity", "30001, 2"),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
                     OrderSendTypeId = table.Column<int>(type: "int", nullable: false),
@@ -1395,6 +1685,18 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "OrganizationBanks",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_ReceivePays_PaymentOriginTypes_ReceivePaymentTypeFromId",
+                        column: x => x.ReceivePaymentTypeFromId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentOriginTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ReceivePays_PaymentOriginTypes_ReceivePaymentTypeToId",
+                        column: x => x.ReceivePaymentTypeToId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentOriginTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ReceivePays_PettyCashs_PayToPettyCashId",
                         column: x => x.PayToPettyCashId,
                         principalSchema: "sepdb",
@@ -1414,18 +1716,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeFromId",
-                        column: x => x.ReceivePaymentTypeFromId,
-                        principalSchema: "sepdb",
-                        principalTable: "ReceivePaymentTypes",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ReceivePays_ReceivePaymentTypes_ReceivePaymentTypeToId",
-                        column: x => x.ReceivePaymentTypeToId,
-                        principalSchema: "sepdb",
-                        principalTable: "ReceivePaymentTypes",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_ReceivePays_ShareHolders_PayToShareHolderId",
                         column: x => x.PayToShareHolderId,
                         principalSchema: "sepdb",
@@ -1443,6 +1733,30 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalSchema: "sepdb",
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InternalPhoneNumber",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PhonebookId = table.Column<int>(type: "int", nullable: false),
+                    InternalNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InternalPhoneNumber", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InternalPhoneNumber_Phonebook_PhonebookId",
+                        column: x => x.PhonebookId,
+                        principalSchema: "sepdb",
+                        principalTable: "Phonebook",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1500,6 +1814,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
+                    FullTextSearch = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -1591,39 +1906,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "EntrancePermits",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PermitCode = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1001, 1"),
-                    TransferRemittanceId = table.Column<int>(type: "int", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EntrancePermits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EntrancePermits_TransferRemittances_TransferRemittanceId",
-                        column: x => x.TransferRemittanceId,
-                        principalSchema: "sepdb",
-                        principalTable: "TransferRemittances",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_EntrancePermits_Users_CreatedBy",
-                        column: x => x.CreatedBy,
-                        principalSchema: "sepdb",
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderPayments",
                 schema: "sepdb",
                 columns: table => new
@@ -1646,6 +1928,42 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderReturn",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReturnedAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReturnStatusId = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderReturn", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderReturn_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderReturn_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1827,6 +2145,150 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
+                name: "TransferRemittances",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PurchaseOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginWarehouseId = table.Column<int>(type: "int", nullable: false),
+                    DestinationWarehouseId = table.Column<int>(type: "int", nullable: false),
+                    TransferRemittanceTypeId = table.Column<int>(type: "int", nullable: false),
+                    DriverName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleTypeId = table.Column<int>(type: "int", nullable: true),
+                    DriverMobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DriverAccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DriverCreditCardNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliverDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
+                    FareAmountApproved = table.Column<bool>(type: "bit", nullable: false),
+                    OtherCosts = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
+                    TransferRemittanceStatusId = table.Column<int>(type: "int", nullable: false),
+                    UnloadingPlaceAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransferRemittances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_PurchaseOrder_PurchaseOrderId",
+                        column: x => x.PurchaseOrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_TransferRemittanceStatus_TransferRemittanceStatusId",
+                        column: x => x.TransferRemittanceStatusId,
+                        principalSchema: "sepdb",
+                        principalTable: "TransferRemittanceStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_TransferRemittanceTypes_TransferRemittanceTypeId",
+                        column: x => x.TransferRemittanceTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "TransferRemittanceTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_VehicleTypes_VehicleTypeId",
+                        column: x => x.VehicleTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "VehicleTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_Warehouses_DestinationWarehouseId",
+                        column: x => x.DestinationWarehouseId,
+                        principalSchema: "sepdb",
+                        principalTable: "Warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittances_Warehouses_OriginWarehouseId",
+                        column: x => x.OriginWarehouseId,
+                        principalSchema: "sepdb",
+                        principalTable: "Warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerLabels",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerLabelTypeId = table.Column<int>(type: "int", nullable: false),
+                    LabelName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProductTypeId = table.Column<int>(type: "int", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    ProductBrandId = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerLabels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalSchema: "sepdb",
+                        principalTable: "Brands",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_CustomerLabelTypes_CustomerLabelTypeId",
+                        column: x => x.CustomerLabelTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "CustomerLabelTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_ProductBrands_ProductBrandId",
+                        column: x => x.ProductBrandId,
+                        principalSchema: "sepdb",
+                        principalTable: "ProductBrands",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_ProductTypes_ProductTypeId",
+                        column: x => x.ProductTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "ProductTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalSchema: "sepdb",
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerLabels_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderDetails",
                 schema: "sepdb",
                 columns: table => new
@@ -1866,12 +2328,18 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Customers",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_OrderDetails_InvoiceTypes_PurchaseInvoiceTypeId",
+                        column: x => x.PurchaseInvoiceTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "InvoiceTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
                         principalSchema: "sepdb",
                         principalTable: "Orders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderDetails_ProductBrands_AlternativeProductBrandId",
                         column: x => x.AlternativeProductBrandId,
@@ -1898,12 +2366,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderDetails_PurchaseInvoiceTypes_PurchaseInvoiceTypeId",
-                        column: x => x.PurchaseInvoiceTypeId,
-                        principalSchema: "sepdb",
-                        principalTable: "PurchaseInvoiceTypes",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OrderDetails_PurchaseOrder_PurchaseOrderId",
                         column: x => x.PurchaseOrderId,
@@ -2054,6 +2516,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "Customers",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_PurchaseOrderDetails_InvoiceTypes_PurchaseInvoiceTypeId",
+                        column: x => x.PurchaseInvoiceTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "InvoiceTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_PurchaseOrderDetails_ProductBrands_AlternativeProductBrandId",
                         column: x => x.AlternativeProductBrandId,
                         principalSchema: "sepdb",
@@ -2073,12 +2541,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalTable: "ProductUnits",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PurchaseOrderDetails_PurchaseInvoiceTypes_PurchaseInvoiceTypeId",
-                        column: x => x.PurchaseInvoiceTypeId,
-                        principalSchema: "sepdb",
-                        principalTable: "PurchaseInvoiceTypes",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_PurchaseOrderDetails_PurchaseOrder_OrderId",
                         column: x => x.OrderId,
                         principalSchema: "sepdb",
@@ -2094,32 +2556,32 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransferRemittanceDetails",
+                name: "TransferWarehouseInventoryDetails",
                 schema: "sepdb",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TransferWarehouseInventoryId = table.Column<int>(type: "int", nullable: false),
                     ProductBrandId = table.Column<int>(type: "int", nullable: false),
                     TransferAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
-                    TransferRemittanceId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransferRemittanceDetails", x => x.Id);
+                    table.PrimaryKey("PK_TransferWarehouseInventoryDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TransferRemittanceDetails_ProductBrands_ProductBrandId",
+                        name: "FK_TransferWarehouseInventoryDetails_ProductBrands_ProductBrandId",
                         column: x => x.ProductBrandId,
                         principalSchema: "sepdb",
                         principalTable: "ProductBrands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TransferRemittanceDetails_TransferRemittances_TransferRemittanceId",
-                        column: x => x.TransferRemittanceId,
+                        name: "FK_TransferWarehouseInventoryDetails_TransferWarehouseInventories_TransferWarehouseInventoryId",
+                        column: x => x.TransferWarehouseInventoryId,
                         principalSchema: "sepdb",
-                        principalTable: "TransferRemittances",
+                        principalTable: "TransferWarehouseInventories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -2173,6 +2635,100 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
+                name: "EntrancePermits",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PermitCode = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1001, 1"),
+                    TransferRemittanceId = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EntrancePermits", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EntrancePermits_TransferRemittances_TransferRemittanceId",
+                        column: x => x.TransferRemittanceId,
+                        principalSchema: "sepdb",
+                        principalTable: "TransferRemittances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EntrancePermits_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransferRemittanceDetails",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductBrandId = table.Column<int>(type: "int", nullable: false),
+                    TransferAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    TransferRemittanceId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransferRemittanceDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittanceDetails_ProductBrands_ProductBrandId",
+                        column: x => x.ProductBrandId,
+                        principalSchema: "sepdb",
+                        principalTable: "ProductBrands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TransferRemittanceDetails_TransferRemittances_TransferRemittanceId",
+                        column: x => x.TransferRemittanceId,
+                        principalSchema: "sepdb",
+                        principalTable: "TransferRemittances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerAssignedLabels",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerLabelId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerAssignedLabels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerAssignedLabels_CustomerLabels_CustomerLabelId",
+                        column: x => x.CustomerLabelId,
+                        principalSchema: "sepdb",
+                        principalTable: "CustomerLabels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomerAssignedLabels_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalSchema: "sepdb",
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CargoAnnounceDetails",
                 schema: "sepdb",
                 columns: table => new
@@ -2199,7 +2755,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         principalSchema: "sepdb",
                         principalTable: "CargoAnnounces",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CargoAnnounceDetails_OrderDetails_OrderDetailId",
                         column: x => x.OrderDetailId,
@@ -2209,6 +2765,47 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CargoAnnounceDetails_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderDetailReturn",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderDetailId = table.Column<int>(type: "int", nullable: false),
+                    OrderReturnId = table.Column<int>(type: "int", nullable: false),
+                    ReturnedAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetailReturn", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderDetailReturn_OrderDetails_OrderDetailId",
+                        column: x => x.OrderDetailId,
+                        principalSchema: "sepdb",
+                        principalTable: "OrderDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderDetailReturn_OrderReturn_OrderReturnId",
+                        column: x => x.OrderReturnId,
+                        principalSchema: "sepdb",
+                        principalTable: "OrderReturn",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderDetailReturn_Users_CreatedBy",
                         column: x => x.CreatedBy,
                         principalSchema: "sepdb",
                         principalTable: "Users",
@@ -2246,59 +2843,6 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "UnloadingPermits",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EntrancePermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UnloadingPermitCode = table.Column<int>(type: "int", nullable: false),
-                    TransferRemittanceDetailId = table.Column<int>(type: "int", nullable: false),
-                    DriverAccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DriverCreditCardNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OtherCosts = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
-                    DriverName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
-                    FareAmountApproved = table.Column<bool>(type: "bit", nullable: false),
-                    FareAmountPayStatus = table.Column<bool>(type: "bit", nullable: false),
-                    ShippingName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Plaque = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VehicleTypeId = table.Column<int>(type: "int", nullable: false),
-                    DriverMobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliverDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UnloadingPlaceAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnloadingPermits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UnloadingPermits_EntrancePermits_EntrancePermitId",
-                        column: x => x.EntrancePermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "EntrancePermits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UnloadingPermits_TransferRemittanceDetails_TransferRemittanceDetailId",
-                        column: x => x.TransferRemittanceDetailId,
-                        principalSchema: "sepdb",
-                        principalTable: "TransferRemittanceDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UnloadingPermits_Users_CreatedBy",
-                        column: x => x.CreatedBy,
-                        principalSchema: "sepdb",
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LadingExitPermit",
                 schema: "sepdb",
                 columns: table => new
@@ -2313,9 +2857,8 @@ namespace Sepehr.Infrastructure.Persistence.Data
                     OtherAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
                     ExitPermitDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: true),
-                    FareAmountPayStatus = table.Column<bool>(type: "bit", nullable: false),
+                    FareAmountStatusId = table.Column<int>(type: "int", nullable: true),
                     HasExitPermit = table.Column<bool>(type: "bit", nullable: true),
-                    FareAmountApproved = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -2325,6 +2868,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LadingExitPermit", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LadingExitPermit_FareAmountStatus_FareAmountStatusId",
+                        column: x => x.FareAmountStatusId,
+                        principalSchema: "sepdb",
+                        principalTable: "FareAmountStatus",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_LadingExitPermit_LadingPermit_LadingPermitId",
                         column: x => x.LadingPermitId,
@@ -2381,46 +2930,26 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "UnloadingPermitDetails",
+                name: "UnloadingPermits",
                 schema: "sepdb",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EntrancePermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UnloadingPermitCode = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TransferRemittanceDetailId = table.Column<int>(type: "int", nullable: false),
-                    UnloadedAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnloadingPermitDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UnloadingPermitDetails_TransferRemittanceDetails_TransferRemittanceDetailId",
-                        column: x => x.TransferRemittanceDetailId,
-                        principalSchema: "sepdb",
-                        principalTable: "TransferRemittanceDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UnloadingPermitDetails_UnloadingPermits_UnloadingPermitId",
-                        column: x => x.UnloadingPermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "UnloadingPermits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DriverFareAmountApproves",
-                schema: "sepdb",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PurOrderTransRemittUnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DriverAccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DriverCreditCardNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OtherCosts = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    DriverName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    ShippingName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleTypeId = table.Column<int>(type: "int", nullable: false),
+                    DriverMobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliverDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UnloadingPlaceAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FareAmountStatusId = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -2429,21 +2958,22 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DriverFareAmountApproves", x => x.Id);
+                    table.PrimaryKey("PK_UnloadingPermits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DriverFareAmountApproves_LadingExitPermit_LadingExitPermitId",
-                        column: x => x.LadingExitPermitId,
+                        name: "FK_UnloadingPermits_EntrancePermits_EntrancePermitId",
+                        column: x => x.EntrancePermitId,
                         principalSchema: "sepdb",
-                        principalTable: "LadingExitPermit",
+                        principalTable: "EntrancePermits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UnloadingPermits_FareAmountStatus_FareAmountStatusId",
+                        column: x => x.FareAmountStatusId,
+                        principalSchema: "sepdb",
+                        principalTable: "FareAmountStatus",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_DriverFareAmountApproves_UnloadingPermits_PurOrderTransRemittUnloadingPermitId",
-                        column: x => x.PurOrderTransRemittUnloadingPermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "UnloadingPermits",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DriverFareAmountApproves_Users_CreatedBy",
+                        name: "FK_UnloadingPermits_Users_CreatedBy",
                         column: x => x.CreatedBy,
                         principalSchema: "sepdb",
                         principalTable: "Users",
@@ -2561,17 +3091,63 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "RentPayments",
+                name: "DriverFareAmountApproves",
                 schema: "sepdb",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReceivePaymentOriginId = table.Column<int>(type: "int", nullable: false),
-                    UnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TotalFareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PurOrderTransRemittUnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DriverFareAmountApproves", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DriverFareAmountApproves_LadingExitPermit_LadingExitPermitId",
+                        column: x => x.LadingExitPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "LadingExitPermit",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DriverFareAmountApproves_UnloadingPermits_PurOrderTransRemittUnloadingPermitId",
+                        column: x => x.PurOrderTransRemittUnloadingPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "UnloadingPermits",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DriverFareAmountApproves_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalSchema: "sepdb",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RentPayments",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1010, 1"),
+                    TotalFareAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
+                    FareAmountStatusId = table.Column<int>(type: "int", nullable: false),
+                    PaymentOriginTypeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentFromOrganizationBankId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCashDeskId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromIncomeId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromPettyCashId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromCostId = table.Column<int>(type: "int", nullable: true),
+                    PaymentFromShareHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -2582,18 +3158,53 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 {
                     table.PrimaryKey("PK_RentPayments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RentPayments_LadingExitPermit_LadingExitPermitId",
-                        column: x => x.LadingExitPermitId,
+                        name: "FK_RentPayments_CashDesks_PaymentFromCashDeskId",
+                        column: x => x.PaymentFromCashDeskId,
                         principalSchema: "sepdb",
-                        principalTable: "LadingExitPermit",
+                        principalTable: "CashDesks",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_RentPayments_ReceivePaymentTypes_ReceivePaymentOriginId",
-                        column: x => x.ReceivePaymentOriginId,
+                        name: "FK_RentPayments_Costs_PaymentFromCostId",
+                        column: x => x.PaymentFromCostId,
                         principalSchema: "sepdb",
-                        principalTable: "ReceivePaymentTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Costs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_Customers_PaymentFromCustomerId",
+                        column: x => x.PaymentFromCustomerId,
+                        principalSchema: "sepdb",
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_Incomes_PaymentFromIncomeId",
+                        column: x => x.PaymentFromIncomeId,
+                        principalSchema: "sepdb",
+                        principalTable: "Incomes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_OrganizationBanks_PaymentFromOrganizationBankId",
+                        column: x => x.PaymentFromOrganizationBankId,
+                        principalSchema: "sepdb",
+                        principalTable: "OrganizationBanks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_PaymentOriginTypes_PaymentOriginTypeId",
+                        column: x => x.PaymentOriginTypeId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentOriginTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_PettyCashs_PaymentFromPettyCashId",
+                        column: x => x.PaymentFromPettyCashId,
+                        principalSchema: "sepdb",
+                        principalTable: "PettyCashs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPayments_ShareHolders_PaymentFromShareHolderId",
+                        column: x => x.PaymentFromShareHolderId,
+                        principalSchema: "sepdb",
+                        principalTable: "ShareHolders",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RentPayments_UnloadingPermits_UnloadingPermitId",
                         column: x => x.UnloadingPermitId,
@@ -2609,81 +3220,34 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachment",
+                name: "UnloadingPermitDetails",
                 schema: "sepdb",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    ReceivePayId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PurchaseOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LadingPermitId = table.Column<int>(type: "int", nullable: true),
-                    PurOrderTransRemittanceUnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PurOrderTransRemittanceEntrancePermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    AttachmentType = table.Column<int>(type: "int", nullable: true),
-                    CargoAnnounceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LadingLicenseId = table.Column<int>(type: "int", nullable: true),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TransferRemittanceDetailId = table.Column<int>(type: "int", nullable: false),
+                    UnloadedAmount = table.Column<decimal>(type: "decimal(18,6)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachment", x => x.Id);
+                    table.PrimaryKey("PK_UnloadingPermitDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attachment_CargoAnnounces_CargoAnnounceId",
-                        column: x => x.CargoAnnounceId,
+                        name: "FK_UnloadingPermitDetails_TransferRemittanceDetails_TransferRemittanceDetailId",
+                        column: x => x.TransferRemittanceDetailId,
                         principalSchema: "sepdb",
-                        principalTable: "CargoAnnounces",
-                        principalColumn: "Id");
+                        principalTable: "TransferRemittanceDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Attachment_EntrancePermits_PurOrderTransRemittanceEntrancePermitId",
-                        column: x => x.PurOrderTransRemittanceEntrancePermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "EntrancePermits",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_LadingExitPermit_LadingExitPermitId",
-                        column: x => x.LadingExitPermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "LadingExitPermit",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_LadingLicense_LadingLicenseId",
-                        column: x => x.LadingLicenseId,
-                        principalSchema: "sepdb",
-                        principalTable: "LadingLicense",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_LadingPermit_LadingPermitId",
-                        column: x => x.LadingPermitId,
-                        principalSchema: "sepdb",
-                        principalTable: "LadingPermit",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalSchema: "sepdb",
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_PurchaseOrder_PurchaseOrderId",
-                        column: x => x.PurchaseOrderId,
-                        principalSchema: "sepdb",
-                        principalTable: "PurchaseOrder",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_ReceivePays_ReceivePayId",
-                        column: x => x.ReceivePayId,
-                        principalSchema: "sepdb",
-                        principalTable: "ReceivePays",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Attachment_UnloadingPermits_PurOrderTransRemittanceUnloadingPermitId",
-                        column: x => x.PurOrderTransRemittanceUnloadingPermitId,
+                        name: "FK_UnloadingPermitDetails_UnloadingPermits_UnloadingPermitId",
+                        column: x => x.UnloadingPermitId,
                         principalSchema: "sepdb",
                         principalTable: "UnloadingPermits",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -2719,6 +3283,149 @@ namespace Sepehr.Infrastructure.Persistence.Data
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Attachment",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    RentPaymentId = table.Column<int>(type: "int", nullable: true),
+                    ReceivePayId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PurchaseOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LadingPermitId = table.Column<int>(type: "int", nullable: true),
+                    PurOrderTransRemittanceUnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PurOrderTransRemittanceEntrancePermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    AttachmentType = table.Column<int>(type: "int", nullable: true),
+                    CargoAnnounceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PaymentRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DraftOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LadingLicenseId = table.Column<int>(type: "int", nullable: true),
+                    PersonnelPaymentRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attachment_CargoAnnounces_CargoAnnounceId",
+                        column: x => x.CargoAnnounceId,
+                        principalSchema: "sepdb",
+                        principalTable: "CargoAnnounces",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_DraftOrders_DraftOrderId",
+                        column: x => x.DraftOrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "DraftOrders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Attachment_EntrancePermits_PurOrderTransRemittanceEntrancePermitId",
+                        column: x => x.PurOrderTransRemittanceEntrancePermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "EntrancePermits",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_LadingExitPermit_LadingExitPermitId",
+                        column: x => x.LadingExitPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "LadingExitPermit",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_LadingLicense_LadingLicenseId",
+                        column: x => x.LadingLicenseId,
+                        principalSchema: "sepdb",
+                        principalTable: "LadingLicense",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_LadingPermit_LadingPermitId",
+                        column: x => x.LadingPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "LadingPermit",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "Orders",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_PaymentRequests_PaymentRequestId",
+                        column: x => x.PaymentRequestId,
+                        principalSchema: "sepdb",
+                        principalTable: "PaymentRequests",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_PersonnelPaymentRequests_PersonnelPaymentRequestId",
+                        column: x => x.PersonnelPaymentRequestId,
+                        principalSchema: "sepdb",
+                        principalTable: "PersonnelPaymentRequests",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_PurchaseOrder_PurchaseOrderId",
+                        column: x => x.PurchaseOrderId,
+                        principalSchema: "sepdb",
+                        principalTable: "PurchaseOrder",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_ReceivePays_ReceivePayId",
+                        column: x => x.ReceivePayId,
+                        principalSchema: "sepdb",
+                        principalTable: "ReceivePays",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_RentPayments_RentPaymentId",
+                        column: x => x.RentPaymentId,
+                        principalSchema: "sepdb",
+                        principalTable: "RentPayments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attachment_UnloadingPermits_PurOrderTransRemittanceUnloadingPermitId",
+                        column: x => x.PurOrderTransRemittanceUnloadingPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "UnloadingPermits",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RentPaymentDetails",
+                schema: "sepdb",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RentPaymentId = table.Column<int>(type: "int", nullable: false),
+                    UnloadingPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LadingExitPermitId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RentPaymentDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RentPaymentDetails_LadingExitPermit_LadingExitPermitId",
+                        column: x => x.LadingExitPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "LadingExitPermit",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RentPaymentDetails_RentPayments_RentPaymentId",
+                        column: x => x.RentPaymentId,
+                        principalSchema: "sepdb",
+                        principalTable: "RentPayments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RentPaymentDetails_UnloadingPermits_UnloadingPermitId",
+                        column: x => x.UnloadingPermitId,
+                        principalSchema: "sepdb",
+                        principalTable: "UnloadingPermits",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationMenus_ApplicationMenuId",
                 schema: "sepdb",
@@ -2736,6 +3443,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "Attachment",
                 column: "CargoAnnounceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachment_DraftOrderId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "DraftOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attachment_LadingExitPermitId",
@@ -2762,6 +3475,18 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attachment_PaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "PaymentRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachment_PersonnelPaymentRequestId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "PersonnelPaymentRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attachment_PurchaseOrderId",
                 schema: "sepdb",
                 table: "Attachment",
@@ -2786,10 +3511,22 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "ReceivePayId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attachment_RentPaymentId",
+                schema: "sepdb",
+                table: "Attachment",
+                column: "RentPaymentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AuditLogs_CreatedBy",
                 schema: "sepdb",
                 table: "AuditLogs",
                 column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Brands_Name",
+                schema: "sepdb",
+                table: "Brands",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CargoAnnounceDetails_CargoAnnounceId",
@@ -2834,6 +3571,54 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "VehicleTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerAssignedLabels_CustomerId",
+                schema: "sepdb",
+                table: "CustomerAssignedLabels",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAssignedLabels_CustomerLabelId",
+                schema: "sepdb",
+                table: "CustomerAssignedLabels",
+                column: "CustomerLabelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_BrandId",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_CreatedBy",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_CustomerLabelTypeId",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "CustomerLabelTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_ProductBrandId",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "ProductBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_ProductId",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerLabels_ProductTypeId",
+                schema: "sepdb",
+                table: "CustomerLabels",
+                column: "ProductTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomerOfficialCompanies_CreatedBy",
                 schema: "sepdb",
                 table: "CustomerOfficialCompanies",
@@ -2870,6 +3655,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DraftOrders_CreatedBy",
+                schema: "sepdb",
+                table: "DraftOrders",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DriverFareAmountApproves_CreatedBy",
                 schema: "sepdb",
                 table: "DriverFareAmountApproves",
@@ -2901,22 +3692,36 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_InternalPhoneNumber_PhonebookId",
+                schema: "sepdb",
+                table: "InternalPhoneNumber",
+                column: "PhonebookId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LadingExitPermit_CreatedBy",
                 schema: "sepdb",
                 table: "LadingExitPermit",
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LadingExitPermit_FareAmountStatusId",
+                schema: "sepdb",
+                table: "LadingExitPermit",
+                column: "FareAmountStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LadingExitPermit_LadingPermitId",
                 schema: "sepdb",
                 table: "LadingExitPermit",
-                column: "LadingPermitId");
+                column: "LadingPermitId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LadingExitPermitDetails_CargoAnnounceDetailId",
                 schema: "sepdb",
                 table: "LadingExitPermitDetails",
-                column: "CargoAnnounceDetailId");
+                column: "CargoAnnounceDetailId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LadingExitPermitDetails_CreatedBy",
@@ -3040,6 +3845,24 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderDetailReturn_CreatedBy",
+                schema: "sepdb",
+                table: "OrderDetailReturn",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetailReturn_OrderDetailId",
+                schema: "sepdb",
+                table: "OrderDetailReturn",
+                column: "OrderDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetailReturn_OrderReturnId",
+                schema: "sepdb",
+                table: "OrderDetailReturn",
+                column: "OrderReturnId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_AlternativeProductBrandId",
                 schema: "sepdb",
                 table: "OrderDetails",
@@ -3100,6 +3923,18 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderReturn_CreatedBy",
+                schema: "sepdb",
+                table: "OrderReturn",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderReturn_OrderId",
+                schema: "sepdb",
+                table: "OrderReturn",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CreatedBy",
                 schema: "sepdb",
                 table: "Orders",
@@ -3116,6 +3951,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "Orders",
                 column: "CustomerOfficialCompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_DraftOrderId",
+                schema: "sepdb",
+                table: "Orders",
+                column: "DraftOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_FarePaymentTypeId",
@@ -3166,10 +4007,160 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "BankId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_ApproverId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "ApproverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_CreatedBy",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_CustomerId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromCashDeskId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromCashDeskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromCostId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromCostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromCustomerId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromCustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromIncomeId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromIncomeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromOrganizationBankId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromOrganizationBankId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromPettyCashId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromPettyCashId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentFromShareHolderId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentFromShareHolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentOriginTypeId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentOriginTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_PaymentRequestStatusId",
+                schema: "sepdb",
+                table: "PaymentRequests",
+                column: "PaymentRequestStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Permissions_ApplicationMenuId",
                 schema: "sepdb",
                 table: "Permissions",
                 column: "ApplicationMenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_ApproverId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "ApproverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_CreatedBy",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromCashDeskId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromCashDeskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromCostId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromCostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromCustomerId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromCustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromIncomeId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromIncomeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromOrganizationBankId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromOrganizationBankId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromPettyCashId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromPettyCashId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentFromShareHolderId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentFromShareHolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentOriginTypeId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentOriginTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PaymentRequestStatusId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PaymentRequestStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonnelPaymentRequests_PersonnelId",
+                schema: "sepdb",
+                table: "PersonnelPaymentRequests",
+                column: "PersonnelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Personnels_CreatedBy",
+                schema: "sepdb",
+                table: "Personnels",
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Phonebook_CreatedBy",
@@ -3178,10 +4169,18 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phonebook_CustomerId",
+                name: "IX_Phonebook_CustomerId_PhoneNumber_PhoneNumberTypeId",
                 schema: "sepdb",
                 table: "Phonebook",
-                column: "CustomerId");
+                columns: new[] { "CustomerId", "PhoneNumber", "PhoneNumberTypeId" },
+                unique: true,
+                filter: "[CustomerId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Phonebook_PersonnelId",
+                schema: "sepdb",
+                table: "Phonebook",
+                column: "PersonnelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Phonebook_PhoneNumberTypeId",
@@ -3214,10 +4213,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductInventories_ProductBrandId",
+                name: "IX_ProductInventories_ProductBrandId_WarehouseId",
                 schema: "sepdb",
                 table: "ProductInventories",
-                column: "ProductBrandId");
+                columns: new[] { "ProductBrandId", "WarehouseId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductInventories_ProductId",
@@ -3273,6 +4273,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "Products",
                 column: "ProductMainUnitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_ProductName_ProductCode",
+                schema: "sepdb",
+                table: "Products",
+                columns: new[] { "ProductName", "ProductCode" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductStandardId",
@@ -3587,22 +4593,76 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RentPaymentDetails_LadingExitPermitId",
+                schema: "sepdb",
+                table: "RentPaymentDetails",
+                column: "LadingExitPermitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPaymentDetails_RentPaymentId",
+                schema: "sepdb",
+                table: "RentPaymentDetails",
+                column: "RentPaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPaymentDetails_UnloadingPermitId",
+                schema: "sepdb",
+                table: "RentPaymentDetails",
+                column: "UnloadingPermitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RentPayments_CreatedBy",
                 schema: "sepdb",
                 table: "RentPayments",
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentPayments_LadingExitPermitId",
+                name: "IX_RentPayments_PaymentFromCashDeskId",
                 schema: "sepdb",
                 table: "RentPayments",
-                column: "LadingExitPermitId");
+                column: "PaymentFromCashDeskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentPayments_ReceivePaymentOriginId",
+                name: "IX_RentPayments_PaymentFromCostId",
                 schema: "sepdb",
                 table: "RentPayments",
-                column: "ReceivePaymentOriginId");
+                column: "PaymentFromCostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentFromCustomerId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentFromCustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentFromIncomeId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentFromIncomeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentFromOrganizationBankId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentFromOrganizationBankId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentFromPettyCashId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentFromPettyCashId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentFromShareHolderId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentFromShareHolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentPayments_PaymentOriginTypeId",
+                schema: "sepdb",
+                table: "RentPayments",
+                column: "PaymentOriginTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RentPayments_UnloadingPermitId",
@@ -3671,6 +4731,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 column: "OriginWarehouseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransferRemittances_PurchaseOrderId",
+                schema: "sepdb",
+                table: "TransferRemittances",
+                column: "PurchaseOrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransferRemittances_TransferRemittanceStatusId",
                 schema: "sepdb",
                 table: "TransferRemittances",
@@ -3687,6 +4753,24 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "TransferRemittances",
                 column: "VehicleTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransferWarehouseInventories_CreatedBy",
+                schema: "sepdb",
+                table: "TransferWarehouseInventories",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransferWarehouseInventoryDetails_ProductBrandId",
+                schema: "sepdb",
+                table: "TransferWarehouseInventoryDetails",
+                column: "ProductBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransferWarehouseInventoryDetails_TransferWarehouseInventoryId",
+                schema: "sepdb",
+                table: "TransferWarehouseInventoryDetails",
+                column: "TransferWarehouseInventoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UnloadingPermitDetails_TransferRemittanceDetailId",
@@ -3710,13 +4794,14 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 name: "IX_UnloadingPermits_EntrancePermitId",
                 schema: "sepdb",
                 table: "UnloadingPermits",
-                column: "EntrancePermitId");
+                column: "EntrancePermitId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UnloadingPermits_TransferRemittanceDetailId",
+                name: "IX_UnloadingPermits_FareAmountStatusId",
                 schema: "sepdb",
                 table: "UnloadingPermits",
-                column: "TransferRemittanceDetailId");
+                column: "FareAmountStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -3729,6 +4814,12 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb",
                 table: "UserRoles",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Warehouses_Name",
+                schema: "sepdb",
+                table: "Warehouses",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Warehouses_WarehouseTypeId",
@@ -3749,11 +4840,19 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "CustomerAssignedLabels",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "CustomerWarehouses",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
                 name: "DriverFareAmountApproves",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "InternalPhoneNumber",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3773,6 +4872,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "OrderDetailReturn",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "OrderPayments",
                 schema: "sepdb");
 
@@ -3781,7 +4884,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "Phonebook",
+                name: "PaymentRequestReasons",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3821,7 +4924,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "RentPayments",
+                name: "RentPaymentDetails",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3833,6 +4936,10 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "TransferWarehouseInventoryDetails",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "UnloadingPermitDetails",
                 schema: "sepdb");
 
@@ -3841,7 +4948,23 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "PaymentRequests",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "PersonnelPaymentRequests",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "ReceivePays",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "CustomerLabels",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "Phonebook",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3853,7 +4976,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "PhoneNumberTypes",
+                name: "OrderReturn",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3869,15 +4992,51 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "RentPayments",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "Permissions",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "UnloadingPermits",
+                name: "TransferWarehouseInventories",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "TransferRemittanceDetails",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
                 name: "Roles",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "PaymentRequestStatus",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "ReceivePayStatus",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "CustomerLabelTypes",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "Personnels",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "PhoneNumberTypes",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "OrderDetails",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "LadingExitPermit",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3897,15 +5056,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
+                name: "PaymentOriginTypes",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
                 name: "PettyCashs",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "ReceivePayStatus",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "ReceivePaymentTypes",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3913,11 +5068,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "OrderDetails",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "LadingExitPermit",
+                name: "UnloadingPermits",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3925,19 +5076,7 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "EntrancePermits",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "TransferRemittanceDetails",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "Banks",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "PurchaseInvoiceTypes",
+                name: "ProductBrands",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3945,15 +5084,15 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "ProductBrands",
+                name: "Banks",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "TransferRemittances",
+                name: "EntrancePermits",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "CargoAnnounces",
+                name: "FareAmountStatus",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3965,23 +5104,11 @@ namespace Sepehr.Infrastructure.Persistence.Data
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "TransferRemittanceStatus",
+                name: "CargoAnnounces",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
-                name: "TransferRemittanceTypes",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "Orders",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "PurchaseOrder",
-                schema: "sepdb");
-
-            migrationBuilder.DropTable(
-                name: "VehicleTypes",
+                name: "TransferRemittances",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(
@@ -3998,6 +5125,30 @@ namespace Sepehr.Infrastructure.Persistence.Data
 
             migrationBuilder.DropTable(
                 name: "ProductUnits",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "Orders",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "PurchaseOrder",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "TransferRemittanceStatus",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "TransferRemittanceTypes",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "VehicleTypes",
+                schema: "sepdb");
+
+            migrationBuilder.DropTable(
+                name: "DraftOrders",
                 schema: "sepdb");
 
             migrationBuilder.DropTable(

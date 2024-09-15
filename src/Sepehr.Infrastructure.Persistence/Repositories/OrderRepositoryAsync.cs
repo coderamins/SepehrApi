@@ -57,64 +57,80 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Order> CreateOrder(Order order)
         {
-            //----اگه سفارش فروش فوری باشد از موجودی کسر خواهد شد----
-            if (order.OrderTypeId == OrderType.Urgant)
+            try
             {
-                foreach (var prodBrand in order.Details)
+                //----اگه سفارش فروش فوری باشد از موجودی کسر خواهد شد----
+                if (order.OrderTypeId == OrderType.Urgant)
                 {
-                    var prodInventory = await _productInventory
-                        .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
-                                    i.WarehouseId == prodBrand.WarehouseId);
-
-                    if (prodInventory == null)
-                        throw new ApiException("انبار یافت نشد !");
-                    else
+                    foreach (var prodBrand in order.Details)
                     {
-                        var prodEnvEntry = _productInventory.Entry(prodInventory);
-                        prodEnvEntry.State = EntityState.Modified;
+                        var prodInventory = await _productInventory
+                            .FirstOrDefaultAsync(i => i.ProductBrandId == prodBrand.ProductBrandId &&
+                                        i.WarehouseId == prodBrand.WarehouseId);
 
-                        //-----اگر نوع انبار واسط باشد چون یک سفارش خرید براش ثبت شده باید ابتدا به موجودی تقریبی انبار اضافه شود-------
-                        if (_warehouses.Any(x => x.Id == prodBrand.WarehouseId && x.WarehouseTypeId == (int)EWarehouseType.Vaseteh))
-                            prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
+                        if (prodInventory == null)
+                            throw new ApiException("انبار یافت نشد !");
+                        else
+                        {
+                            var prodEnvEntry = _productInventory.Entry(prodInventory);
+                            prodEnvEntry.State = EntityState.Modified;
 
-                        prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
+                            //-----اگر نوع انبار واسط باشد چون یک سفارش خرید براش ثبت شده باید ابتدا به موجودی تقریبی انبار اضافه شود-------
+                            if (_warehouses.Any(x => x.Id == prodBrand.WarehouseId && x.WarehouseTypeId == (int)EWarehouseType.Vaseteh))
+                                prodInventory.ApproximateInventory += prodBrand.ProximateAmount;
 
-                        prodEnvEntry.CurrentValues.SetValues(prodInventory);
+                            prodInventory.ApproximateInventory -= prodBrand.ProximateAmount;
+
+                            prodEnvEntry.CurrentValues.SetValues(prodInventory);
+                        }
+
                     }
-
                 }
-            }
 
-            var newOrder = await _orders.AddAsync(order);
+                var newOrder = await _orders.AddAsync(order);
 
-            //--------تبدیل وضعیت پیش نویس به سفارش شده------
-            //var draftOrder =await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
-            //if (draftOrder != null)
-            //    draftOrder.Converted = true;
-            //-----------------------------------------------
-
-            await _dbContext.SaveChangesAsync();
-            
-            var customerPrimaryMobiles = _dbContext.Phonebook.Where(p => p.CustomerId == order.CustomerId &&
-                        p.PhoneNumberTypeId == (int)EPhoneNoType.Mobile && p.IsPrimary).ToList();
-
-
-            if (customerPrimaryMobiles.Count() > 0)
-            {
-                List<string> messages = new List<string>();
-                messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان"
-                    , "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید"
-                    , $"https://storm.net/order?id={order.Id}"));
-
-                messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
-                await _smsService.SendAsync(new SmsRequest
+                //--------تبدیل وضعیت پیش نویس به سفارش شده------
+                var draftOrder = await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
+                if (order.DraftOrderId != null && draftOrder == null)
+                    throw new ApiException("پیش نویس یافت نشد !");
+                if (draftOrder != null)
                 {
-                    mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
-                    messageTexts = messages
-                });
-            }
+                    if (_orders.Any(o => o.DraftOrderId == order.DraftOrderId))
+                        throw new ApiException("سفارش با این پیش نویس قبلا ثبت شده است !");
 
-            return newOrder.Entity;
+                    draftOrder.Converted = true;
+                    _dbContext.DraftOrders.Update(draftOrder);
+                }
+                //-----------------------------------------------
+
+                await _dbContext.SaveChangesAsync();
+
+                var customerPrimaryMobiles = _dbContext.Phonebook.Where(p => p.CustomerId == order.CustomerId &&
+                            p.PhoneNumberTypeId == (int)EPhoneNoType.Mobile && p.IsPrimary).ToList();
+
+
+                if (customerPrimaryMobiles.Count() > 0)
+                {
+                    List<string> messages = new List<string>();
+                    messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان",
+                        "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید",
+                        $"https://storm.net/order?id={order.Id}",
+                        " \n لغو11"));
+
+                    messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
+                    await _smsService.SendAsync(new SmsRequest
+                    {
+                        mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
+                        messageTexts = messages
+                    });
+                }
+
+                return newOrder.Entity;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 
         }
 
@@ -141,11 +157,10 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<bool> ConfirmOrder(Guid orderId)
         {
             var order = await _orders.AsNoTracking().Include(o => o.Customer).FirstOrDefaultAsync(o => o.Id == orderId);
+
+            ArgumentNullException.ThrowIfNull(order, "سفارش یافت نشد !");
+
             var ordEntry = _orders.Entry(order);
-            if (order == null)
-            {
-                throw new ApiException("سفارش یافت نشد !");
-            }
             if (order.OrderStatusId == (int)OrderStatusEnum.Confirmed)
                 throw new ApiException("این سفارش قبلا تایید شده است !");
 
@@ -223,6 +238,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         public async Task<IQueryable<Order>> GetAllOrdersAsync(GetAllOrdersParameter param)
         {
             var query = _orders.AsNoTracking()
+                .Include(o => o.DraftOrder).ThenInclude(o=>o.ApplicationUser)
                 .Include(o => o.OrderStatus)
                 .Include(o => o.OrderServices).ThenInclude(s => s.Service)
                 .Include(c => c.Customer)
@@ -242,6 +258,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             return query
                 .Where(o =>
+                ((o.DraftOrder!=null && o.DraftOrder.CreatedBy == param.SaleManagerId) || param.SaleManagerId == null || param.SaleManagerId == Guid.Empty) &&
                 (o.OrderTypeId == param.OrderType || param.OrderType == null) &&
                 (o.OrderCode == param.OrderCode || param.OrderCode == null) &&
                 (o.OrderStatusId == param.OrderStatusId || param.OrderStatusId == null) &&

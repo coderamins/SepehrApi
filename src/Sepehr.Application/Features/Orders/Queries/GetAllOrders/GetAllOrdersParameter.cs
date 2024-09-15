@@ -14,5 +14,6 @@ namespace Sepehr.Application.Features.Orders.Queries.GetAllOrders
         public long? OrderCode { get; set; }
         public OrderType? OrderType { get; set; }
         public bool? IsTemporary { get; set; }
+        public Guid? SaleManagerId { get; set; }
     }
 }

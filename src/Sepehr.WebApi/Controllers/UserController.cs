@@ -22,7 +22,8 @@ namespace Sepehr.WebApi.Controller
                 .Send(new GetAllApplicationUsersQuery()
                 {
                     PageSize = filter.PageSize,
-                    PageNumber = filter.PageNumber
+                    PageNumber = filter.PageNumber,
+                    UserRoles=filter.UserRoles
                 }));
         }
 

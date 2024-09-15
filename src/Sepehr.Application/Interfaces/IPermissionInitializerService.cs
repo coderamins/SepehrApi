@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Application.Interfaces
 {
-    public interface IPermissionInitializerService:IGenericRepositoryAsync<Permission>
+    public interface IPermissionInitializerService : IGenericRepositoryAsync<Permission>
     {
-
+        Task<bool> CheckPermissionExists(string policy);
     }
 }

@@ -11,5 +11,7 @@ namespace Sepehr.Application.Features.DraftOrders.Queries.GetAllDraftOrders
         public Guid? ProductId { get; set; }
         public bool? Converted { get; set; }
         public Guid? CreatorId { get; set; }
+        public string FromDate{get;set;}=string.Empty;
+        public string ToDate { get; set; } = string.Empty;
     }
 }
