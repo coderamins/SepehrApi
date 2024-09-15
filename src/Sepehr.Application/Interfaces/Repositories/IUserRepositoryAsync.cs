@@ -7,6 +7,7 @@ namespace Sepehr.Application.Interfaces.Repositories
     public interface IApplicationUserRepositoryAsync : IGenericRepositoryAsync<ApplicationUser>
     {
         Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken, string userName);
+        Task CreateVerificationCode(VerificationCode verificationCode);
         Task<List<ApplicationUser>> GetAllApplicationUsers(GetAllApplicationUsersParameter filter);
         Task<ApplicationUser?> GetApplicationUserInfo(string userName);
         Task<ApplicationUser?> GetApplicationUserInfo(Guid Id);

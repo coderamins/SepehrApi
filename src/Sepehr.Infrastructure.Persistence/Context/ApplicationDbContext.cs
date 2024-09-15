@@ -114,6 +114,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<DraftOrder> DraftOrders { get; set; }
         public DbSet<OrderReturn> OrderReturn { get; set; }
         public DbSet<OrderDetailReturn> OrderDetailReturn { get; set; }
+        public DbSet<VerificationCode> VerificationCodes { get; set; }
+        
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

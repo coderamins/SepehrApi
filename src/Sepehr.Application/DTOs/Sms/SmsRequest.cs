@@ -9,7 +9,7 @@ namespace Sepehr.Application.DTOs.Sms
     public class SmsRequest
     {
         public required IEnumerable<string> mobiles { get; set; }
-        public required IEnumerable<string> messageTexts { get; set; }
-        public string LineNumber { get; set; } = "30004505000017";
+        public required string messageText { get; set; }
+        public string LineNumber { get; set; } = "100091005030";
     }
 }

@@ -1,5 +1,6 @@
 using Sepehr.Domain.Common;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sepehr.Domain.Entities.UserEntities
 {
@@ -18,6 +19,8 @@ namespace Sepehr.Domain.Entities.UserEntities
         public string PasswordHash { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+        [StringLength(11)]
+        public string Mobile { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public bool IsDealerUser { get; set; } = false;

@@ -29,6 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using Sepehr.Domain.Common;
 using Sepehr.WebApi.Services;
 using Sepehr.Infrastructure.Persistence.Seeds;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => new Dictionary<string, UserChatConnection>());
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    rateLimiterOptions.AddFixedWindowLimiter("forgetPassRequestLimiter", options =>
+    {
+        options.PermitLimit = StatusCodes.Status429TooManyRequests;
+        options.Window = TimeSpan.FromSeconds(3);
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 3;
+    });
+});
 
 builder.Services.AddHealthChecks();
 //builder.Services.AddHostedService<PermissionDiscoveryService>();
@@ -166,6 +178,8 @@ using (var scope = scopeFactory.CreateScope())
 
     Log.Information("Finished Seeding Default Data");
     Log.Information("Application Starting");
+    
+    app.UseRateLimiter();
 
     app.UseEndpoints(endpoint =>
     {

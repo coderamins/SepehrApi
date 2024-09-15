@@ -111,17 +111,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                 if (customerPrimaryMobiles.Count() > 0)
                 {
-                    List<string> messages = new List<string>();
-                    messages.Add(string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان",
+                    string messages=string.Concat($"مشتری گرامی \n سفارش شما به شماره {order.OrderCode} دریافت شد . \n  شرکت فولاد سپهر ایرانیان",
                         "\n ضمنا جهت مشاهده پیش فاکتور سفارش به لینک زیر مراجعه فرمایید",
                         $"https://storm.net/order?id={order.Id}",
-                        " \n لغو11"));
+                        " \n لغو11");
 
-                    messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
+                    //messages = messages.Concat(Enumerable.Repeat(messages[0], customerPrimaryMobiles.Count() - 1)).ToList();
                     await _smsService.SendAsync(new SmsRequest
                     {
                         mobiles = customerPrimaryMobiles.Select(x => x.PhoneNumber),
-                        messageTexts = messages
+                        messageText = messages
                     });
                 }
 

@@ -2,6 +2,7 @@
 using Sepehr.Application.Exceptions;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Interfaces.Repositories;
+using Sepehr.Domain.Entities;
 using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
 
@@ -30,6 +31,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
 
             return reftoken.Entity;
+        }
+
+        public async Task CreateVerificationCode(VerificationCode verificationCode)
+        {
+            await _dbContext.VerificationCodes.AddAsync(verificationCode);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<ApplicationUser>> GetAllApplicationUsers(GetAllApplicationUsersParameter filter)

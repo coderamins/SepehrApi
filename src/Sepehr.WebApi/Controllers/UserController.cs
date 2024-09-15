@@ -6,6 +6,7 @@ using Sepehr.Application.Features.ApplicationUsers.Command.UpdateApplicationUser
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetApplicationUserById;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetLoginedUserInfo;
+using Sepehr.Application.Features.Users.Command.ForgetPassword;
 using Sepehr.Application.Helpers;
 using Serilog;
 
@@ -70,6 +71,14 @@ namespace Sepehr.WebApi.Controller
         {
             return Ok(await Mediator
                 .Send(new DeleteApplicationUserByIdCommand { Id = id }));
+        }
+
+        // DELETE api/<controller>/5
+        [HttpPost("ForgetPasswordRequest")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgetPasswordRequest(ForgetPasswordRequestCommand command)
+        {
+            return Ok(await Mediator.Send(command));
         }
     }
 }
