@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Sepehr.Application.Features.ApplicationUsers.Command.CreateApplicationUser;
 using Sepehr.Application.Features.ApplicationUsers.Command.DeleteApplicationUserById;
 using Sepehr.Application.Features.ApplicationUsers.Command.UpdateApplicationUser;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetAllApplicationUsers;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetApplicationUserById;
 using Sepehr.Application.Features.ApplicationUsers.Queries.GetLoginedUserInfo;
+using Sepehr.Application.Features.Users.Command.ChangePassword;
 using Sepehr.Application.Features.Users.Command.ForgetPassword;
 using Sepehr.Application.Helpers;
 using Serilog;
@@ -75,8 +77,18 @@ namespace Sepehr.WebApi.Controller
 
         // DELETE api/<controller>/5
         [HttpPost("ForgetPasswordRequest")]
+        [EnableRateLimiting("ForgetPassReqLimit")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgetPasswordRequest(ForgetPasswordRequestCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        // DELETE api/<controller>/5
+        [HttpPost("ChangePasswordRequest")]
+        [EnableRateLimiting("ChangePasswordLimiter")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ChangePasswordRequest(ChangePasswordRequestCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

@@ -21,7 +21,7 @@ namespace Sepehr.Domain.Entities
         public string DriverAccountNo { get; set; } = string.Empty;
         public string? DriverCreditCardNo { get; set; } = string.Empty;
         public DateTime? DeliverDate { get; set; } 
-        public decimal? FareAmount { get; set; }
+        public decimal FareAmount { get; set; }
         public bool FareAmountApproved { get; set; }
         public decimal? OtherCosts { get; set; }
         public int TransferRemittanceStatusId { get; set; } = 1;

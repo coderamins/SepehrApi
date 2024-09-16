@@ -12,6 +12,7 @@ namespace Sepehr.Domain.Settings
         public required string sender { get; set; }
         public required string receptor { get; set; }
         public required string apikey { get; set; }
+        public int SmsTemplateId { get; set; } 
         public required string Sender { get; set; }
     }
 }

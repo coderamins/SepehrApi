@@ -380,6 +380,10 @@ namespace Sepehr.Infrastructure.Persistence.Context
                 .Property(p => p.Name)
                 .IsUnicode();
 
+            builder.Entity<ApplicationUser>()
+                .Property(p => p.UserName)
+                .IsUnicode();
+
             builder.Entity<CargoAnnounce>().Property(u => u.CargoAnnounceNo).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<PaymentRequest>().Property(u => u.PaymentRequestCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder.Entity<Order>().Property(u => u.OrderCode).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
@@ -414,6 +418,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<Warehouse>()
                 .HasIndex(w => new { w.Name });
+
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => new { u.UserName });
 
             builder.Entity<OrderDetail>()
             .HasOne(od => od.Order)

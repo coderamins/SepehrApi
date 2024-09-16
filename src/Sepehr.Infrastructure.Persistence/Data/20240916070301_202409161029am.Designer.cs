@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sepehr.Infrastructure.Persistence.Context;
 
 #nullable disable
 
-namespace Sepehr.Infrastructure.Persistence.Migrations
+namespace Sepehr.Infrastructure.Persistence.Data
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240916070301_202409161029am")]
+    partial class _202409161029am
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4302,7 +4305,6 @@ namespace Sepehr.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .IsUnicode(true)
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");

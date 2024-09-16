@@ -45,6 +45,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 foreach (var item in transRemittance.Details)
                 {
+                    var purchaseOrderDetail = _dbContext.PurchaseOrderDetails
+                        .First(d => d.OrderId == transRemittance.PurchaseOrderId && d.ProductBrandId == item.ProductBrandId);
+
                     var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
                                         w.WarehouseId == transRemittance.OriginWarehouseId
                                         && w.ProductBrandId == item.ProductBrandId);
@@ -55,6 +58,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     var _destWarehouse = await _productInventory.FirstOrDefaultAsync(w =>
                                         w.WarehouseId == transRemittance.DestinationWarehouseId
                                         && w.ProductBrandId == item.ProductBrandId);
+
+
+                    #region محاسبه میانگین موزون تقریبی قبل از اضافه شدن موجودی 
+                    var prodBrand = await _dbContext.ProductBrands.FirstAsync(x => x.Id == item.ProductBrandId);
+                    var pBrandEntry = _dbContext.ProductBrands.Entry(prodBrand);
+
+                    pBrandEntry.State = EntityState.Modified;
+
+                    //------در قیمت تمام شده اگر کرایه با مشتری باشد قیمت تمام شده همان قیمت خرید می باشد------قیمت تمام شده کالا---//
+                    decimal productCost = purchaseOrderDetail.Price +
+                        (purchaseOrderDetail.Order.FarePaymentTypeId == (int)EFarePaymentType.FareWithCustomer ? 0 : +
+                        ((decimal)item.TransferRemittance.FareAmount / item.TransferAmount));
+
+                    prodBrand.ProximateWeightedAverage = ((_originWarehouse.OnTransitInventory + _originWarehouse.ApproximateInventory) *
+                                                       prodBrand.ProximateWeightedAverage + item.TransferAmount * productCost) /
+                                                       (_originWarehouse.OnTransitInventory + _originWarehouse.ApproximateInventory + item.TransferAmount);
+                    #endregion
+
+
 
                     //----موجودی تقریبی انبار مبدا کم می شود
                     var prodInvEntry1 = _productInventory.Entry(_originWarehouse);
@@ -313,7 +335,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 foreach (var udetail in unloadingPermit.UnloadingPermitDetails)
                 {
                     var _tRemitt = await _transferRemittanceDetails
-                        .Include(x => x.TransferRemittance).ThenInclude(x=>x.PurchaseOrder)
+                        .Include(x => x.TransferRemittance).ThenInclude(x=>x.PurchaseOrder).ThenInclude(x=>x.Details)
                         .FirstOrDefaultAsync(d => d.Id == udetail.TransferRemittanceDetailId);
                     if (_tRemitt == null)
                         throw new ApiException("خطا در اجرای درخواست !");
@@ -354,6 +376,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         throw new ApiException("انبار یافت نشد !");
                     else
                     {
+                        #region محاسبه میانگین موزون واقعی قبل از اضافه شدن موجودی 
+                        decimal productPrice = _tRemitt.TransferRemittance.PurchaseOrder.Details.First(d => d.ProductBrandId == _tRemitt.ProductBrandId).Price;
+
+                        var prodBrand = await _dbContext.ProductBrands.FirstAsync(x=>x.Id== _tRemitt.ProductBrandId);
+                        var pBrandEntry = _dbContext.ProductBrands.Entry(prodBrand);
+
+                        pBrandEntry.State = EntityState.Modified;
+
+                        //------در قیمت تمام شده اگر کرایه با مشتری باشد قیمت تمام شده همان قیمت خرید می باشد------قیمت تمام شده کالا---//
+                        decimal productCost = productPrice +
+                            (_tRemitt.TransferRemittance.PurchaseOrder.FarePaymentTypeId == (int)EFarePaymentType.FareWithCustomer ? 0 : +
+                            ((decimal)unloadingPermit.FareAmount / udetail.UnloadedAmount));
+
+
+                        prodBrand.ActualWeightedAverage = ((decimal)inv.FloorInventory * prodBrand.ActualWeightedAverage + udetail.UnloadedAmount * productCost) /
+                                                        ((decimal)inv.FloorInventory + udetail.UnloadedAmount);
+                        #endregion
+
+
                         var invEntry = _productInventory.Entry(inv);
                         invEntry.State = EntityState.Modified;
 
@@ -363,6 +404,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         invEntry.CurrentValues.SetValues(inv);
                     }
                     #endregion
+
                 }
                 #endregion
 

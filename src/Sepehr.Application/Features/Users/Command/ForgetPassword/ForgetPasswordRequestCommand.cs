@@ -7,12 +7,6 @@ using Sepehr.Application.Interfaces;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Application.Wrappers;
 using Sepehr.Domain.Entities;
-using Sepehr.Domain.Entities.UserEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sepehr.Application.Features.Users.Command.ForgetPassword
 {
@@ -48,13 +42,11 @@ namespace Sepehr.Application.Features.Users.Command.ForgetPassword
                 if(string.IsNullOrEmpty(userInfo.Mobile))
                     throw new ApiException("شماره موبایل نامعتبر می باشد !");
 
-                string verifyCode = "";
-                await _smsService.SendAsync(new SmsRequest
-                {
-                    mobiles=new List<string> { userInfo.Mobile },
-                    messageText =string.Concat("کد فراموشی \n", VerificationCodeHelper.GenerateVerificationCode(out verifyCode,5), "بازرگانی سپهر ایرانیان (STORM)")
-                });
+                if (await _applicationUserRepository.HasAnyActiveVerifyCode(request.UserName))
+                    throw new ApiException("کد تایید قبلا برای شما ارسال شده است !");
 
+                string verifyCode = "";
+                await _smsService.SendVerifyCode(userInfo.Mobile, VerificationCodeHelper.GenerateVerificationCode(out verifyCode, 5));
 
                 await _applicationUserRepository.CreateVerificationCode(new VerificationCode
                 {

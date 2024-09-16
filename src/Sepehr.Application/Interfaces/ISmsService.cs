@@ -9,5 +9,6 @@ namespace Sepehr.Application.Interfaces
     public interface ISmsService
     {
         Task SendAsync(SmsRequest request);
+        Task SendVerifyCode(string mobile, string code);
     }
 }

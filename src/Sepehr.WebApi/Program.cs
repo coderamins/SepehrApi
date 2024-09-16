@@ -86,16 +86,40 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IDictionary<string, UserChatConnection>>(opts => new Dictionary<string, UserChatConnection>());
-builder.Services.AddRateLimiter(rateLimiterOptions =>
+builder.Services.AddRateLimiter(options =>
 {
-    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    rateLimiterOptions.AddFixedWindowLimiter("forgetPassRequestLimiter", options =>
+    options.RejectionStatusCode = 429;
+    options.AddFixedWindowLimiter("AuthenticateAsyncRateLimit", opt =>
     {
-        options.PermitLimit = StatusCodes.Status429TooManyRequests;
-        options.Window = TimeSpan.FromSeconds(3);
-        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        options.QueueLimit = 3;
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
     });
+    options.AddFixedWindowLimiter("ChangePasswordLimiter", opt =>
+    {
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 1;
+        opt.Window = TimeSpan.FromMinutes(10);
+    });
+    options.AddFixedWindowLimiter("CaptchaRateLimit", opt =>
+    {
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 20;
+        opt.Window = TimeSpan.FromMinutes(1);
+    });
+    options.AddFixedWindowLimiter("ForgetPassReqLimit", opt =>
+    {
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 2;
+        opt.Window = TimeSpan.FromMinutes(5);
+    });
+    options.AddFixedWindowLimiter("GenericApiRateLimit", opt =>
+    {
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 50;
+        opt.Window = TimeSpan.FromMinutes(1);
+    });
+
 });
 
 builder.Services.AddHealthChecks();

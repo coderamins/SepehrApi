@@ -39,6 +39,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task DeactivateVerifyCode(string verificationCode)
+        {
+            var vcode =await _dbContext.VerificationCodes.FirstOrDefaultAsync(c => c.Code == verificationCode);
+            if (vcode == null)
+                throw new ApiException("کد تایید یافت نشد !");
+            
+            vcode.IsActive = false;
+            vcode.IsUsed = true;
+
+            _dbContext.Update(vcode);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<ApplicationUser>> GetAllApplicationUsers(GetAllApplicationUsersParameter filter)
         {
             return await _applicationUsers
@@ -87,6 +100,16 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 throw new ApiException("احراز هویت امکان پذیر نیست !");
 
             return refreshToken.Token;
+        }
+
+        public async Task<bool> HasAnyActiveVerifyCode(string userName)
+        {
+            return await _dbContext.VerificationCodes.AnyAsync(x => x.UserName.Equals(userName) && x.IsActive && x.CreatedAt.AddMinutes(1) < DateTime.UtcNow);
+        }
+
+        public async Task<bool> IsValidVerifyCode(string userName,string code)
+        {
+            return await _dbContext.VerificationCodes.AnyAsync(x => x.UserName.Equals(userName) && x.Code.Equals(code) && (x.IsActive || x.CreatedAt.AddMinutes(1) < DateTime.UtcNow));
         }
 
         public async Task<ApplicationUser> UpdateUserAsync(ApplicationUser applicationUser)
