@@ -425,7 +425,7 @@ namespace Sepehr.Application.Mapping
             CreateMap<Order, OrderViewModel>()
                 .ForMember(m => m.CreatorName, opt => opt.MapFrom(d => string.Concat(d.ApplicationUser.FirstName, " ", d.ApplicationUser.LastName)))
                 .ForMember(m => m.CustomerName, opt => opt.MapFrom(d => string.Concat(d.Customer.FirstName, " ", d.Customer.LastName)))
-                .ForMember(m => m.SaleManagerName, opt => opt.MapFrom(d =>d.DraftOrder==null ? "": string.Concat(d.DraftOrder.ApplicationUser.FirstName, " ", d.DraftOrder.ApplicationUser.LastName)))
+                .ForMember(m => m.SaleAgentName, opt => opt.MapFrom(d =>string.Concat(d.SalesAgent.FirstName, " ", d.SalesAgent.LastName)))
                 .ForMember(m => m.RegisterDate, opt => opt.MapFrom(d => d.Created.ToShamsiDate()))
                 .ForMember(m => m.DeliverDate, opt => opt.MapFrom(d => d.DeliverDate.ToShamsiDate()))
                 .ForMember(m => m.OfficialName, opt => opt.MapFrom(d => d.Customer.OfficialName))

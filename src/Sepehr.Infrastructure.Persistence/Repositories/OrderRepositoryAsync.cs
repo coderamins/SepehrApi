@@ -87,8 +87,6 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     }
                 }
 
-                var newOrder = await _orders.AddAsync(order);
-
                 //--------تبدیل وضعیت پیش نویس به سفارش شده------
                 var draftOrder = await _dbContext.DraftOrders.FirstOrDefaultAsync(x => x.Id == order.DraftOrderId);
                 if (order.DraftOrderId != null && draftOrder == null)
@@ -102,6 +100,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     _dbContext.DraftOrders.Update(draftOrder);
                 }
                 //-----------------------------------------------
+                order.SalesAgentId = draftOrder == null ? Guid.Parse(_authenticatedUser.UserId):draftOrder.CreatedBy;
+                var newOrder = await _orders.AddAsync(order);
 
                 await _dbContext.SaveChangesAsync();
 

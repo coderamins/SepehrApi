@@ -17,6 +17,7 @@ namespace Sepehr.Application.Features.ApplicationUsers.Command.CreateApplication
         public required string UserName { get; set; }
         public required string Password { get; set; }
         public required string ConfirmPassword { get; set; }
+        public string Mobile { get; set; }
 
         public List<CreateUserRoleDto> UserRoles { get; set; } = new List<CreateUserRoleDto>();
     }
