@@ -48,9 +48,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     var purchaseOrderDetail = _dbContext.PurchaseOrderDetails
                         .First(d => d.OrderId == transRemittance.PurchaseOrderId && d.ProductBrandId == item.ProductBrandId);
 
+                    var pbrand_inv = await _productInventory.AsNoTracking().FirstAsync(w =>
+                                        w.WarehouseId == (int)EWarehouses.Bazargani
+                                        && w.ProductBrandId == item.ProductBrandId);
+
                     var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
                                         w.WarehouseId == transRemittance.OriginWarehouseId
                                         && w.ProductBrandId == item.ProductBrandId);
+
                     if (_originWarehouse == null)
                         throw new ApiException(string.Format("موجودی خرید برای کالا برند {0} یافت نشد !",
                             _dbContext.Set<ProductBrand>().AsNoTracking().First(b => b.Id == item.ProductBrandId).Brand.Name));
@@ -61,21 +66,25 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
 
                     #region محاسبه میانگین موزون تقریبی قبل از اضافه شدن موجودی 
-                    var prodBrand = await _dbContext.ProductBrands.FirstAsync(x => x.Id == item.ProductBrandId);
-                    var pBrandEntry = _dbContext.ProductBrands.Entry(prodBrand);
-
-                    pBrandEntry.State = EntityState.Modified;
 
                     //------در قیمت تمام شده اگر کرایه با مشتری باشد قیمت تمام شده همان قیمت خرید می باشد------قیمت تمام شده کالا---//
+                    var prodBazarganiInvEntry = _productInventory.Entry(pbrand_inv);
+
                     decimal productCost = purchaseOrderDetail.Price +
                         (purchaseOrderDetail.Order.FarePaymentTypeId == (int)EFarePaymentType.FareWithCustomer ? 0 : +
                         ((decimal)item.TransferRemittance.FareAmount / item.TransferAmount));
 
-                    prodBrand.ProximateWeightedAverage = ((_originWarehouse.OnTransitInventory + _originWarehouse.ApproximateInventory) *
-                                                       prodBrand.ProximateWeightedAverage + item.TransferAmount * productCost) /
-                                                       (_originWarehouse.OnTransitInventory + _originWarehouse.ApproximateInventory + item.TransferAmount);
-                    #endregion
+                    pbrand_inv.ProximateWeightedAverage = ((pbrand_inv.OnTransitInventory + pbrand_inv.ApproximateInventory) *
+                                                       pbrand_inv.ProximateWeightedAverage + item.TransferAmount * productCost) /
+                                                       (pbrand_inv.OnTransitInventory + pbrand_inv.ApproximateInventory + item.TransferAmount);
 
+                    prodBazarganiInvEntry.State = EntityState.Modified;
+
+                    prodBazarganiInvEntry.CurrentValues.SetValues(pbrand_inv);
+
+                    //-------محاسبه میانگین موزون در انبار مبادی-------//
+
+                    #endregion
 
 
                     //----موجودی تقریبی انبار مبدا کم می شود
@@ -376,6 +385,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         throw new ApiException("انبار یافت نشد !");
                     else
                     {
+                        var invEntry = _productInventory.Entry(inv);
+
                         #region محاسبه میانگین موزون واقعی قبل از اضافه شدن موجودی 
                         decimal productPrice = _tRemitt.TransferRemittance.PurchaseOrder.Details.First(d => d.ProductBrandId == _tRemitt.ProductBrandId).Price;
 
@@ -389,13 +400,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                             (_tRemitt.TransferRemittance.PurchaseOrder.FarePaymentTypeId == (int)EFarePaymentType.FareWithCustomer ? 0 : +
                             ((decimal)unloadingPermit.FareAmount / udetail.UnloadedAmount));
 
-
-                        prodBrand.ActualWeightedAverage = ((decimal)inv.FloorInventory * prodBrand.ActualWeightedAverage + udetail.UnloadedAmount * productCost) /
-                                                        ((decimal)inv.FloorInventory + udetail.UnloadedAmount);
+                        inv.ActualWeightedAverage = ((decimal)inv.FloorInventory * inv.ActualWeightedAverage + 
+                                                    udetail.UnloadedAmount * productCost) /
+                                                    ((decimal)inv.FloorInventory + udetail.UnloadedAmount);
                         #endregion
 
-
-                        var invEntry = _productInventory.Entry(inv);
                         invEntry.State = EntityState.Modified;
 
                         inv.FloorInventory += (double)udetail.UnloadedAmount;

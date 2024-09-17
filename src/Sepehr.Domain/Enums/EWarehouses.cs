@@ -12,5 +12,9 @@ namespace Sepehr.Domain.Enums
         /// انبار خرید(مجازی)
         /// </summary>
         PurchaseWarehouse=13,
+        /// <summary>
+        /// انبار بازرگانی
+        /// </summary>
+        Bazargani=5,
     }
 }

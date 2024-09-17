@@ -11,14 +11,6 @@ namespace Sepehr.Domain.Entities
     {
         public Guid ProductId { get; set; }
         public int BrandId { get; set;}
-        /// <summary>
-        /// میانگین موزون تقریبی
-        /// </summary>
-        public decimal ProximateWeightedAverage { get; set; }
-        /// <summary>
-        /// میانگین موزون واقعی
-        /// </summary>
-        public decimal ActualWeightedAverage { get; set; }
         public string FullTextSearch { get; set; } = string.Empty;
 
 

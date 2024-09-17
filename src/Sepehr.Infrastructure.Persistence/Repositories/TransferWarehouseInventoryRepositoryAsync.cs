@@ -38,16 +38,30 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     .FirstOrDefaultAsync(i => i.ProductBrandId == item.ProductBrandId &&
                                               i.WarehouseId == transInventory.OriginWarehouseId &&
                                               i.Warehouse.WarehouseTypeId == (int)EWarehouseType.Mabadi);
+
                 if (_prodMabadiInventory == null)
                     throw new ApiException("موجودی انبار مبادی یافت نشد !");
 
                 if (item.TransferAmount > _prodMabadiInventory.PurchaseInventory)
                     throw new ApiException("موجودی خرید کافی نمی باشد !");
 
+                var inv_entry = _productInventory.Entry(_prodMabadiInventory);
+
+                var purchaseOrderDetail = _dbContext.PurchaseOrderDetails
+                        .First(d => d.OrderId == transInventory.PurchaseOrderId && d.ProductBrandId == item.ProductBrandId);
+
+                decimal productCost = purchaseOrderDetail.Price;
+
+                _prodMabadiInventory.ProximateWeightedAverage = (_prodMabadiInventory.ApproximateInventory * _prodMabadiInventory.ProximateWeightedAverage + 
+                    item.TransferAmount*productCost) / ( _prodMabadiInventory.ApproximateInventory + item.TransferAmount);
+
+
                 _prodMabadiInventory.PurchaseInventory -= item.TransferAmount;
                 _prodMabadiInventory.ApproximateInventory += item.TransferAmount;
 
-                _productInventory.Update(_prodMabadiInventory);
+                inv_entry.State = EntityState.Modified;
+
+                inv_entry.CurrentValues.SetValues(_prodMabadiInventory);
             }
 
             var transInv = await _transferInventories.AddAsync(transInventory);

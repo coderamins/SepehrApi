@@ -41,6 +41,17 @@ namespace Sepehr.Domain.Entities
         /// </summary>
         public double OrderPoint { get; set; }
 
+        /// <summary>
+        /// میانگین موزون تقریبی
+        /// </summary>
+        public decimal ProximateWeightedAverage { get; set; }
+
+        /// <summary>
+        /// میانگین موزون واقعی
+        /// </summary>
+        public decimal ActualWeightedAverage { get; set; }
+
+
         public virtual ProductBrand ProductBrand { get; set; }
         public virtual Warehouse Warehouse { get; set; }
 
