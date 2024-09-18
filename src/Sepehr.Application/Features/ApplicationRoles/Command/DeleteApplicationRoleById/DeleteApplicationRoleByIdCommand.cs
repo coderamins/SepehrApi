@@ -34,12 +34,20 @@ namespace Sepehr.Application.Features.ApplicationRoles.Command.DeleteApplication
                 CancellationToken cancellationToken
             )
             {
-                var applicationRole = await _applicationRoleRepository.GetByIdAsync(command.Id);
-                if (applicationRole == null)
-                    throw new ApiException($"نقش یافت نشد !");
+                try
+                {
+                    var applicationRole = await _applicationRoleRepository.GetByIdAsync(command.Id);
+                    if (applicationRole == null)
+                        throw new ApiException($"نقش یافت نشد !");
 
-                await _applicationRoleRepository.DeleteAsync(applicationRole);
-                return new Response<bool>(true,"نقش با موفقیت حذف شد .");
+                    await _applicationRoleRepository.DeleteAsync(applicationRole);
+                    return new Response<bool>(true, "نقش با موفقیت حذف شد .");
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
             }
         }
     }

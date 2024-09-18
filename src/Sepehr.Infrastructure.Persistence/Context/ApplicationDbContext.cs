@@ -104,8 +104,8 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<CustomerLabelType> CustomerLabelTypes { get; set; }
         public DbSet<PaymentRequestReason> PaymentRequestReasons { get; set; }
         public DbSet<PaymentRequestStatus> PaymentRequestStatus { get; set; }
-        public DbSet<PaymentRequest> PaymentRequests { get; set; }        
-        public DbSet<PersonnelPaymentRequest> PersonnelPaymentRequests { get; set; }        
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }
+        public DbSet<PersonnelPaymentRequest> PersonnelPaymentRequests { get; set; }
         public DbSet<Personnel> Personnels { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<TransferWarehouseInventory> TransferWarehouseInventories { get; set; }
@@ -115,7 +115,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
         public DbSet<OrderReturn> OrderReturn { get; set; }
         public DbSet<OrderDetailReturn> OrderDetailReturn { get; set; }
         public DbSet<VerificationCode> VerificationCodes { get; set; }
-        
+
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -185,7 +185,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             .HasIndex(p => new { p.ProductBrandId, p.WarehouseId }).IsUnique();
 
             builder.Entity<Product>()
-                .HasIndex(c => new {c.ProductCode}); // Index on IsEnabled column for better performance
+                .HasIndex(c => new { c.ProductCode }); // Index on IsEnabled column for better performance
 
             builder.Entity<InvoiceType>().ToTable("InvoiceTypes");
 
@@ -421,6 +421,24 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
             builder.Entity<ApplicationUser>()
                 .HasIndex(u => new { u.UserName });
+
+            builder.Entity<RoleMenu>()
+              .HasOne(rm => rm.ApplicationRole)
+              .WithMany(r => r.RoleMenus)
+              .HasForeignKey(rm => rm.ApplicationRoleId)
+              .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany() // No inverse navigation property needed
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<RolePermission>()
+                .HasOne(rp => rp.ApplicationRole)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<OrderDetail>()
             .HasOne(od => od.Order)

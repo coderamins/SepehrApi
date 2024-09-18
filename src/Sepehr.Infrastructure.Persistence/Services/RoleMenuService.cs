@@ -11,6 +11,9 @@ using System.Data;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
+using System.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Collections.Generic;
 
 namespace Sepehr.Infrastructure.Persistence
 {
@@ -106,28 +109,48 @@ namespace Sepehr.Infrastructure.Persistence
         public async Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus()
         {
             var userRoles = _authenticatedUserService.UserRoles;
+            var roleIds = _dbContext.Roles.Where(r => userRoles.Contains(r.Name)).Select(x => x.Id).AsEnumerable();
+
             string uRoles = string.Join(',', userRoles.ToArray());
-            string menus = string.Join(',', _dbContext.RoleMenus.Where(r => uRoles.Contains(r.ApplicationRole.Name)).Select(r => r.ApplicationMenuId));
+            var _roleMenus = _dbContext.RoleMenus.Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.ApplicationMenuId).AsEnumerable();
 
-            var appMenus =
-                _dbContext.ApplicationMenus.OrderBy(x => Convert.ToInt32(x.OrderNo))
-                .Include(i => i.Children.OrderBy(x => x.OrderNo))    //.Where(c => menus.Contains(c.Id.ToString())     || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))//.Where(c => menus.Contains(c.Id.ToString()) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .Where(m => m.ApplicationMenuId == null)
-                .AsQueryable();
+            var hasAccessMenus = await
+                    _dbContext.ApplicationMenus
+                    .Where(x => _roleMenus.Contains(x.Id)).ToListAsync();
 
-            var output = await appMenus
-                .Where(c => _dbContext.ApplicationMenus.Where(a =>
-                menus.Contains(a.Id.ToString()) || userRoles.Contains("Admin")).Select(m => m.ApplicationMenuId).Contains(c.Id))
-                //.OrderBy(m=>m.OrderNo)
+            List<Guid> parents = new List<Guid>();
+            parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id));
+
+            bool parentStatus = true;
+            while (hasAccessMenus!=null)
+            {
+                hasAccessMenus = await _dbContext.ApplicationMenus
+                    .Where(m => hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id).Contains(m.Id)).ToListAsync();
+                
+                if (hasAccessMenus != null)
+                    parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId == null).Select(x => x.Id));
+            }
+
+            var pm = _dbContext.ApplicationMenus
+                .Include(x=>x.Children.Where(c => _roleMenus.Contains(c.Id)))
+                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
+                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
+                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
+                .Where(x => x.ApplicationMenuId == null);
+            var menus = await pm
+                .Include(i => i.Children.OrderBy(x => x.OrderNo).Where(c =>     _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                //.Where(x=> parents.Contains(x.Id))
+                .OrderBy(x => x.OrderNo)
                 .ToListAsync();
 
-            if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
 
-            var result = _mapper.Map<List<ApplicationMenuViewModel>>(output);
+            if (menus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
+
+            var result = _mapper.Map<List<ApplicationMenuViewModel>>(menus);
             return new Response<IEnumerable<ApplicationMenuViewModel>>(result);
         }
 
