@@ -1,5 +1,6 @@
 ﻿using Sepehr.Domain.Common;
 using Sepehr.Domain.Entities.BaseEntities;
+using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,9 @@ namespace Sepehr.Domain.Entities
         public OrderType OrderTypeId { get; set; }
         public DateTime DeliverDate { get; set; }
         public int OrderExitTypeId { get; set; }
+        public Guid? SalesAgentId { get; set; }
 
+        public virtual ApplicationUser? SalesAgent { get; set; }
         public virtual DraftOrder? DraftOrder { get; set; }
         public virtual CustomerOfficialCompany? CustomerOfficialCompany { get; set; }
         public required virtual OrderExitType OrderExitType { get; set; }
