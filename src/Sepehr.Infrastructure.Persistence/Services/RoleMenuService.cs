@@ -108,11 +108,34 @@ namespace Sepehr.Infrastructure.Persistence
 
         public async Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus()
         {
+
+            var role = _dbContext.Roles
+                .Include(x=>x.RoleMenus)
+                .FirstOrDefault(r => r.Id.ToString() == "d3a2ee97-7825-40cc-f6a3-08dcd7b40b61");
+            if (role == null)
+            {
+                throw new ArgumentException("نقش معتبر نیست.");
+            }
+
+            // گرفتن شناسه منوی‌های مرتبط با نقش
+            var roleMenuIds = role.RoleMenus.Select(rm => rm.ApplicationMenuId).ToList();
+            var test1 = BuildMenuHierarchy(roleMenuIds);
+
+
             var userRoles = _authenticatedUserService.UserRoles;
             var roleIds = _dbContext.Roles.Where(r => userRoles.Contains(r.Name)).Select(x => x.Id).AsEnumerable();
 
             string uRoles = string.Join(',', userRoles.ToArray());
-            var _roleMenus = _dbContext.RoleMenus.Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.ApplicationMenuId).AsEnumerable();
+            var _roleMenus = _dbContext.RoleMenus
+                .Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.Id).ToList();
+
+            var test= BuildMenuHierarchy(_roleMenus);
+
+
+
+
+
+
 
             var hasAccessMenus = await
                     _dbContext.ApplicationMenus
@@ -122,27 +145,27 @@ namespace Sepehr.Infrastructure.Persistence
             parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id));
 
             bool parentStatus = true;
-            while (hasAccessMenus!=null)
+            while (hasAccessMenus != null)
             {
                 hasAccessMenus = await _dbContext.ApplicationMenus
                     .Where(m => hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id).Contains(m.Id)).ToListAsync();
-                
+
                 if (hasAccessMenus != null)
                     parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId == null).Select(x => x.Id));
             }
 
             var pm = _dbContext.ApplicationMenus
-                .Include(x=>x.Children.Where(c => _roleMenus.Contains(c.Id)))
+                .Include(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
                 .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
                 .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
                 .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
                 .Where(x => x.ApplicationMenuId == null);
             var menus = await pm
-                .Include(i => i.Children.OrderBy(x => x.OrderNo).Where(c =>     _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId!=null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .Include(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
                 //.Where(x=> parents.Contains(x.Id))
                 .OrderBy(x => x.OrderNo)
                 .ToListAsync();
@@ -171,5 +194,53 @@ namespace Sepehr.Infrastructure.Persistence
             return new Response<List<ApplicationMenuViewModel>>(result);
         }
 
+
+
+        //-------------------------------------------------------------
+
+        public List<ApplicationMenu> GetAccessibleMenusForRole(Guid roleId)
+        {
+            // پیدا کردن نقش
+            var role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId);
+            if (role == null)
+            {
+                throw new ArgumentException("نقش معتبر نیست.");
+            }
+
+            // گرفتن شناسه منوی‌های مرتبط با نقش
+            var roleMenuIds = role.RoleMenus.Select(rm => rm.ApplicationMenuId).ToList();
+
+            // ساخت ساختار سلسله مراتبی
+            return BuildMenuHierarchy(roleMenuIds);
+        }
+
+        private List<ApplicationMenu> BuildMenuHierarchy(List<Guid> roleMenuIds)
+        {
+            // گرفتن منوی‌های ریشه که به نقش دسترسی دارند
+            var rootMenus = _dbContext.ApplicationMenus
+                .Where(m => m.ApplicationMenuId == null && roleMenuIds.Contains(m.Id))
+                .ToList();
+
+            var hierarchicalMenus = new List<ApplicationMenu>();
+
+            foreach (var rootMenu in rootMenus)
+            {
+                // ساخت ساختار سلسله مراتبی برای فرزندان
+                rootMenu.Children = BuildMenuHierarchy(roleMenuIds, rootMenu.Children.ToList());
+                hierarchicalMenus.Add(rootMenu);
+            }
+
+            return hierarchicalMenus;
+        }
+
+        private List<ApplicationMenu> BuildMenuHierarchy(List<Guid> roleMenuIds, List<ApplicationMenu> menus)
+        {
+            var accessibleChildren = menus.Where(m => roleMenuIds.Contains(m.Id)).ToList();
+            foreach (var childMenu in accessibleChildren)
+            {
+                childMenu.Children = BuildMenuHierarchy(roleMenuIds, childMenu.Children.ToList());
+            }
+            return accessibleChildren;
+        }
     }
 }
