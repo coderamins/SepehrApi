@@ -108,73 +108,47 @@ namespace Sepehr.Infrastructure.Persistence
 
         public async Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus()
         {
-
-            var role = _dbContext.Roles
-                .Include(x=>x.RoleMenus)
-                .FirstOrDefault(r => r.Id.ToString() == "d3a2ee97-7825-40cc-f6a3-08dcd7b40b61");
-            if (role == null)
+            try
             {
-                throw new ArgumentException("نقش معتبر نیست.");
-            }
+                var userRoles = _authenticatedUserService.UserRoles;
+                var roleIds = _dbContext.Roles.Where(r => userRoles.Contains(r.Name)).Select(x => x.Id).AsEnumerable();
 
-            // گرفتن شناسه منوی‌های مرتبط با نقش
-            var roleMenuIds = role.RoleMenus.Select(rm => rm.ApplicationMenuId).ToList();
-            var test1 = BuildMenuHierarchy(roleMenuIds);
+                string uRoles = string.Join(',', userRoles.ToArray());
+                var _roleMenus = _dbContext.RoleMenus.Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.ApplicationMenuId).AsEnumerable();
 
-
-            var userRoles = _authenticatedUserService.UserRoles;
-            var roleIds = _dbContext.Roles.Where(r => userRoles.Contains(r.Name)).Select(x => x.Id).AsEnumerable();
-
-            string uRoles = string.Join(',', userRoles.ToArray());
-            var _roleMenus = _dbContext.RoleMenus
-                .Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.Id).ToList();
-
-            var test= BuildMenuHierarchy(_roleMenus);
-
-
-
-
-
-
-
-            var hasAccessMenus = await
+                var appMenus1 =
                     _dbContext.ApplicationMenus
-                    .Where(x => _roleMenus.Contains(x.Id)).ToListAsync();
+                    .Include(i => i.Children.Where(m=> _roleMenus.Contains(m.Id) || ))
+                    .ThenInclude(x => x.Children)
+                    .ThenInclude(x => x.Children)    
+                    .Where(m => m.ApplicationMenuId==null)
+                    .AsNoTracking()
+                    .AsQueryable();
 
-            List<Guid> parents = new List<Guid>();
-            parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id));
+                var appMenus =
+                    _dbContext.ApplicationMenus
+                    .Include(i => i.Parent).ThenInclude(x => x.Parent).ThenInclude(x => x.Parent)//.ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
+                                                                                                 //.ThenInclude(x=>x.Parent).ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
+                                                                                                 //.ThenInclude(x=>x.Parent).ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
+                    .Where(m => _roleMenus.Contains(m.Id))
+                    .AsNoTracking()
+                    .AsQueryable();
 
-            bool parentStatus = true;
-            while (hasAccessMenus != null)
-            {
-                hasAccessMenus = await _dbContext.ApplicationMenus
-                    .Where(m => hasAccessMenus.Where(x => x.ApplicationMenuId != null).Select(x => x.Id).Contains(m.Id)).ToListAsync();
+                var output = await appMenus
+                    .Include(m=>m.Children).ThenInclude(x=>x.Children).ThenInclude(x => x.Children)
+                    //.OrderBy(m=>m.OrderNo)
+                    .ToListAsync();
 
-                if (hasAccessMenus != null)
-                    parents.AddRange(hasAccessMenus.Where(x => x.ApplicationMenuId == null).Select(x => x.Id));
+                if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
+
+                var result = _mapper.Map<List<ApplicationMenuViewModel>>(appMenus);
+                return new Response<IEnumerable<ApplicationMenuViewModel>>(result);
             }
+            catch (Exception e)
+            {
 
-            var pm = _dbContext.ApplicationMenus
-                .Include(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
-                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
-                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
-                .ThenInclude(x => x.Children.Where(c => _roleMenus.Contains(c.Id)))
-                .Where(x => x.ApplicationMenuId == null);
-            var menus = await pm
-                .Include(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                .ThenInclude(i => i.Children.OrderBy(x => x.OrderNo).Where(c => _roleMenus.Contains(c.Id) || (c.ApplicationMenuId != null && _roleMenus.Contains((Guid)c.ApplicationMenuId)) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
-                //.Where(x=> parents.Contains(x.Id))
-                .OrderBy(x => x.OrderNo)
-                .ToListAsync();
-
-
-            if (menus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
-
-            var result = _mapper.Map<List<ApplicationMenuViewModel>>(menus);
-            return new Response<IEnumerable<ApplicationMenuViewModel>>(result);
+                throw;
+            }
         }
 
         public async Task<Response<List<ApplicationMenuViewModel>>> GetAllApplicationMenus()
@@ -194,53 +168,5 @@ namespace Sepehr.Infrastructure.Persistence
             return new Response<List<ApplicationMenuViewModel>>(result);
         }
 
-
-
-        //-------------------------------------------------------------
-
-        public List<ApplicationMenu> GetAccessibleMenusForRole(Guid roleId)
-        {
-            // پیدا کردن نقش
-            var role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId);
-            if (role == null)
-            {
-                throw new ArgumentException("نقش معتبر نیست.");
-            }
-
-            // گرفتن شناسه منوی‌های مرتبط با نقش
-            var roleMenuIds = role.RoleMenus.Select(rm => rm.ApplicationMenuId).ToList();
-
-            // ساخت ساختار سلسله مراتبی
-            return BuildMenuHierarchy(roleMenuIds);
-        }
-
-        private List<ApplicationMenu> BuildMenuHierarchy(List<Guid> roleMenuIds)
-        {
-            // گرفتن منوی‌های ریشه که به نقش دسترسی دارند
-            var rootMenus = _dbContext.ApplicationMenus
-                .Where(m => m.ApplicationMenuId == null && roleMenuIds.Contains(m.Id))
-                .ToList();
-
-            var hierarchicalMenus = new List<ApplicationMenu>();
-
-            foreach (var rootMenu in rootMenus)
-            {
-                // ساخت ساختار سلسله مراتبی برای فرزندان
-                rootMenu.Children = BuildMenuHierarchy(roleMenuIds, rootMenu.Children.ToList());
-                hierarchicalMenus.Add(rootMenu);
-            }
-
-            return hierarchicalMenus;
-        }
-
-        private List<ApplicationMenu> BuildMenuHierarchy(List<Guid> roleMenuIds, List<ApplicationMenu> menus)
-        {
-            var accessibleChildren = menus.Where(m => roleMenuIds.Contains(m.Id)).ToList();
-            foreach (var childMenu in accessibleChildren)
-            {
-                childMenu.Children = BuildMenuHierarchy(roleMenuIds, childMenu.Children.ToList());
-            }
-            return accessibleChildren;
-        }
     }
 }

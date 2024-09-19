@@ -13,10 +13,11 @@ namespace Sepehr.Domain.Entities.UserEntities
         public string AccessUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string MenuIcon { get; set; } = string.Empty;
-        [ForeignKey("ApplicationMenu")]
+        [ForeignKey("Parent")]
         public Guid? ApplicationMenuId { get; set; }
         public string? OrderNo { get; set; }
 
+        public virtual ApplicationMenu? Parent { get; set; }
         public virtual ICollection<ApplicationMenu> Children { get; set; }=new List<ApplicationMenu>();
         public virtual ICollection<Permission> Permissions { get; set; }=new List<Permission>();
     }
