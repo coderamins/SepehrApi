@@ -71,13 +71,13 @@ namespace Sepehr.Infrastructure.Persistence
             }
         }
 
-        public async Task<Response<bool>> DeleteRoleMenu(Guid id)
+        public async Task<Response<bool>> DeleteRoleMenu(IEnumerable<Guid> ids)
         {
-            var rolemenu = await _dbContext.RoleMenus.FindAsync(id);
-            if (rolemenu == null)
+            var rolemenus = _dbContext.RoleMenus.Where(m=> ids.Contains(m.Id)).AsQueryable();
+            if (rolemenus == null)
                 throw new ApiException("نقش-منو یافت نشد !");
 
-            _dbContext.RoleMenus.Remove(rolemenu);
+            _dbContext.RoleMenus.RemoveRange(rolemenus);
             await _dbContext.SaveChangesAsync();
 
             return new Response<bool>(true);
@@ -116,32 +116,24 @@ namespace Sepehr.Infrastructure.Persistence
                 string uRoles = string.Join(',', userRoles.ToArray());
                 var _roleMenus = _dbContext.RoleMenus.Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.ApplicationMenuId).AsEnumerable();
 
-                var appMenus1 =
-                    _dbContext.ApplicationMenus
-                    .Include(i => i.Children.Where(m=> _roleMenus.Contains(m.Id) || ))
-                    .ThenInclude(x => x.Children)
-                    .ThenInclude(x => x.Children)    
-                    .Where(m => m.ApplicationMenuId==null)
-                    .AsNoTracking()
-                    .AsQueryable();
-
                 var appMenus =
-                    _dbContext.ApplicationMenus
-                    .Include(i => i.Parent).ThenInclude(x => x.Parent).ThenInclude(x => x.Parent)//.ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
-                                                                                                 //.ThenInclude(x=>x.Parent).ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
-                                                                                                 //.ThenInclude(x=>x.Parent).ThenInclude(i => i.Children.OrderBy(x => x.OrderNo))
-                    .Where(m => _roleMenus.Contains(m.Id))
-                    .AsNoTracking()
-                    .AsQueryable();
+                        _dbContext.ApplicationMenus.OrderBy(x =>x.OrderNo)
+                        .Include(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                        .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                        .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                        .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                        .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
+                        .Where(m => m.ApplicationMenuId == null)
+                        .AsQueryable();
 
                 var output = await appMenus
-                    .Include(m=>m.Children).ThenInclude(x=>x.Children).ThenInclude(x => x.Children)
-                    //.OrderBy(m=>m.OrderNo)
+                    .Where(c => _dbContext.ApplicationMenus.Where(a =>
+                    _roleMenus.Contains(a.Id) || userRoles.Contains("Admin")).Select(m => m.ApplicationMenuId).Contains(c.Id))
                     .ToListAsync();
 
-                if (appMenus.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
+                if (output.Count() <= 0) throw new ApiException("رکوردی یافت  نشد !");
 
-                var result = _mapper.Map<List<ApplicationMenuViewModel>>(appMenus);
+                var result = _mapper.Map<List<ApplicationMenuViewModel>>(output);
                 return new Response<IEnumerable<ApplicationMenuViewModel>>(result);
             }
             catch (Exception e)

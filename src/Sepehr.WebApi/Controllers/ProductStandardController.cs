@@ -13,7 +13,7 @@ namespace Sepehr.WebApi.Controller
     public class ProductStandardController : BaseApiController
     {
 
-        [HasPermission("GetAllProductStandards")]
+        //[HasPermission("GetAllProductStandards")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllProductStandardsParameter filter)
         {

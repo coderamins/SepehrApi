@@ -39,7 +39,7 @@ namespace Sepehr.WebApi.Controller
         }
 
         // GET api/<controller>/5
-        [HasPermission("GetLoginedUserInfo")]
+        //[HasPermission("GetLoginedUserInfo")]
         [HttpGet("GetUserInfo")]
         public async Task<IActionResult> GetUserInfo()
         {

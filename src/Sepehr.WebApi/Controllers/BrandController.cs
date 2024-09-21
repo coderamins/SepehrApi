@@ -13,7 +13,7 @@ namespace Sepehr.WebApi.Controller
     public class BrandController : BaseApiController
     {
 
-        [HasPermission("GetAllBrands")]
+        //[HasPermission("GetAllBrands")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllBrandsParameter filter)
         {

@@ -10,5 +10,6 @@ namespace Sepehr.Application.Interfaces.Repositories
         Task<Permission?> GetPermissionInfo(Guid Id);
         Task<Permission?> GetPermissionInfo(string Title);
         Task<HashSet<string>> GetPermissionsAsync(Guid parsedUserId);
+        Task<HashSet<string>> GetRequirementMappedPermissions(IEnumerable<string> permission);
     }
 }

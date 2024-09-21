@@ -35,7 +35,7 @@ namespace Sepehr.WebApi.Controller
         }
 
         // POST api/<controller>
-        [HasPermission("CreateProductBran")]
+        [HasPermission("CreateWarehouse")]
         [HttpPost]
         public async Task<IActionResult> Post(CreateWarehouseCommand command)
         {

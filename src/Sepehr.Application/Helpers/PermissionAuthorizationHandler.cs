@@ -23,13 +23,14 @@ namespace Sepehr.Application.Helpers
         }
 
         protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context, 
+            AuthorizationHandlerContext context,
             PermissionRequirement requirement)
         {
             string? userId = context.User.Claims.FirstOrDefault(
                 x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if(!Guid.TryParse(userId, out var parsedUserId)) {
+            if (!Guid.TryParse(userId, out var parsedUserId))
+            {
                 return;
             }
 
@@ -46,7 +47,11 @@ namespace Sepehr.Application.Helpers
             HashSet<string> userRoles = userRoleRep
                 .GetAllUserRoles(userId);
 
-            if (permissions.Contains(requirement.Permission) || userRoles.Contains("Admin"))
+            HashSet<string> mappedRequirementPermissions =await permissionRep
+                .GetRequirementMappedPermissions(permissions);
+
+
+            if (mappedRequirementPermissions.Any(x => requirement.Permission.Split(',').Contains(x)) || userRoles.Contains("Admin"))
             {
                 context.Succeed(requirement);
             }

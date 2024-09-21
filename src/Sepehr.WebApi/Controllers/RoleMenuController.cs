@@ -31,14 +31,14 @@ namespace Sepehr.WebApi.Controller
             return Ok(await _roleMenuService.GetAllRoleMenus(roleId));
         }
 
-        [HasPermission("GetUserApplicationMenus")]
+        //[HasPermission("GetUserApplicationMenus")]
         [HttpGet("GetApplicationMenus")]
         public async Task<IActionResult> GetApplicationMenus()
         {
             return Ok(await _roleMenuService.GetUserApplicationMenus());
         }
 
-        [HasPermission("GetAllApplicationMenus")]
+        //[HasPermission("GetAllApplicationMenus")]
         [HttpGet("GetAllApplicationMenus")]
         public async Task<IActionResult> GetAllApplicationMenus()
         {
@@ -46,10 +46,10 @@ namespace Sepehr.WebApi.Controller
         }
 
         [HasPermission("DeleteApplicationMenu")]
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> Delete(Guid Id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(IEnumerable<Guid> Ids)
         {
-            return Ok(await _roleMenuService.DeleteRoleMenu(Id));
+            return Ok(await _roleMenuService.DeleteRoleMenu(Ids));
         }
 
 

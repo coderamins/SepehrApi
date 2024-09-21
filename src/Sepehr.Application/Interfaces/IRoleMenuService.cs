@@ -12,7 +12,7 @@ namespace Sepehr.Application.Interfaces
     public interface IRoleMenuService
     {
         Task<Response<bool>> AddRoleMenu(AddRoleMenuRequest request);
-        Task<Response<bool>> DeleteRoleMenu(Guid id);
+        Task<Response<bool>> DeleteRoleMenu(IEnumerable<Guid> ids);
         Task<Response<List<ApplicationMenuViewModel>>> GetAllApplicationMenus();
         Task<Response<IEnumerable<RoleMenuViewModel>>> GetAllRoleMenus(Guid roleId);
         Task<Response<IEnumerable<ApplicationMenuViewModel>>> GetUserApplicationMenus();

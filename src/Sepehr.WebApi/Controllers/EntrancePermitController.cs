@@ -44,6 +44,7 @@ namespace Sepehr.WebApi.Controllers
         }
 
         [SwaggerOperation("لیست مجوز های ورود")]
+        [HasPermission("GetAllEntrancePermits")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllEntrancePermitsParameter filter)
         {

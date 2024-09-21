@@ -12,7 +12,7 @@ namespace Sepehr.WebApi.Controller
     [ApiVersion("1.0")]
     public class CashDeskController : BaseApiController
     {
-        [HasPermission("GetAllCashDesks")]
+        //[HasPermission("GetAllCashDesks")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllCashDesksParameter filter)
         {

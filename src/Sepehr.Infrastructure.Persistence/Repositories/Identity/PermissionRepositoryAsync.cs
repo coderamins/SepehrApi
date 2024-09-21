@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore;
 using Sepehr.Application.Interfaces.Repositories;
 using Sepehr.Domain.Entities.UserEntities;
 using Sepehr.Infrastructure.Persistence.Context;
@@ -22,6 +23,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _permissions
                 .Include(p => p.ApplicationMenu)
+                .Where(p=>p.IsActive)
                 .ToListAsync();
         }
 
@@ -62,5 +64,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
             return r.ToHashSet();
         }
+
+        public async Task<HashSet<string>> GetRequirementMappedPermissions(IEnumerable<string> permissions)
+        {
+            var accessiblePermissions= await _permissions
+                .Where(p => permissions.Contains(p.Name)).ToListAsync();
+
+            List<string> mappedPermissions = new List<string>();
+            foreach (var permission in accessiblePermissions)
+            {
+                mappedPermissions.AddRange(permission.MappedPermissions.Split(','));
+            }
+
+            return mappedPermissions == null ? new HashSet<string>() :
+                mappedPermissions.ToHashSet();
+        }
+
     }
 }

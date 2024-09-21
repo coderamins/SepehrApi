@@ -58,147 +58,147 @@ namespace Sepehr.WebApi.Controller
             _banks = dbContext.Set<Bank>();
         }
 
-        [HasPermission("GetOrderSendTypes")]
+        //[HasPermission("GetOrderSendTypes")]
         [HttpGet("GetOrderSendTypes")]
         public async Task<IActionResult> GetOrderSendTypes()
         {
             return Ok(await _orderSendTypes.ToListAsync());
         }
 
-        [HasPermission("GetPurchaseOrderSendTypes")]
+        //[HasPermission("GetPurchaseOrderSendTypes")]
         [HttpGet("GetPurchaseOrderSendTypes")]
         public async Task<IActionResult> GetPurchaseOrderSendTypes()
         {
             return Ok(await _purOrderSendTypes.ToListAsync());
         }
 
-        [HasPermission("GetRentPaymentTypes")]
+        //[HasPermission("GetRentPaymentTypes")]
         [HttpGet("GetRentPaymentTypes")]
         public async Task<IActionResult> GetRentPaymentTypes()
         {
             return Ok(await _orderFarePayments.ToListAsync());
         }
 
-        [HasPermission("GetPurchaseFarePaymentTypes")]
+        //[HasPermission("GetPurchaseFarePaymentTypes")]
         [HttpGet("GetPurchaseFarePaymentTypes")]
         public async Task<IActionResult> GetPurchaseFarePaymentTypes()
         {
             return Ok(await _purOrderFarePayments.ToListAsync());
         }
 
-        [HasPermission("GetInvoiceTypes")]
+        //[HasPermission("GetInvoiceTypes")]
         [HttpGet("GetInvoiceTypes")]
         public async Task<IActionResult> GetInvoiceTypes()
         {
             return Ok(await _invoiceTypes.ToListAsync());
         }
 
-        [HasPermission("GetCustomerValidities")]
+        //[HasPermission("GetCustomerValidities")]
         [HttpGet("GetCustomerValidities")]
         public async Task<IActionResult> GetCustomerValidities()
         {
             return Ok(await _customerValidities.ToListAsync());
         }
 
-        [HasPermission("GetWarehouseTypes")]
+        //[HasPermission("GetWarehouseTypes")]
         [HttpGet("GetWarehouseTypes")]
         public async Task<IActionResult> GetWarehouseTypes()
         {
             return Ok(await _warehouseTypes.ToListAsync());
         }
 
-        [HasPermission("GetWarehouses")]
+        //[HasPermission("GetWarehouses")]
         [HttpGet("GetWarehouses")]
         public async Task<IActionResult> GetWarehouses()
         {
             return Ok(await _warehouse.ToListAsync());
         }
 
-        [HasPermission("GetReceivePaymentSources")]
+        //[HasPermission("GetReceivePaymentSources")]
         [HttpGet("GetReceivePaymentSources")]
         public async Task<IActionResult> GetReceivePaymentSources()
         {
             return Ok(await _receivePaymentTypes.ToListAsync());
         }
 
-        [HasPermission("GetProductUnits")]
+        //[HasPermission("GetProductUnits")]
         [HttpGet("GetProductUnits")]
         public async Task<IActionResult> GetProductUnits()
         {
             return Ok(await _productUnits.ToListAsync());
         }
 
-        [HasPermission("GetServices")]
+        //[HasPermission("GetServices")]
         [HttpGet("GetServices")]
         public async Task<IActionResult> GetServices()
         {
             return Ok(await _services.ToListAsync());
         }
 
-        [HasPermission("GetProductTypes")]
+        //[HasPermission("GetProductTypes")]
         [HttpGet("GetProductTypes")]
         public async Task<IActionResult> GetProductTypes()
         {
             return Ok(await _productTypes.ToListAsync());
         }
 
-        [HasPermission("GetOrderStatuses")]
+        //[HasPermission("GetOrderStatuses")]
         [HttpGet("GetOrderStatuses")]
         public async Task<IActionResult> GetOrderStatuses()
         {
             return Ok(await _orderStatus.ToListAsync());
         }
 
-        [HasPermission("GetVehicleTypes")]
+        //[HasPermission("GetVehicleTypes")]
         [HttpGet("GetVehicleTypes")]
         public async Task<IActionResult> GetVehicleTypes()
         {
             return Ok(await _vehicleTypes.ToListAsync());
         }
 
-        [HasPermission("GetAllTransferRemittanceStatus")]
+        //[HasPermission("GetAllTransferRemittanceStatus")]
         [HttpGet("GetAllTransferRemittanceStatus")]
         public async Task<IActionResult> GetAllTransferRemittanceStatus()
         {
             return Ok(await _transferRemittanceStatuses.ToListAsync());
         }
 
-        [HasPermission("GetAllBanks")]
+        //[HasPermission("GetAllBanks")]
         [HttpGet("GetAllBanks")]
         public async Task<IActionResult> GetAllBanks()
         {
             return Ok(await _banks.ToListAsync());
         }
 
-        [HasPermission("GetOrderExitTypes")]
+        //[HasPermission("GetOrderExitTypes")]
         [HttpGet("GetOrderExitTypes")]
         public async Task<IActionResult> GetOrderExitTypes()
         {
             return Ok(await _orderExitTypes.ToListAsync());
         }
 
-        [HasPermission("GetPhoneNumberTypes")]
+        //[HasPermission("GetPhoneNumberTypes")]
         [HttpGet("GetPhoneNumberTypes")]
         public async Task<IActionResult> GetPhoneNumberTypes()
         {
             return Ok(await _phoneNumberTypes.ToListAsync());
         }
 
-        [HasPermission("GetCustomerLabelTypes")]
+        //[HasPermission("GetCustomerLabelTypes")]
         [HttpGet("GetCustomerLabelTypes")]
         public async Task<IActionResult> GetCustomerLabelTypes()
         {
             return Ok(await _customerLabelType.ToListAsync());
         }
 
-        [HasPermission("GetAllPaymentRequestReasons")]
+        //[HasPermission("GetAllPaymentRequestReasons")]
         [HttpGet("GetAllPaymentRequestReasons")]
         public async Task<IActionResult> GetAllPaymentRequestReasons()
         {
             return Ok(await _paymentRequestReason.ToListAsync());
         }
 
-        [HasPermission("GetAllPaymentRequestStatus")]
+        //[HasPermission("GetAllPaymentRequestStatus")]
         [HttpGet("GetAllPaymentRequestStatus")]
         public async Task<IActionResult> GetAllPaymentRequestStatus()
         {

@@ -13,7 +13,7 @@ namespace Sepehr.WebApi.Controller
     public class OrganizationBankController : BaseApiController
     {
 
-        [HasPermission("GetAllOrganizationBanks")]
+        //[HasPermission("GetAllOrganizationBanks")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
