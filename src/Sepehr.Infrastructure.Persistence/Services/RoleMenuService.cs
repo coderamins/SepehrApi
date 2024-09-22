@@ -74,9 +74,10 @@ namespace Sepehr.Infrastructure.Persistence
         public async Task<Response<bool>> DeleteRoleMenu(IEnumerable<Guid> ids)
         {
             var rolemenus = _dbContext.RoleMenus.Where(m=> ids.Contains(m.Id)).AsQueryable();
-            if (rolemenus == null)
+            if (rolemenus.Count() <=0)
                 throw new ApiException("نقش-منو یافت نشد !");
 
+            foreach(var rm in  rolemenus)   
             _dbContext.RoleMenus.RemoveRange(rolemenus);
             await _dbContext.SaveChangesAsync();
 
@@ -127,7 +128,8 @@ namespace Sepehr.Infrastructure.Persistence
                         .AsQueryable();
 
                 var output = await appMenus
-                    .Where(c => _dbContext.ApplicationMenus.Where(a =>
+                    .Where(c => c.Children.Count() > 0 &&
+                    _dbContext.ApplicationMenus.Where(a =>
                     _roleMenus.Contains(a.Id) || userRoles.Contains("Admin")).Select(m => m.ApplicationMenuId).Contains(c.Id))
                     .ToListAsync();
 
@@ -138,7 +140,6 @@ namespace Sepehr.Infrastructure.Persistence
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
