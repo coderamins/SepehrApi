@@ -73,11 +73,10 @@ namespace Sepehr.Infrastructure.Persistence
 
         public async Task<Response<bool>> DeleteRoleMenu(IEnumerable<Guid> ids)
         {
-            var rolemenus = _dbContext.RoleMenus.Where(m=> ids.Contains(m.Id)).AsQueryable();
-            if (rolemenus.Count() <=0)
+            var rolemenus = _dbContext.RoleMenus.Where(m => ids.Contains(m.Id)).AsQueryable();
+            if (rolemenus.Count() <= 0)
                 throw new ApiException("نقش-منو یافت نشد !");
 
-            foreach(var rm in  rolemenus)   
             _dbContext.RoleMenus.RemoveRange(rolemenus);
             await _dbContext.SaveChangesAsync();
 
@@ -118,7 +117,7 @@ namespace Sepehr.Infrastructure.Persistence
                 var _roleMenus = _dbContext.RoleMenus.Where(x => roleIds.Contains(x.ApplicationRoleId)).Select(x => x.ApplicationMenuId).AsEnumerable();
 
                 var appMenus =
-                        _dbContext.ApplicationMenus.OrderBy(x =>x.OrderNo)
+                        _dbContext.ApplicationMenus.OrderBy(x => x.OrderNo)
                         .Include(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
                         .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))
                         .ThenInclude(i => i.Children.Where(c => _roleMenus.Contains(c.Id) || userRoles.Contains("Admin")).OrderBy(x => x.OrderNo))

@@ -74,6 +74,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             foreach (var permission in accessiblePermissions)
             {
                 mappedPermissions.AddRange(permission.MappedPermissions.Split(','));
+                mappedPermissions.Add(permission.Name);
             }
 
             return mappedPermissions == null ? new HashSet<string>() :

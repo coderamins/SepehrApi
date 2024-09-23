@@ -18,6 +18,7 @@ namespace Sepehr.WebApi.Controller
     [ApiVersion("1.0")]
     public class OrderController : BaseApiController
     {
+        [HasPermission("GetAllOrders")]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllOrdersParameter filter)
         {
@@ -36,7 +37,7 @@ namespace Sepehr.WebApi.Controller
         }
 
         // GET api/<controller>/5
-        [HasPermission("GetAllOrders")]
+        [HasPermission("GetOrderById")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {

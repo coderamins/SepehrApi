@@ -125,7 +125,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 								t7.[Desc] as ProductStandardDesc,
 								0 as ProductPrice,
                                 t5.WarehouseTypeId,
-                                0 as PurchaseInventory
+                                0 as PurchaseInventory,
+                                0 as ProximateWeightedAverage,
+                                0 as ActualWeightedAverage
                             from sepdb.Products as t1
                             join sepdb.OfficialWarehoseInventories as t3 on t3.ProductId=t1.Id
 							join sepdb.Warehouses as t5 on t3.WarehouseId=t5.Id 
@@ -190,7 +192,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 				                    t7.[Desc] as ProductStandardDesc,
 				                    t8.Price as ProductPrice,
                                     t5.WarehouseTypeId,
-                                    t3.PurchaseInventory
+                                    t3.PurchaseInventory,
+                                    t3.ProximateWeightedAverage,
+                                    t3.ActualWeightedAverage
                             from sepdb.Products as t1
                             join sepdb.ProductBrands as t2 on t1.Id=t2.ProductId
                             left join sepdb.ProductInventories as t3 on t2.Id=t3.ProductBrandId

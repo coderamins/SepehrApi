@@ -45,14 +45,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             {
                 foreach (var item in transRemittance.Details)
                 {
-                    var purchaseOrderDetail = _dbContext.PurchaseOrderDetails
+                    var purchaseOrderDetail = _dbContext.PurchaseOrderDetails.Include(d=>d.Order)
                         .First(d => d.OrderId == transRemittance.PurchaseOrderId && d.ProductBrandId == item.ProductBrandId);
 
-                    var pbrand_inv = await _productInventory.AsNoTracking().FirstAsync(w =>
-                                        w.WarehouseId == (int)EWarehouses.Bazargani
-                                        && w.ProductBrandId == item.ProductBrandId);
+                    //var pbrand_inv = await _productInventory.AsNoTracking().FirstAsync(w =>
+                    //                    w.WarehouseId == (int)EWarehouses.Bazargani
+                    //                    && w.ProductBrandId == item.ProductBrandId);
 
-                    var _originWarehouse = await _productInventory.AsNoTracking().FirstOrDefaultAsync(w =>
+                    var _originWarehouse = await _productInventory.AsNoTracking().FirstAsync(w =>
                                         w.WarehouseId == transRemittance.OriginWarehouseId
                                         && w.ProductBrandId == item.ProductBrandId);
 
@@ -60,7 +60,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         throw new ApiException(string.Format("موجودی خرید برای کالا برند {0} یافت نشد !",
                             _dbContext.Set<ProductBrand>().AsNoTracking().First(b => b.Id == item.ProductBrandId).Brand.Name));
 
-                    var _destWarehouse = await _productInventory.FirstOrDefaultAsync(w =>
+                    var _destWarehouse = await _productInventory.FirstAsync(w =>
                                         w.WarehouseId == transRemittance.DestinationWarehouseId
                                         && w.ProductBrandId == item.ProductBrandId);
 
@@ -68,19 +68,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     #region محاسبه میانگین موزون تقریبی قبل از اضافه شدن موجودی 
 
                     //------در قیمت تمام شده اگر کرایه با مشتری باشد قیمت تمام شده همان قیمت خرید می باشد------قیمت تمام شده کالا---//
-                    var prodBazarganiInvEntry = _productInventory.Entry(pbrand_inv);
+                    var prodBazarganiInvEntry = _productInventory.Entry(_destWarehouse);
 
                     decimal productCost = purchaseOrderDetail.Price +
                         (purchaseOrderDetail.Order.FarePaymentTypeId == (int)EFarePaymentType.FareWithCustomer ? 0 : +
-                        ((decimal)item.TransferRemittance.FareAmount / item.TransferAmount));
+                        ((decimal)transRemittance.FareAmount / item.TransferAmount));
 
-                    pbrand_inv.ProximateWeightedAverage = ((pbrand_inv.OnTransitInventory + pbrand_inv.ApproximateInventory) *
-                                                       pbrand_inv.ProximateWeightedAverage + item.TransferAmount * productCost) /
-                                                       (pbrand_inv.OnTransitInventory + pbrand_inv.ApproximateInventory + item.TransferAmount);
+                    _destWarehouse.ProximateWeightedAverage = ((_destWarehouse.OnTransitInventory + _destWarehouse.ApproximateInventory) *
+                                                       _destWarehouse.ProximateWeightedAverage + item.TransferAmount * productCost) /
+                                                       (_destWarehouse.OnTransitInventory + _destWarehouse.ApproximateInventory + item.TransferAmount);
 
                     prodBazarganiInvEntry.State = EntityState.Modified;
-
-                    prodBazarganiInvEntry.CurrentValues.SetValues(pbrand_inv);
+                    prodBazarganiInvEntry.CurrentValues.SetValues(_destWarehouse);
 
                     //-------محاسبه میانگین موزون در انبار مبادی-------//
 

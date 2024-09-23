@@ -11,6 +11,7 @@ namespace Sepehr.Application.Features.TransferWarehouseInventories.Command.Creat
     public partial class CreateTransferWarehouseInventoryCommand : IRequest<Response<TransferWarehouseInventory>>
     {
         public int OriginWarehouseId { get; set; }
+        public Guid PurchaseOrderId { get; set; }
         public List<TransferWarehouseInventoryDetailDto> Details { get; set; }
 
     }

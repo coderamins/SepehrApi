@@ -22,6 +22,7 @@ namespace Sepehr.Application.Features.ApplicationUsers.Command.UpdateApplication
         public required string LastName { get; set; }
         public required string Email { get; set; }
         public required string UserName { get; set; }
+        public string Mobile { get; set; } = string.Empty;
 
         public List<ApplicationUserRoleDto> UserRoles { get; set; } = new List<ApplicationUserRoleDto>();
 
