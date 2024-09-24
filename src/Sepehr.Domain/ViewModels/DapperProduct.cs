@@ -33,6 +33,8 @@ namespace Sepehr.Domain.ViewModels
         public DateTime Created { get; set; }
         public bool IsActive { get; set; }
         public int BrandId { get; set; }
+        public decimal ProximateWeightedAverage { get; set; }
+        public decimal ActualWeightedAverage { get; set; }
 
         //Product Inventory
         public int ProductBrandId { get; set; }

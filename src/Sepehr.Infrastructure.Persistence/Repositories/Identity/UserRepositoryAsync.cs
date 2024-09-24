@@ -104,7 +104,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<bool> HasAnyActiveVerifyCode(string userName)
         {
-            return await _dbContext.VerificationCodes.AnyAsync(x => x.UserName.Equals(userName) && x.IsActive && x.CreatedAt.AddMinutes(1) > DateTime.UtcNow);
+            return await _dbContext.VerificationCodes
+                .AnyAsync(x => x.UserName.Equals(userName) && x.IsActive && x.CreatedAt.AddMinutes(1) > DateTime.Now);
         }
 
         public async Task<bool> IsValidVerifyCode(string userName,string code)
