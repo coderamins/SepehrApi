@@ -51,7 +51,7 @@ namespace Sepehr.Application.Helpers
                 .GetRequirementMappedPermissions(permissions);
 
 
-            if (mappedRequirementPermissions.Any(x => requirement.Permission.Split(',').Contains(x)) || userRoles.Contains("Admin"))
+            if (mappedRequirementPermissions.Contains(requirement.Permission) || userRoles.Contains("Admin"))
             {
                 context.Succeed(requirement);
             }

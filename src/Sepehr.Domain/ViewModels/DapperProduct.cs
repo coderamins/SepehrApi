@@ -52,6 +52,8 @@ namespace Sepehr.Domain.ViewModels
 
         //Product State
         public string ProductStateDesc { get; set; }
+        public decimal ProximateWeightedAverage {get;set;}
+        public decimal ActualWeightedAverage    {get;set;}
 
         //Product Standard
         public string ProductStandardDesc { get; set; }
