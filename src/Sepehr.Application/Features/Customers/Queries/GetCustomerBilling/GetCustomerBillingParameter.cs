@@ -10,6 +10,7 @@ namespace Sepehr.Application.Features.Customers.Queries.GetAllCustomers
     public class GetCustomerBillingParameter : RequestParameter
     {
         public Guid CustomerId { get; set; }
+        public int DateFilter { get; set; } = 1;
         public string FromDate { get; set; } = string.Empty;
         public string ToDate { get; set; } = string.Empty;
         public int BillingReportType { get; set; }

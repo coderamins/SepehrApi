@@ -14,7 +14,7 @@ namespace Sepehr.WebApi.Controller
     public class ProductController : BaseApiController
     {
         //[AllowAnonymous]
-        [HasPermission("GetAllProducts,CreateProduct,UpdateProduct")]
+        [HasPermission("GetAllProducts")]
         [HttpGet]
         public async Task<IActionResult>
         Get([FromQuery] GetAllProductsParameter filter)
@@ -36,7 +36,7 @@ namespace Sepehr.WebApi.Controller
                 }));
         }
 
-        [HasPermission("GetAllProductsByType,CreateProduct,UpdateProduct")]
+        [HasPermission("GetAllProductsByType")]
         [HttpGet("GetAllProductsByType")]
         public async Task<IActionResult> GetAllProductsByType([FromQuery] GetAllProductsParameter filter)
         {

@@ -51,6 +51,7 @@ namespace Sepehr.WebApi.Controller
         {
             return Ok(await Mediator.Send(new GetCustomerBillingQuery 
             { 
+                DateFilter=filter.DateFilter,
                 CustomerId = filter.CustomerId,
                 FromDate = filter.FromDate,
                 ToDate = filter.ToDate, 

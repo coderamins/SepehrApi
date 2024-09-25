@@ -312,25 +312,28 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             List<CustomerBillingDetailViewModel> customerMovedInAdvanceBillingReport = new List<CustomerBillingDetailViewModel>();
             var proc_params = new DynamicParameters();
 
-            proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
-            proc_params.Add("@CustomerId", validFilter.CustomerId);
-            proc_params.Add("@ReportType", validFilter.BillingReportType);
-
-            using (var connection = _dapContext.CreateConnection())
+            if (validFilter.DateFilter == -1)
             {
-                customerMovedInAdvanceBillingReport = connection
-                    .Query<CustomerBillingDetailViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
+                proc_params.Add("@CustomerId", validFilter.CustomerId);
+                proc_params.Add("@ReportType", validFilter.BillingReportType);
 
-                foreach (var item in customerMovedInAdvanceBillingReport)
+                using (var connection = _dapContext.CreateConnection())
                 {
-                    item.WeightingDate_Shamsi = "";
-                    item.Created_Shamsi = item.Created.ToShamsiDate();
+                    customerMovedInAdvanceBillingReport = connection
+                        .Query<CustomerBillingDetailViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+
+                    foreach (var item in customerMovedInAdvanceBillingReport)
+                    {
+                        item.WeightingDate_Shamsi = "";
+                        item.Created_Shamsi = item.Created.ToShamsiDate();
+                    }
                 }
             }
 
-
             proc_params = new DynamicParameters();
 
+            proc_params.Add("@DateFilter", validFilter.DateFilter);
             proc_params.Add("@FromDate", validFilter.FromDate.ToDateTime("00:00"));
             proc_params.Add("@ToDate", validFilter.ToDate.ToDateTime("00:00"));
             proc_params.Add("@CustomerId", validFilter.CustomerId);
@@ -354,14 +357,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
                 for (int i = 0; i <= result.Count() - 1; i++)
                 {
-                    var prevBill =i==0 ? null: result[i - 1];
+                    var prevBill = i == 0 ? null : result[i - 1];
                     var currentBill = result[i];
 
                     //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
-                    result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill==null ? 0 :prevBill.DebitAmount);
+                    result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
 
                     //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
-                    result[i].DueRemainingAmount += (prevBill==null ? 0:prevBill.DueRemainingAmount) - currentBill.CreditAmount;
+                    result[i].DueRemainingAmount += (prevBill == null ? 0 : prevBill.DueRemainingAmount) - currentBill.CreditAmount;
 
                     result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
                                            result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
@@ -371,8 +374,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 return new CustomerBillingViewModel
                 {
                     CustomerId = validFilter.CustomerId,
-                    RemainingAmount = result.Count() <= 0 ? 0: result.Last().RemainingAmount,
-                    Recognize =result.Count()<=0 ? "": result.Last().RemainingAmount > 0 ? "بد" : "بس",
+                    RemainingAmount = result.Count() <= 0 ? 0 : result.Last().RemainingAmount,
+                    Recognize = result.Count() <= 0 ? "" : result.Last().RemainingAmount > 0 ? "بد" : "بس",
                     TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
                     Details = result
                 };

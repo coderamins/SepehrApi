@@ -20,13 +20,13 @@ namespace Sepehr.Domain.ViewModels
         public decimal ApproximateWeight { get; set; }
         public int NumberInPackage { get; set; }
         public int? ProductStandardId { get; set; }
-        public string ProductStandardDesc { get; set; }=string.Empty;
+        public string ProductStandardDesc { get; set; } = string.Empty;
         public int? ProductStateId { get; set; }
-        public string ProductStateDesc { get; set; }=string.Empty;
+        public string ProductStateDesc { get; set; } = string.Empty;
         public int ProductMainUnitId { get; set; }
         public string ProductMainUnitDesc { get; set; } = string.Empty;
         public int? ProductSubUnitId { get; set; }
-        public string ProductSubUnitDesc { get; set; }=string.Empty;
+        public string ProductSubUnitDesc { get; set; } = string.Empty;
         public int ProductBrandId { get; set; }
         public string ProductBrandName { get; set; } = string.Empty;
         public int WarehouseTypeId { get; set; }
@@ -34,11 +34,13 @@ namespace Sepehr.Domain.ViewModels
         public int MaxInventory { get; set; } //---حداکثر موجودی
         public int MinInventory { get; set; } //---حداقل موجودی
         public int InventotyCriticalPoint { get; set; } //---نقطه بحرانی
-        
+        public decimal ProximateWeightedAverage { get; set; }
+        public decimal ActualWeightedAverage { get; set; }
+
         public string? Description { get; set; }
         public int StatusId { get; set; }
         public string? ProductIntegratedName { get; set; }
-        public decimal ProductPrice { get; set; } 
+        public decimal ProductPrice { get; set; }
         public string CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public double Inventory { get; set; }
