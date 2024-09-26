@@ -312,7 +312,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             List<CustomerBillingDetailViewModel> customerMovedInAdvanceBillingReport = new List<CustomerBillingDetailViewModel>();
             var proc_params = new DynamicParameters();
 
-            if (validFilter.DateFilter == -1)
+            if (validFilter.DateFilter == 1)
             {
                 proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
                 proc_params.Add("@CustomerId", validFilter.CustomerId);
@@ -334,8 +334,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             proc_params = new DynamicParameters();
 
             proc_params.Add("@DateFilter", validFilter.DateFilter);
-            proc_params.Add("@FromDate", validFilter.FromDate.ToDateTime("00:00"));
-            proc_params.Add("@ToDate", validFilter.ToDate.ToDateTime("00:00"));
+            proc_params.Add("@FromDate", validFilter.DateFilter==-1 ? DateTime.Now: validFilter.FromDate.ToDateTime("00:00"));
+            proc_params.Add("@ToDate", validFilter.DateFilter == -1 ? DateTime.Now : validFilter.ToDate.ToDateTime("00:00"));
             proc_params.Add("@CustomerId", validFilter.CustomerId);
             proc_params.Add("@ReportType", validFilter.BillingReportType);
 

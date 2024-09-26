@@ -175,7 +175,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
             .SelectMany(t => t.GetProperties())
             .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
             {
-                property.SetColumnType("decimal(18,6)");
+                property.SetColumnType("decimal(18,2)");
             }
 
             builder.Entity<LadingPermit>()
