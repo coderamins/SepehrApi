@@ -309,76 +309,84 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<CustomerBillingViewModel> GetCustomerBillingReport(GetCustomerBillingParameter validFilter)
         {
-            List<CustomerBillingDetailViewModel> customerMovedInAdvanceBillingReport = new List<CustomerBillingDetailViewModel>();
-            var proc_params = new DynamicParameters();
-
-            if (validFilter.DateFilter == 1)
+            try
             {
-                proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
+                List<CustomerBillingDetailViewModel> customerMovedInAdvanceBillingReport = new List<CustomerBillingDetailViewModel>();
+                var proc_params = new DynamicParameters();
+
+                if (validFilter.DateFilter == 1)
+                {
+                    proc_params.Add("@Date", validFilter.FromDate.ToDateTime("00:00"));
+                    proc_params.Add("@CustomerId", validFilter.CustomerId);
+                    proc_params.Add("@ReportType", validFilter.BillingReportType);
+
+                    using (var connection = _dapContext.CreateConnection())
+                    {
+                        var dcustomerMovedInAdvanceBillingReport = connection
+                            .Query("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+
+                        foreach (var item in customerMovedInAdvanceBillingReport)
+                        {
+                            item.WeightingDate_Shamsi = "";
+                            item.Created_Shamsi = item.Created.ToShamsiDate();
+                        }
+                    }
+                }
+
+                proc_params = new DynamicParameters();
+
+                proc_params.Add("@DateFilter", validFilter.DateFilter);
+                proc_params.Add("@FromDate", validFilter.DateFilter == -1 ? DateTime.Now : validFilter.FromDate.ToDateTime("00:00"));
+                proc_params.Add("@ToDate", validFilter.DateFilter == -1 ? DateTime.Now : validFilter.ToDate.ToDateTime("00:00"));
                 proc_params.Add("@CustomerId", validFilter.CustomerId);
                 proc_params.Add("@ReportType", validFilter.BillingReportType);
 
+                DateTime defaultDate = new DateTime(1900, 1, 1);
                 using (var connection = _dapContext.CreateConnection())
                 {
-                    customerMovedInAdvanceBillingReport = connection
-                        .Query<CustomerBillingDetailViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                    var customebillingReport = connection
+                        .Query<CustomerBillingDetailViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
-                    foreach (var item in customerMovedInAdvanceBillingReport)
+                    foreach (var item in customebillingReport)
                     {
-                        item.WeightingDate_Shamsi = "";
+                        item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate() : "";
                         item.Created_Shamsi = item.Created.ToShamsiDate();
                     }
+
+                    if (customerMovedInAdvanceBillingReport.Count() > 0 && customebillingReport.Count() > 0)
+                        customebillingReport[0].DueRemainingAmount += customerMovedInAdvanceBillingReport[0].RemainingAmount;
+
+                    var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
+                    for (int i = 0; i <= result.Count() - 1; i++)
+                    {
+                        var prevBill = i == 0 ? null : result[i - 1];
+                        var currentBill = result[i];
+
+                        //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
+                        result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
+
+                        //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
+                        result[i].DueRemainingAmount += (prevBill == null ? 0 : prevBill.DueRemainingAmount) - currentBill.CreditAmount;
+
+                        result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
+                                               result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
+
+                    }
+
+                    return new CustomerBillingViewModel
+                    {
+                        CustomerId = validFilter.CustomerId,
+                        RemainingAmount = result.Count() <= 0 ? 0 : result.Last().RemainingAmount,
+                        Recognize = result.Count() <= 0 ? "" : result.Last().RemainingAmount > 0 ? "بد" : "بس",
+                        TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
+                        Details = result
+                    };
                 }
             }
-
-            proc_params = new DynamicParameters();
-
-            proc_params.Add("@DateFilter", validFilter.DateFilter);
-            proc_params.Add("@FromDate", validFilter.DateFilter==-1 ? DateTime.Now: validFilter.FromDate.ToDateTime("00:00"));
-            proc_params.Add("@ToDate", validFilter.DateFilter == -1 ? DateTime.Now : validFilter.ToDate.ToDateTime("00:00"));
-            proc_params.Add("@CustomerId", validFilter.CustomerId);
-            proc_params.Add("@ReportType", validFilter.BillingReportType);
-
-            DateTime defaultDate = new DateTime(1900, 1, 1);
-            using (var connection = _dapContext.CreateConnection())
+            catch (Exception e)
             {
-                var customebillingReport = connection
-                    .Query<CustomerBillingDetailViewModel>("SP_CustomerBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
-                foreach (var item in customebillingReport)
-                {
-                    item.WeightingDate_Shamsi = !item.WeightingDate.Equals(defaultDate) ? item.WeightingDate.ToShamsiDate() : "";
-                    item.Created_Shamsi = item.Created.ToShamsiDate();
-                }
-
-                if (customerMovedInAdvanceBillingReport.Count() > 0 && customebillingReport.Count() > 0)
-                    customebillingReport[0].DueRemainingAmount += customerMovedInAdvanceBillingReport[0].RemainingAmount;
-
-                var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
-                for (int i = 0; i <= result.Count() - 1; i++)
-                {
-                    var prevBill = i == 0 ? null : result[i - 1];
-                    var currentBill = result[i];
-
-                    //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
-                    result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
-
-                    //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
-                    result[i].DueRemainingAmount += (prevBill == null ? 0 : prevBill.DueRemainingAmount) - currentBill.CreditAmount;
-
-                    result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
-                                           result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
-
-                }
-
-                return new CustomerBillingViewModel
-                {
-                    CustomerId = validFilter.CustomerId,
-                    RemainingAmount = result.Count() <= 0 ? 0 : result.Last().RemainingAmount,
-                    Recognize = result.Count() <= 0 ? "" : result.Last().RemainingAmount > 0 ? "بد" : "بس",
-                    TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
-                    Details = result
-                };
+                throw;
             }
 
         }
