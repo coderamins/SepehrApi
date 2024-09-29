@@ -60,6 +60,7 @@ namespace Sepehr.WebApi.Controller
             {
                 return BadRequest();
             }
+
             return Ok(await Mediator.Send(command));
         }
 
