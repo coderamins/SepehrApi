@@ -10,6 +10,7 @@ namespace Sepehr.Application.Features.TransferRemittances.Command.TransferRemitt
     {
         public int TransferRemittanceDetailId { get; set; }
         public decimal UnloadedAmount { get; set; }
+        public decimal SubUnitUnloadedAmount { get; set; }
 
 
     }
