@@ -26,7 +26,7 @@ namespace Sepehr.Domain.Entities
         /// تکمیل بارگیری- درصورتی که برای همه اقلام سفارش اعلام بار انجام شده باشد این گزینه TRUE خواهد شد
         /// </summary>
         public bool IsComplete { get; set; }
-        public int VehicleTypeId { get; set; }
+        public int? VehicleTypeId { get; set; }
         public DateTime DeliveryDate { get; set; }
         public string ShippingName { get; set; } = string.Empty;
         public bool HasLadingPermit { get; set; }
@@ -34,7 +34,7 @@ namespace Sepehr.Domain.Entities
 
         public virtual required Order Order { get; set; }
         public ICollection<Attachment>? Attachments { get; set; }
-        public virtual required VehicleType VehicleType { get; set; }
+        public virtual VehicleType? VehicleType { get; set; }
         //public required virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<LadingPermit> LadingPermits { get; set; } = new List<LadingPermit>();
         public virtual required ICollection<CargoAnnounceDetail> CargoAnnounceDetails { get; set; }
