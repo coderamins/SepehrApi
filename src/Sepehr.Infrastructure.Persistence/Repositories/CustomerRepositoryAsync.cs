@@ -322,8 +322,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
                     using (var connection = _dapContext.CreateConnection())
                     {
-                        var dcustomerMovedInAdvanceBillingReport = connection
-                            .Query("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
+                        customerMovedInAdvanceBillingReport = connection
+                            .Query<CustomerBillingDetailViewModel>("SP_CustomerMovedInAdvanceBilling", proc_params, commandType: CommandType.StoredProcedure).ToList();
 
                         foreach (var item in customerMovedInAdvanceBillingReport)
                         {
@@ -356,14 +356,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     if (customerMovedInAdvanceBillingReport.Count() > 0 && customebillingReport.Count() > 0)
                         customebillingReport[0].DueRemainingAmount += customerMovedInAdvanceBillingReport[0].RemainingAmount;
 
-                    var result = customebillingReport.Union(customerMovedInAdvanceBillingReport).OrderBy(x => x.Created).ToList();
+                    var result = customerMovedInAdvanceBillingReport.Union(customebillingReport.OrderBy(x => x.Created)).ToList();
                     for (int i = 0; i <= result.Count() - 1; i++)
                     {
                         var prevBill = i == 0 ? null : result[i - 1];
                         var currentBill = result[i];
 
                         //-----مانده= بستانکاری ردیف فعلی + بدهکاری ردیف قبلی - بدهکاری ردیف فعلی
-                        result[i].RemainingAmount = currentBill.DebitAmount - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
+                        result[i].RemainingAmount = currentBill.DebitAmount + (prevBill?.RemainingAmount ?? 0) - currentBill.CreditAmount;// - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
 
                         //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
                         result[i].DueRemainingAmount += (prevBill == null ? 0 : prevBill.DueRemainingAmount) - currentBill.CreditAmount;

@@ -53,7 +53,7 @@ namespace Sepehr.Application.Features.ProductBrands.Queries.GetAllProductBrands
                 {
                     query = query.Where(
                         (b =>
-                            b.Product.ProductCode.ToString().Contains(item) ||
+                            //b.Product.ProductCode.ToString().Contains(item) ||
                             b.Product.ProductName.Contains(item) ||
                             b.Brand.Name.Contains(item) ||
                             b.Product.ProductType.Desc.Contains(item) ||

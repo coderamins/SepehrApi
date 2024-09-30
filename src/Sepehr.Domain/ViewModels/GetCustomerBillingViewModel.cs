@@ -28,7 +28,7 @@ namespace Sepehr.Domain.ViewModels
     public class CustomerBillingDetailViewModel
     {
         public DateTime Created { get; set; }
-        public string Created_Shamsi { get; set; }=string.Empty;
+        public string Created_Shamsi { get; set; } = string.Empty;
         public DateTime? WeightingDate { get; set; }
         public string WeightingDate_Shamsi { get; set; } = string.Empty;
         public string DocType { get; set; } = string.Empty;
@@ -39,6 +39,6 @@ namespace Sepehr.Domain.ViewModels
         public decimal CreditAmount { get; set; }
         public decimal RemainingAmount { get; set; }
         public decimal DueRemainingAmount { get; set; }
-        public string Recognizing { get; set; }=string.Empty;
+        public string Recognizing { get; set; } = string.Empty;
     }
 }
