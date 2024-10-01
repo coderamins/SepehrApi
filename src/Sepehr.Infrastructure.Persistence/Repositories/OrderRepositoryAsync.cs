@@ -99,6 +99,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     draftOrder.Converted = true;
                     _dbContext.DraftOrders.Update(draftOrder);
                 }
+
                 //-----------------------------------------------
                 order.SalesAgentId = draftOrder == null ? Guid.Parse(_authenticatedUser.UserId):draftOrder.CreatedBy;
                 var newOrder = await _orders.AddAsync(order);
@@ -201,6 +202,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
 
@@ -234,6 +236,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 //.Include(o => o.CargoAnnounces).ThenInclude(c => c.CargoAnnounceDetails)
                 //.ThenInclude(o=>o.LadingExitPermitDetail).ThenInclude(o=>o.LadingExitPermit)
                 //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync();
         }
 
@@ -257,6 +260,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product)
                 .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
                 .AsQueryable();
 
             return query
@@ -380,7 +384,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(d => d.Product).ThenInclude(o => o.ProductSubUnit)
-                .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType).FirstOrDefaultAsync();
+                .Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Order> UpdateOrder(Order order)

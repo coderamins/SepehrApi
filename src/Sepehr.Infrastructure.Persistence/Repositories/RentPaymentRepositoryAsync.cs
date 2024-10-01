@@ -115,7 +115,11 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                (x.LadingExitPermit != null && x.LadingExitPermit.LadingPermit.CargoAnnounce.DriverName.Contains(validFilter.DriverName)))
                                ))
                         .ThenInclude(x => x.UnloadingPermit)
-                .Include(r => r.RentPaymentDetails).ThenInclude(r => r.LadingExitPermit).ThenInclude(x => x.LadingPermit).ThenInclude(x => x.CargoAnnounce)
+                .Include(r => r.RentPaymentDetails)
+                    .ThenInclude(r => r.LadingExitPermit)
+                        .ThenInclude(x => x.LadingPermit)
+                            .ThenInclude(x => x.CargoAnnounce)
+                .AsSplitQuery()
                 .Where(x =>
                 x.IsActive &&
                 (validFilter.RentPaymentCode == x.Id || validFilter.RentPaymentCode == null) &&
@@ -144,6 +148,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (x.Created >= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
                 (x.Created <= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
                 (validParams.OrderType == OrderClassType.Sale || validParams.OrderType == null))
+                .AsSplitQuery()
                 .ToListAsync();
 
             var purOrdTransRemitUnloads =
@@ -162,6 +167,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (x.Created >= validParams.FromDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.FromDate)) &&
                 (x.Created <= validParams.ToDate.ToDateTime("00:00") || string.IsNullOrEmpty(validParams.ToDate)) &&
                 (validParams.OrderType == OrderClassType.Purchase || validParams.OrderType == null))
+                .AsSplitQuery()
                 .ToListAsync();
 
             return new Tuple<List<LadingExitPermit>?, List<UnloadingPermit>?>

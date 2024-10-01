@@ -72,8 +72,8 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 (p.ProductName.Contains(filter.ProductName) || string.IsNullOrEmpty(filter.ProductName)) &&
                 (p.ProductInventories.Any(i => i.WarehouseId == filter.WarehouseId) || filter.WarehouseId == null) &&
                 (p.ProductInventories.Any(i => i.Warehouse.WarehouseTypeId == filter.WarehouseTypeId) || filter.WarehouseTypeId == null) &&
-                (p.ProductTypeId == filter.ProductTypeId || filter.ProductTypeId == null)
-                )
+                (p.ProductTypeId == filter.ProductTypeId || filter.ProductTypeId == null))
+                .AsSplitQuery()
                 .OrderByDescending(p => p.Created).AsQueryable();
 
             var result =
@@ -272,6 +272,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(p => p.ProductStandard)
                 .Include(p => p.ProductState)
                 .Include(p => p.ProductBrands).ThenInclude(b => b.Brand)
+                .AsSplitQuery()
                 .Where(p => p.IsActive)
                 .FirstOrDefaultAsync(p => p.ProductCode == productCode);
         }

@@ -207,6 +207,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductSubUnit)
+                .AsSplitQuery()
                 //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
                 .OrderByDescending(p => p.Created).ToListAsync();
         }
@@ -232,11 +233,18 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.PurchaseInvoiceType).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(d => d.PurchaserCustomer).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand).AsNoTracking()
-                .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand).AsNoTracking()
+                .Include(o => o.Details)
+                    .ThenInclude(d => d.ProductBrand)
+                        .ThenInclude(o => o.Brand).AsNoTracking()
                 .Include(o => o.Details).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
-                .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductMainUnit).AsNoTracking()
-                .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductSubUnit).AsNoTracking()
-                //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .Include(o => o.Details)
+                    .ThenInclude(o => o.ProductBrand)
+                        .ThenInclude(o => o.Product)
+                            .ThenInclude(o => o.ProductMainUnit).AsNoTracking()
+                .Include(o => o.Details)
+                    .ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product)
+                        .ThenInclude(o => o.ProductSubUnit).AsNoTracking()
+                .AsSplitQuery()
                 .AsNoTracking().FirstOrDefaultAsync();
         }
 
@@ -265,7 +273,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductMainUnit)
                 .Include(o => o.Details).ThenInclude(o => o.ProductBrand).ThenInclude(o => o.Product).ThenInclude(o => o.ProductSubUnit)
-                //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
                 .AsQueryable();
 
             return query
@@ -379,7 +387,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(o => o.Details).ThenInclude(d => d.AlternativeProductBrand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductBrand).ThenInclude(o => o.Brand)
                 .Include(o => o.Details).ThenInclude(d => d.ProductSubUnit)
-                //.Include(o => o.Details).ThenInclude(d => d.Warehouse).ThenInclude(w => w.WarehouseType)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync();
         }
 

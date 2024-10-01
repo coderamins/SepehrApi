@@ -34,7 +34,7 @@ namespace Sepehr.Infrastructure.Authentication
 
             foreach (var item in user.Roles)
             {
-                roleClaims.Add(new Claim("roles", item.Role.Name));
+                roleClaims.Add(new Claim("roles",item.Role.Name=="Admin" ? "Admin": string.Concat(item.Id,item.Role.Name)));
             }
 
             var claims = new[]
