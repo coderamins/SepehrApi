@@ -376,9 +376,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     return new CustomerBillingViewModel
                     {
                         CustomerId = validFilter.CustomerId,
-                        RemainingAmount = result.Count() <= 0 ? 0 : Math.Abs(result.Last().RemainingAmount),
+                        RemainingAmount = result.Count() <= 0 ? 0 : result.Last().RemainingAmount,
                         Recognize = result.Count() <= 0 ? "" : result.Last().RemainingAmount > 0 ? "بد" : "بس",
-                        TotalDueRemainingAmount = result.Last().DueRemainingAmount,
+                        TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
                         Details = result
                     };
                 }
@@ -396,12 +396,15 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             return await _customers.Where(c => c.FirstName.Equals(custName)).FirstOrDefaultAsync();
         }
 
-        public async  Task AddCustomerCompany(CustomerOfficialCompany customerOfficialCompany)
+        public async  Task AddCustomerCompany(List<CustomerOfficialCompany> comps)
         {
-            if (!_dbContext.CustomerOfficialCompanies.Any(x => x.CompanyName.Equals(customerOfficialCompany.CompanyName)))
+            foreach (var item in comps)
             {
-                await _dbContext.CustomerOfficialCompanies.AddAsync(customerOfficialCompany);
-                await _dbContext.SaveChangesAsync();
+                if (!_dbContext.CustomerOfficialCompanies.Any(x => x.CompanyName.Equals(item.CompanyName)))
+                {
+                    await _dbContext.CustomerOfficialCompanies.AddAsync(item);
+                    await _dbContext.SaveChangesAsync();
+                }
             }
         }
     }

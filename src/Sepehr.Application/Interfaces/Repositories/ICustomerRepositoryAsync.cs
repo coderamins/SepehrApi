@@ -6,7 +6,7 @@ namespace Sepehr.Application.Interfaces.Repositories
 {
     public interface ICustomerRepositoryAsync : IGenericRepositoryAsync<Customer>
     {
-        Task AddCustomerCompany(CustomerOfficialCompany customerOfficialCompany);
+        Task AddCustomerCompany(List<CustomerOfficialCompany> customerOfficialCompany);
         Task<bool> AllocateCustomerWarehouses(Guid id, List<int> warehouses);
         Task<bool> AssignCustomerLabels(ICollection<CustomerAssignedLabel> customerLabels);
         Task<IQueryable<Customer>> GetAllCustomers(GetAllCustomersParameter filter);
