@@ -22,22 +22,17 @@ namespace Sepehr.Application.Features.Brands.Command.CreateBrand
     public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, Response<Brand>>
     {
         private readonly IBrandRepositoryAsync _brandRepository;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         public CreateBrandCommandHandler(
             IBrandRepositoryAsync brandRepository, 
-            ILogger logger,
             IMapper mapper)
         {
             _brandRepository = brandRepository;
             _mapper = mapper;
-            _logger = logger;
         }
 
         public async Task<Response<Brand>> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
-            _logger.Information(JsonConvert.SerializeObject(request));
-
             var checkDuplicate =await _brandRepository.GetBrandInfo(request.Name);
             if (checkDuplicate != null)
                 throw new ApiException(new ErrorMessageFactory().MakeError("برند", ErrorType.DuplicateForCreate));
