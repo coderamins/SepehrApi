@@ -120,7 +120,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity<int>>())
+            foreach (var entry in ChangeTracker.Entries<IAuditableBaseEntity<int>>())
             {
                 switch (entry.State)
                 {
@@ -134,7 +134,7 @@ namespace Sepehr.Infrastructure.Persistence.Context
                         break;
                 }
             }
-            foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity<Guid>>())
+            foreach (var entry in ChangeTracker.Entries<IAuditableBaseEntity<Guid>>())
             {
                 switch (entry.State)
                 {
@@ -161,6 +161,16 @@ namespace Sepehr.Infrastructure.Persistence.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region Univesal Query Filters
+            builder.Entity<Product>().HasQueryFilter(p => p.IsActive);
+            builder.Entity<Warehouse>().HasQueryFilter(p => p.IsActive);
+            builder.Entity<WarehouseType>().HasQueryFilter(p => p.IsActive);
+            builder.Entity<UserRole>().HasQueryFilter(p => p.IsActive);
+            builder.Entity<Customer>().HasQueryFilter(p => p.IsActive);
+            builder.Entity<Brand>().HasQueryFilter(p => p.IsActive);
+            #endregion
+
+
             builder.HasDefaultSchema("sepdb");
             var cascadeEns = builder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())

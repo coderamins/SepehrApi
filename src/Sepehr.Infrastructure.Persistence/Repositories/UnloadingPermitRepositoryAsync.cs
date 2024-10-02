@@ -37,6 +37,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         .ThenInclude(x => x.ProductBrand)
                         .ThenInclude(c => c.Product)
                         .ThenInclude(x => x.ProductSubUnit)
+                .AsSplitQuery()
                 .Where(x => x.UnloadingPermitCode == validFilter.UnloadingPermitCode || validFilter.UnloadingPermitCode == null);
 
         }
@@ -61,6 +62,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         .ThenInclude(c => c.Product)
                         .ThenInclude(x => x.ProductSubUnit)
                 .Include(x => x.Attachments)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.Id == Id);
         }
 
@@ -84,6 +86,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         .ThenInclude(c => c.Product)
                         .ThenInclude(x => x.ProductSubUnit)
                 .Include(x => x.Attachments)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(/*x => x.UnloadingPermitCode == unloadingPermitCode*/);
         }
 

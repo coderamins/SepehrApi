@@ -68,6 +68,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 .Include(i => i.ProductBrand).ThenInclude(pb => pb.Product).ThenInclude(p => p.ProductSubUnit)
                 .Include(i => i.ProductBrand).ThenInclude(pb => pb.Product).ThenInclude(p => p.ProductStandard)
                 .Include(i => i.Warehouse).ThenInclude(p => p.WarehouseType)
+                .AsSplitQuery()
                 .Where(p => p.IsActive)
                 .OrderByDescending(p => p.ProductBrand.Product.Created).ToListAsync();
 

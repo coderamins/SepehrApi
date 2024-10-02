@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2E8553C6-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sepehr.TestApi", "test\Sepehr.TestApi\Sepehr.TestApi.csproj", "{23D21F09-FBEB-44E9-A203-8A408D067C4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sepehr.XunitTest", "test\Sepehr.XunitTest\Sepehr.XunitTest.csproj", "{BB0A5D49-51BA-46FE-A083-0335DCA830AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{23D21F09-FBEB-44E9-A203-8A408D067C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23D21F09-FBEB-44E9-A203-8A408D067C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23D21F09-FBEB-44E9-A203-8A408D067C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0A5D49-51BA-46FE-A083-0335DCA830AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0A5D49-51BA-46FE-A083-0335DCA830AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0A5D49-51BA-46FE-A083-0335DCA830AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0A5D49-51BA-46FE-A083-0335DCA830AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{E3FEDA2F-8ED5-490E-BB55-56D07E63C0E5} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{B7456067-4D0A-451B-B1FB-6895DF976475} = {2CFBA499-86E7-4C84-8B87-2DF6EB8665A0}
 		{23D21F09-FBEB-44E9-A203-8A408D067C4A} = {2E8553C6-1175-4ADA-80BC-F336635AF7EE}
+		{BB0A5D49-51BA-46FE-A083-0335DCA830AC} = {2E8553C6-1175-4ADA-80BC-F336635AF7EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B1853BF-BD9C-41E2-9F94-EA8948DE24A9}

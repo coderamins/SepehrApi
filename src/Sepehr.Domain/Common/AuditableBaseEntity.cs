@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sepehr.Domain.Common
 {
-      public abstract class AuditableBaseEntity<T> 
+      public abstract class AuditableBaseEntity<T>: IAuditableBaseEntity<T> 
     {
         public virtual T Id { get; set; }
         [ForeignKey("ApplicationUser")]

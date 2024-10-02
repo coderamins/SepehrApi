@@ -13,6 +13,7 @@ namespace Sepehr.Domain.Entities
         public Guid UnloadingPermitId { get; set; }
         public int TransferRemittanceDetailId { get; set; }
         public decimal UnloadedAmount { get; set; }
+        public decimal SubUnitUnloadedAmount { get; set; }
 
         public virtual required UnloadingPermit UnloadingPermit { get; set; }
         public virtual required TransferRemittanceDetail TransferRemittanceDetail { get; set; }

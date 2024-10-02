@@ -11,6 +11,7 @@ namespace Sepehr.Domain.ViewModels
     {
         public int Id { get; set; }
         public decimal UnloadedAmount { get; set; }
+        public decimal SubUnitUnloadedAmount { get; set; }
         public TransferRemittanceDetailViewModel TransferRemittanceDetail { get; set; }
 
         public List<AttachmentViewModel> Attachments { get; set; } = new List<AttachmentViewModel>();

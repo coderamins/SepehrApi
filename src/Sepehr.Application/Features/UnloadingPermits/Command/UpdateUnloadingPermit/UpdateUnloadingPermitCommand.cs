@@ -16,8 +16,18 @@ namespace Sepehr.Application.Features.UnloadingPermits.Command.UpdateUnloadingPe
     public class UpdateUnloadingPermitCommand : IRequest<Response<string>>
     {
         public Guid Id { get; set; }
-        public string Desc { get; set; }
-        public bool IsActive { get; set; }
+        public Guid TransferRemittanceEntrancePermitId { get; set; }
+        public string DriverAccountNo { get; set; } = string.Empty;
+        public string DriverCreditCardNo { get; set; } = string.Empty;
+        public decimal? OtherCosts { get; set; }
+        public string DriverName { get; set; } = string.Empty;
+        public decimal? FareAmount { get; set; }
+        public string ShippingName { get; set; } = string.Empty;
+        public string Plaque { get; set; } = string.Empty;
+        public int? VehicleTypeId { get; set; }
+        public string DriverMobile { get; set; } = string.Empty;
+        public string DeliverDate { get; set; } = string.Empty;
+        public string UnloadingPlaceAddress { get; set; } = string.Empty;
 
         public class UpdateUnloadingPermitCommandHandler : IRequestHandler<UpdateUnloadingPermitCommand, Response<string>>
         {

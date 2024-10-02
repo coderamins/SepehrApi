@@ -376,9 +376,9 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                     return new CustomerBillingViewModel
                     {
                         CustomerId = validFilter.CustomerId,
-                        RemainingAmount = result.Count() <= 0 ? 0 : result.Last().RemainingAmount,
+                        RemainingAmount = result.Count() <= 0 ? 0 : Math.Abs(result.Last().RemainingAmount),
                         Recognize = result.Count() <= 0 ? "" : result.Last().RemainingAmount > 0 ? "بد" : "بس",
-                        TotalDueRemainingAmount = result.Sum(x => x.DueRemainingAmount),
+                        TotalDueRemainingAmount = result.Last().DueRemainingAmount,
                         Details = result
                     };
                 }
