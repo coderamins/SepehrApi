@@ -25,6 +25,6 @@ namespace Sepehr.Domain.Entities
         [StringLength(500)]
         public string? Address { get; set; }
 
-        public required virtual Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

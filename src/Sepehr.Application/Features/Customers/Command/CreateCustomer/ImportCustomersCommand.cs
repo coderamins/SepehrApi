@@ -44,66 +44,82 @@ namespace Sepehr.Application.Features.Customers.Command.CreateCustomer
 
                         for (int row = 2; row <= rowCount; row++)
                         {
-                            CustomerDto newCust = new CustomerDto();
-
-                            string _custValidity = (worksheet.Cells[row, 3]?.Value ?? "").ToString();
-                            string _isSupplier = (worksheet.Cells[row, 4]?.Value ?? "").ToString();
-                            string _settleType = (worksheet.Cells[row, 5]?.Value ?? "").ToString();
-                            string _customerCharacteristics =(worksheet.Cells[row, 7]?.Value ?? "").ToString();
-                            string[] mobiles= (worksheet.Cells[row, 9]?.Value ?? "").ToString().Split('-');
-                            string[] phones= (worksheet.Cells[row, 8]?.Value ?? "").ToString().Split('-');
-
-                            List<CreatePhonebookRequest> phonebooks = new List<CreatePhonebookRequest>();
-                            foreach (var item in mobiles)
+                            //CustomerDto newCust = new CustomerDto();
+                            var customer =await _customerRepository.GetCustomerInfoByName((worksheet.Cells[row, 1]?.Value ?? "").ToString());
+                            if (customer != null)
                             {
-                                if (!string.IsNullOrEmpty(item) && !phonebooks.Any(x=>x.PhoneNumber==item.Trim()))
+                                for (int y = 1; y <= 6; y++)
                                 {
-                                    phonebooks.Add(new CreatePhonebookRequest
+                                    string custCompany = (worksheet.Cells[row, y]?.Value ?? "").ToString();
+                                    if (!string.IsNullOrEmpty(custCompany))
                                     {
-                                        PhoneNumber = item.Trim(),
-                                        PhoneNumberTypeId = (int)EPhoneNoType.Mobile
-                                    });
+                                        await _customerRepository.AddCustomerCompany(new CustomerOfficialCompany
+                                        {
+                                            CompanyName = custCompany,
+                                            CustomerId = customer.Id,
+                                            //Customer = customer,
+                                        });
+                                    }
                                 }
                             }
+                            //string _custValidity = (worksheet.Cells[row, 3]?.Value ?? "").ToString();
+                            //string _isSupplier = (worksheet.Cells[row, 4]?.Value ?? "").ToString();
+                            //string _settleType = (worksheet.Cells[row, 5]?.Value ?? "").ToString();
+                            //string _customerCharacteristics =(worksheet.Cells[row, 7]?.Value ?? "").ToString();
+                            //string[] mobiles= (worksheet.Cells[row, 9]?.Value ?? "").ToString().Split('-');
+                            //string[] phones= (worksheet.Cells[row, 8]?.Value ?? "").ToString().Split('-');
 
-                            foreach (var item in phones )
-                            {
-                                if (!string.IsNullOrEmpty(item) && item.Length>=4 && !phonebooks.Any(x => x.PhoneNumber == item.Trim()))
-                                {
-                                    phonebooks.Add(new CreatePhonebookRequest
-                                    {
-                                        PhoneNumber = item.Trim(),
-                                        PhoneNumberTypeId = (int)EPhoneNoType.Office
-                                    });
-                                }
-                            }
+                            //List<CreatePhonebookRequest> phonebooks = new List<CreatePhonebookRequest>();
+                            //foreach (var item in mobiles)
+                            //{
+                            //    if (!string.IsNullOrEmpty(item) && !phonebooks.Any(x=>x.PhoneNumber==item.Trim()))
+                            //    {
+                            //        phonebooks.Add(new CreatePhonebookRequest
+                            //        {
+                            //            PhoneNumber = item.Trim(),
+                            //            PhoneNumberTypeId = (int)EPhoneNoType.Mobile
+                            //        });
+                            //    }
+                            //}
+
+                            //foreach (var item in phones )
+                            //{
+                            //    if (!string.IsNullOrEmpty(item) && item.Length>=4 && !phonebooks.Any(x => x.PhoneNumber == item.Trim()))
+                            //    {
+                            //        phonebooks.Add(new CreatePhonebookRequest
+                            //        {
+                            //            PhoneNumber = item.Trim(),
+                            //            PhoneNumberTypeId = (int)EPhoneNoType.Office
+                            //        });
+                            //    }
+                            //}
 
 
-                            newCust.FirstName=string.Empty;
-                            newCust.LastName=string.Empty;
-                            newCust.OfficialName =(worksheet.Cells[row, 2].Value ?? "").ToString()?.Trim();
-                            newCust.Address1 = (worksheet.Cells[row, 11].Value ?? "").ToString();
-                            newCust.CustomerValidityId = _custValidity == "VIP" ? (int)ECustomerValidity.VIP:
-                                            _custValidity == "نامطلوب" ? (int)ECustomerValidity.undesirable:(int)ECustomerValidity.Usual;
-                            newCust.Address2=string.Empty;
-                            newCust.Representative= (worksheet.Cells[row, 10].Value ?? "").ToString();
-                            newCust.CustomerCharacteristics = _customerCharacteristics;
-                            newCust.IsSupplier = _isSupplier=="+" ? true:false;
-                            SettlementType settlementType=
-                                _settleType.Contains("خروج") ? SettlementType.BeforeExit: SettlementType.AfterExit;
+                            //newCust.FirstName=string.Empty;
+                            //newCust.LastName=string.Empty;
+                            //newCust.OfficialName =(worksheet.Cells[row, 2].Value ?? "").ToString()?.Trim();
+                            //newCust.Address1 = (worksheet.Cells[row, 11].Value ?? "").ToString();
+                            //newCust.CustomerValidityId = _custValidity == "VIP" ? (int)ECustomerValidity.VIP:
+                            //                _custValidity == "نامطلوب" ? (int)ECustomerValidity.undesirable:(int)ECustomerValidity.Usual;
+                            //newCust.Address2=string.Empty;
+                            //newCust.Representative= (worksheet.Cells[row, 10].Value ?? "").ToString();
+                            //newCust.CustomerCharacteristics = _customerCharacteristics;
+                            //newCust.IsSupplier = _isSupplier=="+" ? true:false;
+                            //SettlementType settlementType=
+                            //    _settleType.Contains("خروج") ? SettlementType.BeforeExit: SettlementType.AfterExit;
 
-                            newCust.Phonebook=phonebooks;
+                            //newCust.Phonebook=phonebooks;
 
-                            int settlementDay = 0;
-                            int.TryParse(_settleType,out settlementDay);// ? int.Parse(_settleType) : 0;
+                            //int settlementDay = 0;
+                            //int.TryParse(_settleType,out settlementDay);// ? int.Parse(_settleType) : 0;
 
 
-                            customers.Add(_mapper.Map<Customer>(newCust));
+                            //customers.Add(_mapper.Map<Customer>(newCust));
                         }
                     }
                 }
 
-                await _customerRepository.AddAsync(customers);
+                //await _customerRepository.AddAsync(customers);
 
                 return new Response<bool>(true, "اطلاعات مشتریان با موفقیت ایجاد گردید .");
             }

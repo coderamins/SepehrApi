@@ -390,5 +390,19 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             }
 
         }
+
+        public async Task<Customer?> GetCustomerInfoByName(string custName)
+        {
+            return await _customers.Where(c => c.FirstName.Equals(custName)).FirstOrDefaultAsync();
+        }
+
+        public async  Task AddCustomerCompany(CustomerOfficialCompany customerOfficialCompany)
+        {
+            if (!_dbContext.CustomerOfficialCompanies.Any(x => x.CompanyName.Equals(customerOfficialCompany.CompanyName)))
+            {
+                await _dbContext.CustomerOfficialCompanies.AddAsync(customerOfficialCompany);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }
