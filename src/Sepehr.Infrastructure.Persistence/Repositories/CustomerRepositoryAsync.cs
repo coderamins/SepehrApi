@@ -23,6 +23,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         private readonly DbSet<CustomerWarehouse> _customerWarehouses;
         private readonly DbSet<OrderDetail> _orderDetail;
         private readonly DbSet<CustomerLabel> _customerLabel;
+        private readonly DbSet<CustomerOfficialCompany> _custCompanies;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
@@ -33,6 +34,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
             _customerAsignedLabel = dbContext.Set<CustomerAssignedLabel>();
             _orderDetail = dbContext.Set<OrderDetail>();
             _customerLabel = dbContext.Set<CustomerLabel>();
+            _custCompanies = dbContext.Set<CustomerOfficialCompany>();
             _dbContext = dbContext;
             _mapper = mapper;
             _dapContext = dapContext;
@@ -366,7 +368,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                         result[i].RemainingAmount = currentBill.DebitAmount + (prevBill?.RemainingAmount ?? 0) - currentBill.CreditAmount;// - currentBill.CreditAmount + (prevBill == null ? 0 : prevBill.DebitAmount);
 
                         //-----مانده موعد شده = بستانکاری ردیف فعلی - مانده موعد شده ردیف قبلی
-                        result[i].DueRemainingAmount += (prevBill == null ? 0 : prevBill.DueRemainingAmount) - currentBill.CreditAmount;
+                        result[i].DueRemainingAmount += (prevBill?.DueRemainingAmount ?? 0) - currentBill.CreditAmount + currentBill.DebitAmount;
 
                         result[i].Recognizing = result[i].DebitAmount > result[i].CreditAmount ? "بد" :
                                                result[i].DebitAmount < result[i].CreditAmount ? "بس" : "-";
@@ -398,13 +400,21 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async  Task AddCustomerCompany(List<CustomerOfficialCompany> comps)
         {
-            foreach (var item in comps)
+            try
             {
-                if (!_dbContext.CustomerOfficialCompanies.Any(x => x.CompanyName.Equals(item.CompanyName)))
+                foreach (var item in comps)
                 {
-                    await _dbContext.CustomerOfficialCompanies.AddAsync(item);
-                    await _dbContext.SaveChangesAsync();
+                    if (!_dbContext.CustomerOfficialCompanies.Any(x => x.CompanyName.Equals(item.CompanyName)))
+                    {
+                        await _custCompanies.AddAsync(item);
+                        await _dbContext.SaveChangesAsync();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
         }
     }
