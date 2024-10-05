@@ -92,6 +92,12 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             var words = Regex.Split(filter.Keyword ?? "", @"\W+").Where(w => !string.IsNullOrEmpty(w));
 
+            var filteredProds =
+                await _productBrands
+                .Where(b => words.All(s => string.Concat(b.Product, " ", b.Brand.Name).Contains(s)))
+                .Select(b => new { b.ProductId, b.Id }).ToListAsync();
+
+
             var query = $@"select t1.Id as ProductId,
 	                            ProductCode,
                                 ProductName,

@@ -12,6 +12,7 @@ using Sepehr.Domain.Enums;
 using Sepehr.Domain.ViewModels;
 using Sepehr.Infrastructure.Persistence.Context;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
@@ -395,7 +396,27 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<Customer?> GetCustomerInfoByName(string custName)
         {
-            return await _customers.Where(c => c.FirstName.Equals(custName)).FirstOrDefaultAsync();
+            var cust=await _customers
+                .Where(c => c.FirstName.Replace(" ","")
+                .Equals(custName.Replace(" ", ""))).FirstOrDefaultAsync();
+
+            if(cust==null)
+            {
+                var newCust=await _customers.AddAsync(new Customer
+                {
+                    FirstName = custName,
+                    LastName = " ",
+                    NationalId = "1111111111",
+                    CustomerValidityId = 1,
+                    IsActive = true,
+                    CustomerCharacteristics=" ",
+                });
+
+                await _dbContext.SaveChangesAsync();
+                return newCust.Entity;
+            }
+
+            return cust;
         }
 
         public async  Task AddCustomerCompany(List<CustomerOfficialCompany> comps)

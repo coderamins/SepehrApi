@@ -55,7 +55,7 @@ namespace Sepehr.Domain.Entities
         public string FullTextSearch { get; set; } = string.Empty;
 
 
-        public required virtual CustomerValidity CustomerValidity { get; set; }
+        public virtual CustomerValidity CustomerValidity { get; set; }
         public virtual ICollection<Phonebook>? Phonebook { get; set; }
         public virtual ICollection<Order>? Orders { get; set; }
         [NotMapped]
