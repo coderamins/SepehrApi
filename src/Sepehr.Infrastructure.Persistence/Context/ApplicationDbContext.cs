@@ -195,6 +195,9 @@ namespace Sepehr.Infrastructure.Persistence.Context
             builder.Entity<ProductInventory>()
             .HasIndex(p => new { p.ProductBrandId, p.WarehouseId }).IsUnique();
 
+            builder.Entity<Warehouse>()
+            .HasIndex(p => new { p.Name, p.WarehouseTypeId }).IsUnique();
+
             builder.Entity<Product>()
                 .HasIndex(c => new { c.ProductCode }); // Index on IsEnabled column for better performance
 
