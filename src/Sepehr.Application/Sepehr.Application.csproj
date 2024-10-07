@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Compile Remove="Interfaces\IUserRoleService.cs" />
+    <Compile Remove="Interfaces\Repositories\IMongoDbRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>

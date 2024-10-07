@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\MongoDbRepository.cs" />
     <Compile Remove="Services\AccountService.cs" />
     <Compile Remove="Services\PermissionScannerService.cs" />
     <Compile Remove="Services\UserRoleService.cs" />
