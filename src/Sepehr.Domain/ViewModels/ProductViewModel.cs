@@ -51,6 +51,7 @@ namespace Sepehr.Domain.ViewModels
         public int WarehouseId { get; set; }
         public double? ExchangeRate { get; set; }
         public int TotalCount { get; set; }
+        public decimal Rank { get; set; }
 
         public ProductWarehouseViewModel Warehouse { get; set; } = new ProductWarehouseViewModel();
         public List<ProductPriceViewModel> ProductPrices { get; set; } = new List<ProductPriceViewModel>();
