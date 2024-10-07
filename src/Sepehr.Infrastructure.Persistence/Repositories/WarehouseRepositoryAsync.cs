@@ -67,7 +67,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
         {
             return await _warehouses
                 .Include(w => w.WarehouseType)
-                .Include(w=>w.CustomerWarehouses).ThenInclude(w => w.Customer)
+                //.Include(w=>w.CustomerWarehouses).ThenInclude(w => w.Customer)
                 .Where(w=> w.WarehouseTypeId==WarehouseTypeId || WarehouseTypeId==null) 
                 .OrderByDescending(p => p.Id).ToListAsync();
         }

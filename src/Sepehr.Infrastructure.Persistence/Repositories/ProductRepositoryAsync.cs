@@ -14,6 +14,7 @@ using Sepehr.Infrastructure.Persistence.Context;
 using Stimulsoft.System.Data.Sql;
 using System.Drawing.Printing;
 using System.Text.RegularExpressions;
+using static Stimulsoft.Report.StiOptions.Export;
 
 namespace Sepehr.Infrastructure.Persistence.Repositories
 {
@@ -90,13 +91,7 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<DapperProduct>> GetAllProductsByInventory(GetAllProductsParameter filter)
         {
-            var words = Regex.Split(filter.Keyword ?? "", @"\W+").Where(w => !string.IsNullOrEmpty(w));
-
-            var filteredProds =
-                await _productBrands
-                .Where(b => words.All(s => string.Concat(b.Product, " ", b.Brand.Name).Contains(s)))
-                .Select(b => new { b.ProductId, b.Id }).ToListAsync();
-
+            var words = Regex.Split(filter.Keyword ?? "", @"\W+").Where(w => !string.IsNullOrEmpty(w)).ToList();
 
             var query = $@"select t1.Id as ProductId,
 	                            ProductCode,
@@ -223,6 +218,14 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                                   {(filter.HasPurchaseInventory == true ? " and t3.PurchaseInventory>0" : "")}";
 
             whereClauses = new List<string>();
+            //var firstWord = words.FirstOrDefault();
+    
+            //if (!string.IsNullOrEmpty(firstWord))
+            //{
+            //    whereClauses.Add($" concat(t1.ProductName,' ',t4.Name,' ',t5.Name ,' ',t11.[Desc]) LIKE N'%{firstWord}%' ");
+            //    words.Remove(firstWord);
+            //}
+
             foreach (var word in words)
             {
                 whereClauses.Add($" concat(t1.ProductName,' ',t4.Name,' ',t5.Name ,' ',t11.[Desc]) LIKE N'%{word}%' ");
@@ -250,14 +253,63 @@ namespace Sepehr.Infrastructure.Persistence.Repositories
                 if (products.Count() > 0)
                     products.First().TotalCount = totalRecords;
 
-                var results = products.Select(r => new
-                {
-                    Result = r,
-                    Score = words.Count(w => r.ProductName.Contains(w) || r.ProductBrandName.Contains(w) || r.ProductTypeDesc.Contains(w))
-                });
 
+                var i = 1;
+                foreach (var w in words)
+                {
+                    
+                    foreach (var r in products)
+                    {
+                        var arPnames =  r.ProductName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        var arPbrands = r.ProductBrandName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        var arPtypeDescs = r.ProductTypeDesc.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                       
+
+                        
+
+                       
+                        foreach (var pname in arPnames)
+                        {
+                            if (pname.Equals(w))
+                            {
+                                r.Rank += 50 ;
+                                if (arPnames.Count() == words.Count)
+                                    r.Rank += 15 ;
+                            }
+                            if (pname.Contains(w))
+                                r.Rank += 10 ;
+                        }
+                        foreach (var arPbrand in arPbrands)
+                        {
+                            if (arPbrand.Equals(w))
+                            {
+                                r.Rank += 50 ;
+                                if (arPbrands.Count() == words.Count)
+                                    r.Rank += 15 ;
+                            }
+                            if (arPbrand.Contains(w))
+                                r.Rank += 10 ;
+                        }
+                        foreach (var arPtypeDesc in arPtypeDescs)
+                        {
+                            if (arPtypeDesc.Equals(w))
+                            {
+                                r.Rank += 50 ;
+                                if (arPtypeDescs.Count() == words.Count)
+                                    r.Rank += 15;
+                            }
+                            if (arPtypeDesc.Contains(w))
+                                r.Rank += 10 ;
+                        }
+
+                        if (r.ProductName == filter.Keyword || r.ProductBrandName == filter.Keyword || r.ProductTypeDesc == filter.Keyword)
+                            r.Rank += 200;
+                    }
+                    i++;
+                }
                 // مرتب‌سازی نتایج بر اساس امتیاز
-                return results.OrderByDescending(r => r.Score).Select(r => r.Result);
+                return products.OrderByDescending(r => r.Rank);
             }
 
         }

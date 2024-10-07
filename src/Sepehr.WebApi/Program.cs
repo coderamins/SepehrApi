@@ -95,6 +95,12 @@ builder.Services.AddRateLimiter(options =>
         opt.PermitLimit = 5;
         opt.Window = TimeSpan.FromMinutes(1);
     });
+    options.AddFixedWindowLimiter("CreateOrder", opt =>
+    {
+        opt.AutoReplenishment = true;
+        opt.PermitLimit = 1;
+        opt.Window = TimeSpan.FromMinutes(1);
+    });
     options.AddFixedWindowLimiter("ChangePasswordLimiter", opt =>
     {
         opt.AutoReplenishment = true;
@@ -172,7 +178,7 @@ using (var scope = scopeFactory.CreateScope())
             await DefaultFarePaymentTypes.SeedAsync(applicationDbContext);
             await WarehouseTypes.SeedAsync(applicationDbContext);
             await OrderSendTypes.SeedAsync(applicationDbContext);
-            await DefaultWarehouse.SeedAsync(applicationDbContext);
+            //await DefaultWarehouse.SeedAsync(applicationDbContext);
             await DefaultBrands.SeedAsync(applicationDbContext);
             await DefaultVehicleTypes.SeedAsync(applicationDbContext);
             await DefaultReceivePaymentTypes.SeedAsync(applicationDbContext);
